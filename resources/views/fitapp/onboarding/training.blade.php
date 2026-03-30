@@ -19,14 +19,14 @@
         <div class="page-kicker">
             <i class="bi bi-calendar-week"></i> Entrenamiento
         </div>
-        <h1 class="fit-title mb-2">Cuéntanos cómo entrenas</h1>
+        <h1 class="fit-title mb-2">Cuéntanos los detalles para elaborar tu plan de entrenamiento.</h1>
         <p class="fit-subtitle mb-0">
             Esto ayuda a personalizar frecuencia, dificultad y estructura de cada semana.
         </p>
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">Nivel actual</label>
+        <label class="form-label fw-bold">Tu nivel actual de entrenamiento</label>
         <select class="form-select input-soft">
             <option>Principiante</option>
             <option>Intermedio</option>
@@ -35,7 +35,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">¿Cuántos días puedes entrenar?</label>
+        <label class="form-label fw-bold">¿Cuántos días quieres entrenar?</label>
         <div class="d-flex flex-wrap gap-2">
             <span class="chip">2 días</span>
             <span class="chip active">3 días</span>
@@ -46,7 +46,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">¿Dónde entrenas?</label>
+        <label class="form-label fw-bold">¿Tú entrenamiento en donde lo realizarás?</label>
         <select class="form-select input-soft">
             <option>Gimnasio</option>
             <option>Casa</option>
@@ -65,7 +65,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">¿Tienes lesiones o limitaciones?</label>
+        <label class="form-label fw-bold">¿Tienes alguna enfermedad, lesión o alguna contraindicacion que nos quieras informar?</label>
         <textarea class="form-control input-soft py-3" rows="3" placeholder="Ej. molestia en rodilla, dolor lumbar, hombro, etc."></textarea>
     </div>
 

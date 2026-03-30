@@ -19,7 +19,7 @@
 
         <h1 class="fit-title text-white mb-2">Bienvenido a FitCoach</h1>
         <p class="text-white-50 mb-4">
-            Tu entrenador, tu rutina, tu alimentación y tus evidencias en una sola app.
+            Tu entrenador, tu entrenamiento, tu alimentación, orientación y guianza en una sola app.
         </p>
 
         <div class="auth-feature mb-3">
@@ -27,8 +27,20 @@
                 <i class="bi bi-activity"></i>
             </div>
             <div>
-                <div class="fw-bold">Rutinas por semana</div>
-                <div class="small text-white-50">Con ejercicios guiados, videos del coach y seguimiento diario.</div>
+                <div class="fw-bold">Entrenamiento</div>
+                <div class="small text-white-50">Puedes adquirir un plan de entrenamiento de acuerdo a tu objetivo estético o funcional que desees lograr.</div>
+            </div>
+        </div>
+
+        <div class="auth-feature mb-3">
+            <div class="auth-feature-icon">
+                <i class="bi bi-camera"></i>
+            </div>
+            <div>
+                <div class="fw-bold">Alimentación</div>
+                <div class="small text-white-50">
+                    Se te puede elaborar un plan alimentario para ayudarte a lograr tu objetivo estético o funcional que desees lograr.
+                </div>
             </div>
         </div>
 
@@ -37,10 +49,13 @@
                 <i class="bi bi-camera"></i>
             </div>
             <div>
-                <div class="fw-bold">Evidencias y nutrición</div>
-                <div class="small text-white-50">Sube videos y fotos para evaluación de técnica y comidas.</div>
+                <div class="fw-bold">Guianza y Orientación</div>
+                <div class="small text-white-50">
+                    Puedes recibir la guianza u orientación a distancia de tu entrenador compartiendo tus evidencias subiendo tus videos de ejercicios o comidas que estés realizando.
+                </div>
             </div>
         </div>
+
     </div>
 
     <ul class="nav nav-pills mb-4" id="authTabs" role="tablist">

@@ -19,7 +19,7 @@
         <div class="page-kicker">
             <i class="bi bi-bullseye"></i> Objetivo
         </div>
-        <h1 class="fit-title mb-2">¿Qué quieres lograr?</h1>
+        <h1 class="fit-title mb-2">¿Cuál es tu objetivo?</h1>
         <p class="fit-subtitle mb-0">
             Esta selección ayuda a definir el tipo de entrenamiento, intensidad y recomendaciones del plan.
         </p>
@@ -31,8 +31,8 @@
                 <div class="option-icon">
                     <i class="bi bi-bar-chart-line"></i>
                 </div>
-                <div class="option-title">Masa muscular</div>
-                <div class="option-text">Subir volumen y mejorar desarrollo muscular.</div>
+                <div class="option-title">Aumento de Masa Muscular</div>
+                <div class="option-text">Aumentar  tamaño muscular y mejoramiento de la estética corporal.</div>
             </div>
         </div>
 
@@ -71,8 +71,8 @@
                 <div class="option-icon">
                     <i class="bi bi-fire"></i>
                 </div>
-                <div class="option-title">Pérdida de peso</div>
-                <div class="option-text">Déficit calórico con entrenamiento controlado.</div>
+                <div class="option-title">Disminuir grasa corporal</div>
+                <div class="option-text">Mejorar el tono muscular y reducir grasa corporal subcutánea.</div>
             </div>
         </div>
 

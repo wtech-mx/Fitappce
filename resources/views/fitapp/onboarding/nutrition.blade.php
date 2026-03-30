@@ -19,14 +19,14 @@
         <div class="page-kicker">
             <i class="bi bi-cup-hot"></i> Nutrición
         </div>
-        <h1 class="fit-title mb-2">Ahora tu parte alimentaria</h1>
+        <h1 class="fit-title mb-2">Ahora cuéntanos los detalles para elaborar tu plan alimentario.</h1>
         <p class="fit-subtitle mb-0">
             Esto sirve para que el entrenador prepare un plan realista y que la app sugiera recetas congruentes.
         </p>
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">¿Cuántas comidas haces al día?</label>
+        <label class="form-label fw-bold">¿De cuántas comidas quieres tu plan?</label>
         <select class="form-select input-soft">
             <option>3 comidas</option>
             <option>4 comidas</option>
@@ -36,7 +36,7 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">Restricciones alimentarias</label>
+        <label class="form-label fw-bold">Tienes alguna restricción de alimentos?</label>
         <select class="form-select input-soft">
             <option>Ninguna</option>
             <option>Vegetariano</option>
@@ -48,9 +48,10 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label fw-bold">Alimentos que no te gustan</label>
-        <textarea class="form-control input-soft py-3" rows="3" placeholder="Ej. atún, brócoli, leche, avena..."></textarea>
+        <label class="form-label fw-bold">¿Que alimentos no quieres que incluyamos en tu plan?</label>
+        <textarea class="form-control input-soft py-3" rows="3" placeholder="Ej. molestia en rodilla, dolor lumbar, hombro, etc."></textarea>
     </div>
+
 
     <div class="mb-3">
         <label class="form-label fw-bold">Horario más complicado para comer</label>
@@ -63,12 +64,6 @@
         </select>
     </div>
 
-    <div class="card-soft p-3 rounded-24">
-        <div class="fw-bold mb-1">Buen UX tip</div>
-        <div class="fit-subtitle">
-            El usuario debe sentir que el plan se adapta a su vida, no que la app le va a regañar por existir.
-        </div>
-    </div>
 
     <div class="mt-4">
         <a href="{{ route('fitapp.onboarding.summary') }}" class="btn btn-primary-custom w-100">

@@ -19,7 +19,7 @@
         <div class="page-kicker">
             <i class="bi bi-grid"></i> Servicio
         </div>
-        <h1 class="fit-title mb-2">¿Qué quieres contratar?</h1>
+        <h1 class="fit-title mb-2">¿Que deseas adquirir?</h1>
         <p class="fit-subtitle mb-0">
             Aquí definimos si el usuario solo quiere entrenar o también desea acompañamiento nutricional.
         </p>
@@ -32,7 +32,7 @@
                     <i class="bi bi-activity"></i>
                 </div>
                 <div>
-                    <div class="option-title">Solo rutina</div>
+                    <div class="option-title">Plan de entrenamiento </div>
                     <div class="option-text">Entrenamientos previamente cargados y organizados por semana.</div>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                     <i class="bi bi-cup-straw"></i>
                 </div>
                 <div>
-                    <div class="option-title">Solo plan nutricional</div>
+                    <div class="option-title">Plan alimentario </div>
                     <div class="option-text">Plan de comidas, evidencia fotográfica y seguimiento del coach.</div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                     <i class="bi bi-stars"></i>
                 </div>
                 <div>
-                    <div class="option-title">Rutina + nutrición</div>
+                    <div class="option-title">Plan de entrenamiento y Plan alimentario</div>
                     <div class="option-text">Experiencia completa con entrenamiento, comidas, evidencias y evaluación.</div>
                 </div>
             </div>
