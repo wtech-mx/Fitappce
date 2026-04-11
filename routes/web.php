@@ -8,6 +8,7 @@ Route::get('/', function () {
 
 
 Route::prefix('fitapp')->name('fitapp.')->group(function () {
+
     Route::view('/splash', 'fitapp.splash')->name('splash');
     Route::view('/auth', 'fitapp.auth')->name('auth');
 
@@ -17,7 +18,7 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/servicio', 'fitapp.onboarding.service')->name('service');
         Route::view('/entrenamiento', 'fitapp.onboarding.training')->name('training');
         Route::view('/nutricion', 'fitapp.onboarding.nutrition')->name('nutrition');
-        Route::view('/resumen', 'fitapp.onboarding.summary')->name('summary');
+        Route::view('/cita', 'fitapp.onboarding.appointment')->name('appointment');
     });
 
     Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
@@ -29,4 +30,19 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
     Route::view('/recetas', 'fitapp.recetas')->name('recetas');
     Route::view('/progreso', 'fitapp.progreso')->name('progreso');
     Route::view('/perfil', 'fitapp.perfil')->name('perfil');
+
 });
+
+    Route::prefix('admin')->name('fitapp.admin.')->group(function () {
+        Route::view('/dashboard', 'fitapp.admin.dashboard')->name('dashboard');
+        Route::view('/citas', 'fitapp.admin.citas')->name('citas');
+        Route::view('/usuarios', 'fitapp.admin.usuarios')->name('usuarios');
+        Route::view('/rutinas', 'fitapp.admin.rutinas')->name('rutinas');
+        Route::view('/ejercicios', 'fitapp.admin.ejercicios')->name('ejercicios');
+        Route::view('/ejercicios/crear', 'fitapp.admin.ejercicios-crear')->name('ejercicios.crear');
+        Route::view('/ejercicios/detalle', 'fitapp.admin.ejercicio-detalle')->name('ejercicios.detalle');
+        Route::view('/evidencias', 'fitapp.admin.evidencias')->name('evidencias');
+        Route::view('/nutricion', 'fitapp.admin.nutricion')->name('nutricion');
+        Route::view('/pagos', 'fitapp.admin.pagos')->name('pagos');
+        Route::view('/configuracion', 'fitapp.admin.configuracion')->name('configuracion');
+    });

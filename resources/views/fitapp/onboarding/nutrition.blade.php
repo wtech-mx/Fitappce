@@ -66,8 +66,8 @@
 
 
     <div class="mt-4">
-        <a href="{{ route('fitapp.onboarding.summary') }}" class="btn btn-primary-custom w-100">
-            Continuar
+        <a href="{{ route('fitapp.onboarding.appointment') }}" class="btn btn-primary-custom w-100">
+            Continuar a mi cita inicial
         </a>
     </div>
 </div>
