@@ -39,6 +39,8 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/citas', 'fitapp.admin.citas')->name('citas');
         Route::view('/usuarios', 'fitapp.admin.usuarios')->name('usuarios');
         Route::view('/rutinas', 'fitapp.admin.rutinas')->name('rutinas');
+        Route::view('/rutinas/crear', 'fitapp.admin.rutinas-crear')->name('rutinas.crear');
+        Route::view('/rutinas/detalle', 'fitapp.admin.rutina-detalle')->name('rutinas.detalle');
         Route::view('/ejercicios', 'fitapp.admin.ejercicios')->name('ejercicios');
         Route::view('/ejercicios/crear', 'fitapp.admin.ejercicios-crear')->name('ejercicios.crear');
         Route::view('/ejercicios/detalle', 'fitapp.admin.ejercicio-detalle')->name('ejercicios.detalle');
