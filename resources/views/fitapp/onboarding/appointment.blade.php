@@ -124,14 +124,71 @@
     </div>
 
     <div class="section-title-row">
+        <h2 class="h6 fw-bold mb-0">Modalidad de cita</h2>
+        <span class="mini-note">Presencial u online</span>
+    </div>
+
+    <div class="d-grid gap-3 mb-4">
+        <button type="button" class="appointment-choice-card active" data-appointment-mode="presencial" style="border: solid 1px transparent;">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="d-flex gap-3 text-start">
+                    <div class="option-icon mb-0">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold">Presencial en consultorio</div>
+                        <div class="fit-subtitle">
+                            Asiste al consultorio para tu valoración inicial y mediciones.
+                        </div>
+                    </div>
+                </div>
+                <i class="bi bi-check-circle-fill text-primary-custom choice-check"></i>
+            </div>
+        </button>
+
+        <button type="button" class="appointment-choice-card" data-appointment-mode="online" style="border: solid 1px transparent;">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="d-flex gap-3 text-start">
+                    <div class="option-icon mb-0">
+                        <i class="bi bi-camera-video"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold">Online</div>
+                        <div class="fit-subtitle">
+                            Agenda una llamada por WhatsApp o Google Meet para iniciar a distancia.
+                        </div>
+                    </div>
+                </div>
+                <i class="bi bi-circle text-muted choice-check"></i>
+            </div>
+        </button>
+    </div>
+
+    <div class="mb-4 d-none" id="onlineChannelPanel">
+        <div class="section-title-row">
+            <h2 class="h6 fw-bold mb-0">Canal de llamada</h2>
+            <span class="mini-note">Solo online</span>
+        </div>
+
+        <div class="time-slot-grid">
+            <button type="button" class="time-slot-btn active" data-online-channel="whatsapp">
+                <i class="bi bi-whatsapp me-1"></i> WhatsApp
+            </button>
+            <button type="button" class="time-slot-btn" data-online-channel="google-meet">
+                <i class="bi bi-camera-video me-1"></i> Google Meet
+            </button>
+        </div>
+    </div>
+
+    <div class="section-title-row">
         <h2 class="h6 fw-bold mb-0">Forma de pago</h2>
         <span class="mini-note">$100 para reservar</span>
     </div>
 
     <div class="d-grid gap-3 mb-4">
-        <div class="payment-option-card active">
+        <button type="button" class="payment-option-card active" data-payment-method="mercado-pago" >
             <div class="d-flex justify-content-between align-items-start gap-3">
-                <div class="d-flex gap-3">
+                <div class="d-flex gap-3 text-start">
                     <div class="option-icon mb-0">
                         <i class="bi bi-credit-card-2-front"></i>
                     </div>
@@ -142,31 +199,31 @@
                         </div>
                     </div>
                 </div>
-                <i class="bi bi-check-circle-fill text-primary-custom"></i>
+                <i class="bi bi-check-circle-fill text-primary-custom payment-check"></i>
             </div>
-        </div>
+        </button>
 
-        <div class="payment-option-card">
+        <button type="button" class="payment-option-card" data-payment-method="efectivo" >
             <div class="d-flex justify-content-between align-items-start gap-3">
-                <div class="d-flex gap-3">
+                <div class="d-flex gap-3 text-start">
                     <div class="option-icon mb-0">
                         <i class="bi bi-cash-coin"></i>
                     </div>
                     <div>
                         <div class="fw-bold">Pagar en efectivo en la cita</div>
-                        <div class="fit-subtitle">
+                        <div class="fit-subtitle" data-cash-copy>
                             El usuario aparta la cita y liquida el monto simbólico al llegar al consultorio.
                         </div>
                     </div>
                 </div>
-                <i class="bi bi-circle text-muted"></i>
+                <i class="bi bi-circle text-muted payment-check"></i>
             </div>
-        </div>
+        </button>
     </div>
 
     <div class="policy-note mb-4">
         <div class="policy-note-title">Política de asistencia</div>
-        <div class="policy-note-text">
+        <div class="policy-note-text" id="paymentPolicyText">
             El apartado de <strong>$100 MXN</strong> es para asegurar la asistencia. Si la persona no se presenta a la cita, ese monto se retiene y no se toma a cuenta.
         </div>
     </div>
@@ -177,17 +234,17 @@
     </div>
 
     <div class="surface-card p-3 mb-3">
-        <div class="fw-bold mb-1">Consultorio / valoración inicial</div>
-        <div class="fit-subtitle">
+        <div class="fw-bold mb-1" id="locationInfoTitle">Consultorio / valoración inicial</div>
+        <div class="fit-subtitle" id="locationInfoText">
             Aquí irá la dirección exacta del consultorio y las referencias para llegar.
         </div>
     </div>
 
     <div class="map-placeholder mb-4">
         <div>
-            <i class="bi bi-geo-alt-fill"></i>
-            <div class="fw-bold mb-1">Aquí irá el mapa del consultorio</div>
-            <div class="small text-muted">
+            <i class="bi bi-geo-alt-fill" id="locationVisualIcon"></i>
+            <div class="fw-bold mb-1" id="locationVisualTitle">Aquí irá el mapa del consultorio</div>
+            <div class="small text-muted" id="locationVisualText">
                 Cuando me pases la dirección exacta, te dejo el bloque con mapa embebido o diseño visual listo.
             </div>
         </div>
@@ -203,8 +260,127 @@
         </ul>
     </div>
 
-    <a href="{{ route('fitapp.dashboard') }}" class="btn btn-accent-custom w-100">
+    <a href="{{ route('fitapp.onboarding.thankyou') }}" class="btn btn-accent-custom w-100" id="confirmAppointmentLink">
         Confirmar cita y continuar
     </a>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modeCards = document.querySelectorAll('[data-appointment-mode]');
+        const paymentCards = document.querySelectorAll('[data-payment-method]');
+        const channelButtons = document.querySelectorAll('[data-online-channel]');
+        const channelPanel = document.getElementById('onlineChannelPanel');
+        const cashCard = document.querySelector('[data-payment-method="efectivo"]');
+        const mercadoPagoCard = document.querySelector('[data-payment-method="mercado-pago"]');
+        const cashCopy = document.querySelector('[data-cash-copy]');
+        const paymentPolicyText = document.getElementById('paymentPolicyText');
+        const locationInfoTitle = document.getElementById('locationInfoTitle');
+        const locationInfoText = document.getElementById('locationInfoText');
+        const locationVisualIcon = document.getElementById('locationVisualIcon');
+        const locationVisualTitle = document.getElementById('locationVisualTitle');
+        const locationVisualText = document.getElementById('locationVisualText');
+        const confirmAppointmentLink = document.getElementById('confirmAppointmentLink');
+        let selectedMode = 'presencial';
+        let selectedChannel = 'whatsapp';
+        let selectedPayment = 'mercado-pago';
+
+        const updateConfirmLink = () => {
+            const url = new URL(confirmAppointmentLink.href);
+
+            url.searchParams.set('modalidad', selectedMode);
+            url.searchParams.set('canal', selectedMode === 'online' ? selectedChannel : 'consultorio');
+            url.searchParams.set('pago', selectedPayment);
+            url.searchParams.set('fecha', '9 abril');
+            url.searchParams.set('hora', '11:00 AM');
+            url.searchParams.set('monto', '100');
+
+            confirmAppointmentLink.href = url.toString();
+        };
+
+        const updateCheck = (card, selector, active) => {
+            const icon = card.querySelector(selector);
+
+            if (!icon) {
+                return;
+            }
+
+            icon.className = active
+                ? 'bi bi-check-circle-fill text-primary-custom ' + selector.slice(1)
+                : 'bi bi-circle text-muted ' + selector.slice(1);
+        };
+
+        const setActiveCard = (cards, selectedCard, selector) => {
+            cards.forEach((card) => {
+                const active = card === selectedCard;
+
+                card.classList.toggle('active', active);
+                updateCheck(card, selector, active);
+            });
+        };
+
+        const selectPayment = (card) => {
+            if (!card || card.disabled) {
+                return;
+            }
+
+            setActiveCard(paymentCards, card, '.payment-check');
+            selectedPayment = card.dataset.paymentMethod;
+            updateConfirmLink();
+        };
+
+        const setMode = (mode) => {
+            const selectedModeCard = document.querySelector(`[data-appointment-mode="${mode}"]`);
+            const isOnline = mode === 'online';
+
+            selectedMode = mode;
+            setActiveCard(modeCards, selectedModeCard, '.choice-check');
+            channelPanel.classList.toggle('d-none', !isOnline);
+            cashCard.disabled = isOnline;
+            cashCard.classList.toggle('is-disabled', isOnline);
+
+            if (isOnline) {
+                selectPayment(mercadoPagoCard);
+                cashCopy.textContent = 'No disponible para citas online. La reserva se cubre únicamente por Mercado Pago.';
+                paymentPolicyText.innerHTML = 'Para citas online, el apartado de <strong>$100 MXN</strong> solo se puede pagar por Mercado Pago. Al confirmar, se compartirá el enlace o número para la llamada.';
+                locationInfoTitle.textContent = 'Cita online';
+                locationInfoText.textContent = 'Recibirás los datos de conexión según el canal elegido: llamada por WhatsApp o enlace de Google Meet.';
+                locationVisualIcon.className = 'bi bi-camera-video-fill';
+                locationVisualTitle.textContent = 'Llamada online';
+                locationVisualText.textContent = 'El consultorio no aplica para esta modalidad; la sesión se realiza a distancia en el horario reservado.';
+                updateConfirmLink();
+                return;
+            }
+
+            cashCopy.textContent = 'El usuario aparta la cita y liquida el monto simbólico al llegar al consultorio.';
+            paymentPolicyText.innerHTML = 'El apartado de <strong>$100 MXN</strong> es para asegurar la asistencia. Si la persona no se presenta a la cita, ese monto se retiene y no se toma a cuenta.';
+            locationInfoTitle.textContent = 'Consultorio / valoración inicial';
+            locationInfoText.textContent = 'Aquí irá la dirección exacta del consultorio y las referencias para llegar.';
+            locationVisualIcon.className = 'bi bi-geo-alt-fill';
+            locationVisualTitle.textContent = 'Aquí irá el mapa del consultorio';
+            locationVisualText.textContent = 'Cuando me pases la dirección exacta, te dejo el bloque con mapa embebido o diseño visual listo.';
+            updateConfirmLink();
+        };
+
+        modeCards.forEach((card) => {
+            card.addEventListener('click', () => setMode(card.dataset.appointmentMode));
+        });
+
+        paymentCards.forEach((card) => {
+            card.addEventListener('click', () => selectPayment(card));
+        });
+
+        channelButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                channelButtons.forEach((channelButton) => channelButton.classList.remove('active'));
+                button.classList.add('active');
+                selectedChannel = button.dataset.onlineChannel;
+                updateConfirmLink();
+            });
+        });
+        updateConfirmLink();
+    });
+</script>
+@endpush

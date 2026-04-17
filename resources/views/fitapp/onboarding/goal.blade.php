@@ -41,28 +41,8 @@
                 <div class="option-icon">
                     <i class="bi bi-lightning-charge"></i>
                 </div>
-                <div class="option-title">Definición</div>
-                <div class="option-text">Reducir grasa y mejorar composición corporal.</div>
-            </div>
-        </div>
-
-        <div class="col-6">
-            <div class="option-card h-100">
-                <div class="option-icon">
-                    <i class="bi bi-trophy"></i>
-                </div>
-                <div class="option-title">Fuerza</div>
-                <div class="option-text">Mayor rendimiento y capacidad de carga.</div>
-            </div>
-        </div>
-
-        <div class="col-6">
-            <div class="option-card h-100">
-                <div class="option-icon">
-                    <i class="bi bi-heart-pulse"></i>
-                </div>
-                <div class="option-title">Adulto mayor</div>
-                <div class="option-text">Movilidad, salud articular y autonomía.</div>
+                <div class="option-title">Potencializar o Acondicionar alguna capacidad Física Condicional</div>
+                <div class="option-text">Fuerza, Velocidad, Resistencia o Flexibilidad (Plan personalizado exclusivamente)</div>
             </div>
         </div>
 
@@ -76,15 +56,6 @@
             </div>
         </div>
 
-        <div class="col-6">
-            <div class="option-card h-100">
-                <div class="option-icon">
-                    <i class="bi bi-emoji-smile"></i>
-                </div>
-                <div class="option-title">Bienestar</div>
-                <div class="option-text">Sentirte mejor y crear constancia real.</div>
-            </div>
-        </div>
     </div>
 
     <div class="mt-4">

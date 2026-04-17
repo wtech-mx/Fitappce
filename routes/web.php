@@ -19,6 +19,7 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/entrenamiento', 'fitapp.onboarding.training')->name('training');
         Route::view('/nutricion', 'fitapp.onboarding.nutrition')->name('nutrition');
         Route::view('/cita', 'fitapp.onboarding.appointment')->name('appointment');
+        Route::view('/gracias', 'fitapp.onboarding.thankyou')->name('thankyou');
     });
 
     Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
