@@ -89,6 +89,67 @@
         </div>
     </div>
 
+    <div class="surface-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+            <div>
+                <div class="fw-bold">Mediciones corporales</div>
+                <div class="fit-subtitle">Ultima valoracion: 15 de Abril 2026</div>
+            </div>
+            <span class="status-pill status-ok">Registrada</span>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-6">
+                <div class="profile-stat">
+                    <div class="value">14.73%</div>
+                    <div class="label">Grasa corporal</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="profile-stat">
+                    <div class="value">65.3 kg</div>
+                    <div class="label">Peso corporal</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="profile-stat">
+                    <div class="value">55.68 kg</div>
+                    <div class="label">Masa magra</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="profile-stat">
+                    <div class="value">81.2 cm</div>
+                    <div class="label">Cintura</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="soft-divider"></div>
+
+        <a href="{{ route('fitapp.progreso-corporal') }}" class="btn btn-primary-custom w-100 mb-3">
+            Ver reporte visual de resultados
+        </a>
+
+        <div class="fw-bold mb-3">Historial</div>
+        <div class="d-grid gap-3">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <div class="fw-bold">15 Abr 2026</div>
+                    <div class="fit-subtitle">Seguimiento con medicion completa</div>
+                </div>
+                <span class="status-pill status-ok">Actual</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                    <div class="fw-bold">15 Mar 2026</div>
+                    <div class="fit-subtitle">Valoracion anterior para comparativo</div>
+                </div>
+                <span class="status-pill status-warn">Anterior</span>
+            </div>
+        </div>
+    </div>
+
     <div class="surface-card p-4">
         <div class="fw-bold mb-3">Notas del coach</div>
         <div class="fit-subtitle">

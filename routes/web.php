@@ -30,6 +30,7 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
     Route::view('/plan-alimentario', 'fitapp.plan-alimentario')->name('plan');
     Route::view('/recetas', 'fitapp.recetas')->name('recetas');
     Route::view('/progreso', 'fitapp.progreso')->name('progreso');
+    Route::view('/progreso-corporal', 'fitapp.progreso-corporal')->name('progreso-corporal');
     Route::view('/perfil', 'fitapp.perfil')->name('perfil');
 
 });
@@ -38,6 +39,14 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/dashboard', 'fitapp.admin.dashboard')->name('dashboard');
         Route::view('/citas', 'fitapp.admin.citas')->name('citas');
         Route::view('/usuarios', 'fitapp.admin.usuarios')->name('usuarios');
+        Route::view('/usuarios/alta', 'fitapp.admin.usuarios-alta')->name('usuarios.alta');
+        Route::view('/usuarios/detalle', 'fitapp.admin.usuario-detalle')->name('usuarios.detalle');
+        Route::view('/mediciones', 'fitapp.admin.mediciones')->name('mediciones');
+        Route::view('/mediciones/crear', 'fitapp.admin.mediciones-crear')->name('mediciones.crear');
+        Route::view('/mediciones/reporte', 'fitapp.admin.mediciones-reporte')->name('mediciones.reporte');
+        Route::view('/planes', 'fitapp.admin.planes')->name('planes');
+        Route::view('/planes/crear', 'fitapp.admin.planes-crear')->name('planes.crear');
+        Route::view('/planes/detalle', 'fitapp.admin.plan-detalle')->name('planes.detalle');
         Route::view('/rutinas', 'fitapp.admin.rutinas')->name('rutinas');
         Route::view('/rutinas/crear', 'fitapp.admin.rutinas-crear')->name('rutinas.crear');
         Route::view('/rutinas/detalle', 'fitapp.admin.rutina-detalle')->name('rutinas.detalle');

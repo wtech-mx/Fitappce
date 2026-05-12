@@ -15,17 +15,27 @@
             Citas
         </a>
 
-        <a href="{{ route('fitapp.admin.usuarios') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.usuarios') ? 'active' : '' }}">
+        <a href="{{ route('fitapp.admin.usuarios') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.usuarios*') ? 'active' : '' }}">
             <i class="bi bi-people-fill"></i>
             Usuarios
         </a>
 
-        <a href="{{ route('fitapp.admin.rutinas') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.rutinas') ? 'active' : '' }}">
+        <a href="{{ route('fitapp.admin.planes') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.planes*') ? 'active' : '' }}">
+            <i class="bi bi-clipboard2-pulse-fill"></i>
+            Planes
+        </a>
+
+        <a href="{{ route('fitapp.admin.mediciones') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.mediciones*') ? 'active' : '' }}">
+            <i class="bi bi-rulers"></i>
+            Mediciones
+        </a>
+
+        <a href="{{ route('fitapp.admin.rutinas') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.rutinas*') ? 'active' : '' }}">
             <i class="bi bi-activity"></i>
             Rutinas
         </a>
 
-        <a href="{{ route('fitapp.admin.ejercicios') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.ejercicios') ? 'active' : '' }}">
+        <a href="{{ route('fitapp.admin.ejercicios') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.ejercicios*') ? 'active' : '' }}">
             <i class="bi bi-collection-play-fill"></i>
             Ejercicios
         </a>

@@ -10,7 +10,7 @@
     </div>
 
     <div class="admin-topbar-actions">
-        <button class="btn btn-primary-custom px-4">Nuevo usuario</button>
+        <a href="{{ route('fitapp.admin.usuarios.alta') }}" class="btn btn-primary-custom px-4">Nuevo usuario</a>
         <div class="admin-avatar">C</div>
     </div>
 </div>
@@ -49,7 +49,8 @@
             </div>
 
             <div class="admin-card-actions">
-                <a href="#" class="admin-btn-soft"><i class="bi bi-person-vcard"></i> Ver perfil</a>
+                <a href="{{ route('fitapp.admin.usuarios.detalle') }}" class="admin-btn-soft"><i class="bi bi-person-vcard"></i> Ver perfil</a>
+                <a href="{{ route('fitapp.admin.planes') }}" class="admin-btn-soft"><i class="bi bi-clipboard2-pulse"></i> Planes</a>
                 <a href="{{ route('fitapp.admin.rutinas') }}" class="admin-btn-soft"><i class="bi bi-activity"></i> Rutina</a>
             </div>
         </div>
@@ -75,7 +76,8 @@
             </div>
 
             <div class="admin-card-actions">
-                <a href="#" class="admin-btn-soft"><i class="bi bi-calendar-check"></i> Cita</a>
+                <a href="{{ route('fitapp.admin.usuarios.detalle') }}" class="admin-btn-soft"><i class="bi bi-person-vcard"></i> Ver perfil</a>
+                <a href="{{ route('fitapp.admin.citas') }}" class="admin-btn-soft"><i class="bi bi-calendar-check"></i> Cita</a>
                 <a href="#" class="admin-btn-soft"><i class="bi bi-chat-left-text"></i> Contacto</a>
             </div>
         </div>
@@ -101,6 +103,7 @@
             </div>
 
             <div class="admin-card-actions">
+                <a href="{{ route('fitapp.admin.usuarios.detalle') }}" class="admin-btn-soft"><i class="bi bi-person-vcard"></i> Ver perfil</a>
                 <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-btn-soft"><i class="bi bi-journal-medical"></i> Plan</a>
                 <a href="{{ route('fitapp.admin.evidencias') }}" class="admin-btn-soft"><i class="bi bi-images"></i> Evidencias</a>
             </div>
