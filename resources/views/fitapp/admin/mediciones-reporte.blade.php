@@ -33,6 +33,15 @@
         ['label' => 'Cintura', 'start' => '84.00 cm', 'current' => '81.20 cm', 'total' => '-2.80 cm', 'result' => 'Redujo'],
         ['label' => 'Peso', 'start' => '66.80 kg', 'current' => '65.30 kg', 'total' => '-1.50 kg', 'result' => 'Controlado'],
     ];
+
+    $compareZones = [
+        ['name' => 'Brazo flex.', 'previous' => '33.10 cm', 'current' => '33.80 cm', 'change' => '+0.70'],
+        ['name' => 'Torax', 'previous' => '95.80 cm', 'current' => '97.00 cm', 'change' => '+1.20'],
+        ['name' => 'Cintura', 'previous' => '83.00 cm', 'current' => '81.20 cm', 'change' => '-1.80'],
+        ['name' => 'Cadera', 'previous' => '91.70 cm', 'current' => '92.50 cm', 'change' => '+0.80'],
+        ['name' => 'Muslo', 'previous' => '55.50 cm', 'current' => '56.10 cm', 'change' => '+0.60'],
+        ['name' => 'Pantorrilla', 'previous' => '35.90 cm', 'current' => '36.20 cm', 'change' => '+0.30'],
+    ];
 @endphp
 
 <div class="admin-topbar">
@@ -184,6 +193,88 @@
                                     <td>{{ $change['current'] }}</td>
                                     <td><span class="admin-tag blue">{{ $change['total'] }}</span></td>
                                     <td>{{ $change['result'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-form-card">
+            <div class="admin-form-card-head">
+                <h2 class="admin-panel-title mb-1">Comparar medicion actual contra otro mes</h2>
+                <div class="admin-mini">El coach elige un mes y muestra dos cuerpos para explicar diferencias por zona.</div>
+            </div>
+
+            <div class="admin-form-card-body">
+                <div class="compare-month-tabs mb-3">
+                    <button class="compare-month-tab">Enero</button>
+                    <button class="compare-month-tab active">Febrero</button>
+                    <button class="compare-month-tab">Marzo</button>
+                </div>
+
+                <div class="body-compare-stage mb-3">
+                    <div class="compare-body-card previous">
+                        <div class="compare-body-head">
+                            <span>Febrero</span>
+                            <strong>Medicion anterior</strong>
+                        </div>
+                        <div class="mini-human">
+                            <div class="mini-human-head"></div>
+                            <div class="mini-human-body"></div>
+                            <div class="mini-human-arm left"></div>
+                            <div class="mini-human-arm right"></div>
+                            <div class="mini-human-leg left"></div>
+                            <div class="mini-human-leg right"></div>
+                            <div class="mini-measure waist"></div>
+                            <div class="mini-measure chest"></div>
+                        </div>
+                        <div class="compare-body-foot">
+                            <span>Grasa 15.46%</span>
+                            <span>Cintura 83.00 cm</span>
+                        </div>
+                    </div>
+
+                    <div class="compare-body-card current">
+                        <div class="compare-body-head">
+                            <span>Abril</span>
+                            <strong>Medicion actual</strong>
+                        </div>
+                        <div class="mini-human is-current">
+                            <div class="mini-human-head"></div>
+                            <div class="mini-human-body"></div>
+                            <div class="mini-human-arm left"></div>
+                            <div class="mini-human-arm right"></div>
+                            <div class="mini-human-leg left"></div>
+                            <div class="mini-human-leg right"></div>
+                            <div class="mini-measure waist"></div>
+                            <div class="mini-measure chest"></div>
+                        </div>
+                        <div class="compare-body-foot">
+                            <span>Grasa 14.73%</span>
+                            <span>Cintura 81.20 cm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Zona</th>
+                                <th>Mes elegido</th>
+                                <th>Actual</th>
+                                <th>Diferencia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($compareZones as $zone)
+                                <tr>
+                                    <td><strong>{{ $zone['name'] }}</strong></td>
+                                    <td>{{ $zone['previous'] }}</td>
+                                    <td>{{ $zone['current'] }}</td>
+                                    <td><span class="admin-tag blue">{{ $zone['change'] }}</span></td>
                                 </tr>
                             @endforeach
                         </tbody>
