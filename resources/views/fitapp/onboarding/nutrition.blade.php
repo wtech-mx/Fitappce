@@ -49,7 +49,7 @@
 
     <div class="mb-3">
         <label class="form-label fw-bold">¿Que alimentos no quieres que incluyamos en tu plan?</label>
-        <textarea class="form-control input-soft py-3" rows="3" placeholder="Ej. molestia en rodilla, dolor lumbar, hombro, etc."></textarea>
+        <textarea class="form-control input-soft py-3" rows="3" placeholder="Ej. Manzanas, Platanos ,Cerzas, etc."></textarea>
     </div>
 
 

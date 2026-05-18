@@ -127,7 +127,7 @@
 
         <div class="soft-divider"></div>
 
-        <a href="{{ route('fitapp.progreso-corporal') }}" class="btn btn-primary-custom w-100 mb-3">
+        <a href="{{ route('fitapp.progreso') }}" class="btn btn-primary-custom w-100 mb-3">
             Ver reporte visual de resultados
         </a>
 

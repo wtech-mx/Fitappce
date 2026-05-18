@@ -52,7 +52,7 @@
 
     <div class="admin-topbar-actions">
         <a href="{{ route('fitapp.admin.mediciones') }}" class="btn btn-soft-custom px-4">Volver</a>
-        <a href="{{ route('fitapp.progreso-corporal') }}" class="btn btn-primary-custom px-4">Vista usuario</a>
+        <a href="{{ route('fitapp.progreso') }}" class="btn btn-primary-custom px-4">Vista usuario</a>
         <div class="admin-avatar">C</div>
     </div>
 </div>
@@ -342,7 +342,7 @@
 
                 <div class="admin-card-actions">
                     <a href="{{ route('fitapp.admin.mediciones.crear') }}" class="admin-btn-soft"><i class="bi bi-pencil"></i> Editar datos</a>
-                    <a href="{{ route('fitapp.progreso-corporal') }}" class="admin-btn-soft"><i class="bi bi-phone"></i> Abrir usuario</a>
+                    <a href="{{ route('fitapp.progreso') }}" class="admin-btn-soft"><i class="bi bi-phone"></i> Abrir usuario</a>
                 </div>
             </div>
         </div>

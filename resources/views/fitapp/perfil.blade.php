@@ -70,9 +70,9 @@
         <button class="btn btn-primary-custom w-100">Editar perfil</button>
     </div>
 
-    <button class="btn btn-outline-danger w-100 rounded-4">
+    <a href="{{ route('fitapp.auth') }}" class="btn btn-outline-danger w-100 rounded-4">
         Cerrar sesión
-    </button>
+    </a>
 </div>
 @endsection
 

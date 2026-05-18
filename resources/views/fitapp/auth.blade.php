@@ -98,8 +98,12 @@
                     </a>
                 </div>
 
-                <a href="{{ route('fitapp.onboarding.welcome') }}" class="btn btn-primary-custom w-100">
-                    Entrar
+                <a href="{{ route('fitapp.dashboard') }}" class="btn btn-primary-custom w-100">
+                    Entrar como usuario
+                </a>
+
+                <a href="{{ route('fitapp.admin.dashboard') }}" class="btn btn-soft-custom w-100 mt-2">
+                    Entrar como administrador
                 </a>
             </div>
         </div>
@@ -160,7 +164,7 @@
                 </div>
 
                 <a href="{{ route('fitapp.onboarding.welcome') }}" class="btn btn-primary-custom w-100">
-                    Crear cuenta
+                    Crear cuenta y empezar onboarding
                 </a>
             </div>
 

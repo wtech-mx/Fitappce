@@ -46,7 +46,7 @@
                 <a href="#" class="small text-decoration-none text-primary-custom">Olvidé mi contraseña</a>
             </div>
 
-            <a href="{{ route('fitapp.onboarding') }}" class="btn btn-primary-custom w-100">
+            <a href="{{ route('fitapp.onboarding.welcome') }}" class="btn btn-primary-custom w-100">
                 Entrar
             </a>
         </div>
@@ -99,7 +99,7 @@
                 <input type="password" class="form-control input-soft" placeholder="********">
             </div>
 
-            <a href="{{ route('fitapp.onboarding') }}" class="btn btn-primary-custom w-100">
+            <a href="{{ route('fitapp.onboarding.welcome') }}" class="btn btn-primary-custom w-100">
                 Crear cuenta
             </a>
         </div>

@@ -45,7 +45,7 @@
             Evidencias
         </a>
 
-        <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.nutricion') ? 'active' : '' }}">
+        <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.nutricion*') ? 'active' : '' }}">
             <i class="bi bi-journal-medical"></i>
             Nutrición
         </a>
@@ -58,6 +58,15 @@
         <a href="{{ route('fitapp.admin.configuracion') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.configuracion') ? 'active' : '' }}">
             <i class="bi bi-gear-fill"></i>
             Configuración
+        </a>
+        <a href="{{ route('fitapp.dashboard') }}" class="admin-nav-link">
+            <i class="bi bi-phone-fill"></i>
+            Vista usuario
+        </a>
+
+        <a href="{{ route('fitapp.auth') }}" class="admin-nav-link">
+            <i class="bi bi-box-arrow-right"></i>
+            Salir
         </a>
     </nav>
 

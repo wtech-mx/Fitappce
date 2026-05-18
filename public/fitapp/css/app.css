@@ -2952,6 +2952,56 @@ a{
     border-bottom:1px solid var(--fa-border);
 }
 
+.admin-section-heading{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.admin-section-icon{
+    width:44px;
+    height:44px;
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+    background:rgba(46,134,171,.10);
+    color:var(--fa-primary);
+    font-size:1.15rem;
+}
+
+.admin-section-icon.accent{
+    background:rgba(245,247,73,.28);
+    color:#6f7200;
+}
+
+.admin-section-icon.success{
+    background:var(--fa-success-bg);
+    color:var(--fa-success-text);
+}
+
+.admin-section-icon.warn{
+    background:var(--fa-warn-bg);
+    color:var(--fa-warn-text);
+}
+
+.admin-section-icon.danger{
+    background:var(--fa-danger-bg);
+    color:var(--fa-danger);
+}
+
+.admin-label-icon{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+
+.admin-label-icon i{
+    color:var(--fa-primary);
+    font-size:.95rem;
+}
+
 .admin-form-card-body{
     padding:18px 20px;
 }
@@ -2981,6 +3031,36 @@ a{
     background:#f9fcfd;
     border:1px dashed rgba(46,134,171,.25);
     padding:14px;
+}
+
+.admin-flow-list{
+    display:grid;
+    gap:10px;
+}
+
+.admin-flow-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid rgba(221,229,234,.7);
+}
+
+.admin-flow-item:last-child{
+    border-bottom:0;
+    padding-bottom:0;
+}
+
+.admin-flow-icon{
+    width:34px;
+    height:34px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(46,134,171,.10);
+    color:var(--fa-primary);
+    flex:0 0 auto;
 }
 
 @media (max-width: 1199px){
