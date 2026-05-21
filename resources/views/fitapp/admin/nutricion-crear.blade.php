@@ -36,6 +36,12 @@
         border-radius:18px;
         overflow:hidden;
         box-shadow:var(--fa-shadow-md);
+        min-width:0;
+        max-width:min(520px, calc(100vw - 32px));
+    }
+
+    .select2-container--open .select2-dropdown{
+        width:100% !important;
     }
 
     .select2-search--dropdown{
@@ -47,6 +53,59 @@
         border-radius:14px;
         min-height:42px;
         padding:8px 12px;
+    }
+
+    .nutrition-builder-table{
+        min-width:1040px;
+    }
+
+    .nutrition-builder-table th:first-child,
+    .nutrition-builder-table td:first-child{
+        min-width:320px;
+        width:38%;
+    }
+
+    .nutrition-builder-table input[readonly]{
+        background:#fff;
+        cursor:default;
+    }
+
+    .nutrition-portion-control{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        min-width:190px;
+    }
+
+    .nutrition-portion-control .admin-icon-btn{
+        width:34px;
+        height:28px;
+        min-height:28px;
+        border-radius:12px;
+        font-size:.9rem;
+    }
+
+    .nutrition-portion-control .input-soft{
+        min-height:42px;
+        text-align:center;
+        min-width:92px;
+        padding-left:10px;
+        padding-right:10px;
+        font-weight:700;
+    }
+
+    .nutrition-portion-actions{
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+        flex:0 0 34px;
+    }
+
+    .nutrition-portion-unit{
+        min-width:42px;
+        color:var(--fa-muted);
+        font-size:.82rem;
+        font-weight:700;
     }
 </style>
 @endpush
@@ -131,22 +190,22 @@
 <div class="admin-grid-cards mb-4">
     <div class="admin-stat-card">
         <div class="admin-stat-label"><i class="bi bi-fire me-1 text-primary-custom"></i>Total calorico</div>
-        <div class="admin-stat-value">0</div>
+        <div class="admin-stat-value" data-total-calories>0</div>
         <div class="admin-stat-note">Se calcula al agregar alimentos</div>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-label"><i class="bi bi-lightning-charge me-1 text-primary-custom"></i>Proteinas</div>
-        <div class="admin-stat-value">0</div>
+        <div class="admin-stat-value" data-total-protein>0</div>
         <div class="admin-stat-note">gramos al dia</div>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-label"><i class="bi bi-bar-chart me-1 text-primary-custom"></i>Hidratos</div>
-        <div class="admin-stat-value">0</div>
+        <div class="admin-stat-value" data-total-carbohydrates>0</div>
         <div class="admin-stat-note">gramos al dia</div>
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-label"><i class="bi bi-droplet-half me-1 text-primary-custom"></i>Grasas</div>
-        <div class="admin-stat-value">0</div>
+        <div class="admin-stat-value" data-total-fat>0</div>
         <div class="admin-stat-note">gramos al dia</div>
     </div>
 </div>
@@ -226,10 +285,11 @@
 
                 <div class="admin-form-card-body">
                     <div class="admin-table-wrap">
-                        <table class="admin-table">
+                        <table class="admin-table nutrition-builder-table">
                             <thead>
                                 <tr>
                                     <th>Alimento</th>
+                                    <th>Cantidad</th>
                                     <th>Calorias</th>
                                     <th>Proteinas</th>
                                     <th>Hidratos</th>
@@ -260,12 +320,22 @@
                                                 </optgroup>
                                             @endforeach
                                         </select>
-                                        <div class="admin-mini mt-1" data-food-unit>Unidad base</div>
+                                        <div class="admin-mini mt-1" data-food-unit>Base: selecciona alimento</div>
                                     </td>
-                                    <td><input class="form-control input-soft" data-food-calories placeholder="0"></td>
-                                    <td><input class="form-control input-soft" data-food-protein placeholder="0"></td>
-                                    <td><input class="form-control input-soft" data-food-carbohydrates placeholder="0"></td>
-                                    <td><input class="form-control input-soft" data-food-fat placeholder="0"></td>
+                                    <td>
+                                        <div class="nutrition-portion-control">
+                                            <input class="form-control input-soft" data-food-quantity placeholder="0" inputmode="decimal">
+                                            <div class="nutrition-portion-actions">
+                                                <button type="button" class="admin-icon-btn" data-portion-plus><i class="bi bi-plus"></i></button>
+                                                <button type="button" class="admin-icon-btn" data-portion-minus><i class="bi bi-dash"></i></button>
+                                            </div>
+                                            <span class="nutrition-portion-unit" data-food-quantity-unit></span>
+                                        </div>
+                                    </td>
+                                    <td><input class="form-control input-soft" data-food-calories placeholder="0" readonly></td>
+                                    <td><input class="form-control input-soft" data-food-protein placeholder="0" readonly></td>
+                                    <td><input class="form-control input-soft" data-food-carbohydrates placeholder="0" readonly></td>
+                                    <td><input class="form-control input-soft" data-food-fat placeholder="0" readonly></td>
                                     <td><button class="admin-icon-btn"><i class="bi bi-plus"></i></button></td>
                                 </tr>
                             </tbody>
@@ -328,7 +398,7 @@
                 <div class="admin-stat-inline mb-3">
                     <div class="admin-stat-inline-card">
                         <i class="bi bi-fire text-primary-custom mb-2"></i>
-                        <div class="value">0</div>
+                        <div class="value" data-summary-calories>0</div>
                         <div class="label">Kcal</div>
                     </div>
                     <div class="admin-stat-inline-card">
@@ -340,15 +410,15 @@
 
                 <div class="nutrition-summary-item">
                     <span><i class="bi bi-lightning-charge me-1 text-primary-custom"></i>Proteinas</span>
-                    <strong>0 g</strong>
+                    <strong data-summary-protein>0 g</strong>
                 </div>
                 <div class="nutrition-summary-item">
                     <span><i class="bi bi-bar-chart me-1 text-primary-custom"></i>Hidratos</span>
-                    <strong>0 g</strong>
+                    <strong data-summary-carbohydrates>0 g</strong>
                 </div>
                 <div class="nutrition-summary-item">
                     <span><i class="bi bi-droplet-half me-1 text-primary-custom"></i>Grasas</span>
-                    <strong>0 g</strong>
+                    <strong data-summary-fat>0 g</strong>
                 </div>
 
                 <div class="soft-divider my-3"></div>
@@ -373,33 +443,155 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const formatNumber = (value, decimals = 2) => {
+            const number = Number.parseFloat(value || 0);
+            return Number.isInteger(number) ? String(number) : number.toFixed(decimals);
+        };
+
+        const getPortionUnit = (baseUnit) => (baseUnit || 'porcion').replace(/^[\d.,]+\s*/, '');
+
+        const getPortionStep = (baseUnit) => {
+            const unit = (baseUnit || '').toLowerCase();
+
+            if (unit.includes('g') || unit.includes('ml')) {
+                return 10;
+            }
+
+            return 1;
+        };
+
+        const getSelectedFood = (row) => {
+            const select = row.querySelector('[data-food-select]');
+            return select?.options[select.selectedIndex] || null;
+        };
+
+        const recalculateFoodRow = (row) => {
+            const selected = getSelectedFood(row);
+            const quantityInput = row.querySelector('[data-food-quantity]');
+
+            if (!selected || !selected.value || !quantityInput) {
+                return;
+            }
+
+            const baseQuantity = Number.parseFloat(selected.getAttribute('data-quantity') || 1) || 1;
+            const quantity = Number.parseFloat(quantityInput.value || 0);
+            const factor = quantity > 0 ? quantity / baseQuantity : 0;
+
+            row.querySelector('[data-food-calories]').value = formatNumber((selected.getAttribute('data-calories') || 0) * factor, 0);
+            row.querySelector('[data-food-protein]').value = formatNumber((selected.getAttribute('data-protein') || 0) * factor);
+            row.querySelector('[data-food-carbohydrates]').value = formatNumber((selected.getAttribute('data-carbohydrates') || 0) * factor);
+            row.querySelector('[data-food-fat]').value = formatNumber((selected.getAttribute('data-fat') || 0) * factor);
+
+            updateTotals();
+        };
+
+        const updateTotals = () => {
+            const totals = { calories: 0, protein: 0, carbohydrates: 0, fat: 0 };
+
+            document.querySelectorAll('[data-food-row]').forEach((row) => {
+                totals.calories += Number.parseFloat(row.querySelector('[data-food-calories]')?.value || 0);
+                totals.protein += Number.parseFloat(row.querySelector('[data-food-protein]')?.value || 0);
+                totals.carbohydrates += Number.parseFloat(row.querySelector('[data-food-carbohydrates]')?.value || 0);
+                totals.fat += Number.parseFloat(row.querySelector('[data-food-fat]')?.value || 0);
+            });
+
+            document.querySelector('[data-total-calories]')?.replaceChildren(formatNumber(totals.calories, 0));
+            document.querySelector('[data-total-protein]')?.replaceChildren(formatNumber(totals.protein));
+            document.querySelector('[data-total-carbohydrates]')?.replaceChildren(formatNumber(totals.carbohydrates));
+            document.querySelector('[data-total-fat]')?.replaceChildren(formatNumber(totals.fat));
+            document.querySelector('[data-summary-calories]')?.replaceChildren(formatNumber(totals.calories, 0));
+            document.querySelector('[data-summary-protein]')?.replaceChildren(`${formatNumber(totals.protein)} g`);
+            document.querySelector('[data-summary-carbohydrates]')?.replaceChildren(`${formatNumber(totals.carbohydrates)} g`);
+            document.querySelector('[data-summary-fat]')?.replaceChildren(`${formatNumber(totals.fat)} g`);
+        };
+
         if (window.jQuery && jQuery.fn.select2) {
-            jQuery('.food-select2').select2({
-                placeholder: 'Buscar alimento...',
-                width: '100%',
+            jQuery('.food-select2').each(function () {
+                jQuery(this).select2({
+                    placeholder: 'Buscar alimento...',
+                    width: 'resolve',
+                    dropdownAutoWidth: false,
+                    dropdownParent: jQuery(this).closest('.admin-form-card'),
+                });
             });
         }
 
-        document.querySelectorAll('[data-food-select]').forEach((select) => {
-            select.addEventListener('change', () => {
-                const row = select.closest('[data-food-row]');
-                const selected = select.selectedOptions[0];
+        const fillFoodRow = (select) => {
+            const row = select.closest('[data-food-row]');
+            const selected = select.options[select.selectedIndex];
 
-                if (!row || !selected || !selected.value) {
+            if (!row || !selected || !selected.value) {
+                if (row) {
+                    row.querySelector('[data-food-quantity]').value = '';
+                    row.querySelector('[data-food-quantity-unit]').textContent = '';
+                    row.querySelector('[data-food-calories]').value = '';
+                    row.querySelector('[data-food-protein]').value = '';
+                    row.querySelector('[data-food-carbohydrates]').value = '';
+                    row.querySelector('[data-food-fat]').value = '';
+                    row.querySelector('[data-food-unit]').textContent = 'Base: selecciona alimento';
+                }
+                updateTotals();
+                return;
+            }
+
+            const baseUnit = selected.getAttribute('data-unit') || 'porcion';
+            const baseQuantity = selected.getAttribute('data-quantity') || 1;
+            const portionUnit = getPortionUnit(baseUnit);
+
+            row.querySelector('[data-food-quantity]').value = formatNumber(baseQuantity);
+            row.querySelector('[data-food-quantity-unit]').textContent = portionUnit;
+
+            const unit = row.querySelector('[data-food-unit]');
+            if (unit) {
+                unit.textContent = `Base: ${baseUnit} = ${formatNumber(selected.getAttribute('data-calories'), 0)} kcal | P ${formatNumber(selected.getAttribute('data-protein'))}g | H ${formatNumber(selected.getAttribute('data-carbohydrates'))}g | G ${formatNumber(selected.getAttribute('data-fat'))}g`;
+            }
+
+            recalculateFoodRow(row);
+        };
+
+        document.querySelectorAll('[data-food-select]').forEach((select) => {
+            select.addEventListener('change', () => fillFoodRow(select));
+        });
+
+        if (window.jQuery) {
+            jQuery(document).on('select2:select change', '[data-food-select]', function () {
+                fillFoodRow(this);
+            });
+        }
+
+        document.querySelectorAll('[data-food-row]').forEach((row) => {
+            row.querySelector('[data-food-quantity]')?.addEventListener('input', () => recalculateFoodRow(row));
+
+            row.querySelector('[data-portion-minus]')?.addEventListener('click', () => {
+                const selected = getSelectedFood(row);
+                const input = row.querySelector('[data-food-quantity]');
+
+                if (!selected || !selected.value || !input) {
                     return;
                 }
 
-                row.querySelector('[data-food-calories]').value = selected.dataset.calories || '0';
-                row.querySelector('[data-food-protein]').value = selected.dataset.protein || '0';
-                row.querySelector('[data-food-carbohydrates]').value = selected.dataset.carbohydrates || '0';
-                row.querySelector('[data-food-fat]').value = selected.dataset.fat || '0';
+                const step = getPortionStep(selected.getAttribute('data-unit'));
+                const current = Number.parseFloat(input.value || 0);
+                input.value = formatNumber(Math.max(0, current - step));
+                recalculateFoodRow(row);
+            });
 
-                const unit = row.querySelector('[data-food-unit]');
-                if (unit) {
-                    unit.textContent = `Unidad base: ${selected.dataset.unit || 'porcion'}`;
+            row.querySelector('[data-portion-plus]')?.addEventListener('click', () => {
+                const selected = getSelectedFood(row);
+                const input = row.querySelector('[data-food-quantity]');
+
+                if (!selected || !selected.value || !input) {
+                    return;
                 }
+
+                const step = getPortionStep(selected.getAttribute('data-unit'));
+                const current = Number.parseFloat(input.value || 0);
+                input.value = formatNumber(current + step);
+                recalculateFoodRow(row);
             });
         });
+
+        updateTotals();
     });
 </script>
 @endpush
