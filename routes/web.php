@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\NutritionController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/fitapp/auth')->name('home');
@@ -40,7 +41,7 @@ Route::prefix('admin')->name('fitapp.admin.')->group(function () {
     Route::view('/dashboard', 'fitapp.admin.dashboard')->name('dashboard');
     Route::view('/citas', 'fitapp.admin.citas')->name('citas');
     Route::view('/usuarios', 'fitapp.admin.usuarios')->name('usuarios');
-    Route::view('/usuarios/alta', 'fitapp.admin.usuarios-alta')->name('usuarios.alta');
+    Route::get('/usuarios/alta', [UserController::class, 'create'])->name('usuarios.alta');
     Route::view('/usuarios/detalle', 'fitapp.admin.usuario-detalle')->name('usuarios.detalle');
     Route::view('/mediciones', 'fitapp.admin.mediciones')->name('mediciones');
     Route::view('/mediciones/crear', 'fitapp.admin.mediciones-crear')->name('mediciones.crear');

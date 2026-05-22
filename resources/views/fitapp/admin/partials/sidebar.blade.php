@@ -1,7 +1,6 @@
 <aside class="admin-sidebar">
     <div class="admin-brand">
         <div class="admin-brand-title">FitCoach Admin</div>
-        <div class="admin-brand-subtitle">Panel del entrenador / nutriólogo</div>
     </div>
 
     <nav class="admin-nav">

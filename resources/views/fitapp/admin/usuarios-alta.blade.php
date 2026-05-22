@@ -2,6 +2,73 @@
 
 @section('title', 'Alta de usuario | FitCoach Admin')
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+<style>
+    .select2-container{
+        width:100% !important;
+    }
+
+    .select2-container--default .select2-selection--multiple{
+        min-height:54px;
+        border:1px solid transparent;
+        border-radius:18px;
+        background:var(--fa-soft);
+        padding:8px 12px;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--multiple{
+        border-color:var(--fa-primary);
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        border:0;
+        border-radius:999px;
+        background:#fff;
+        box-shadow:0 8px 18px rgba(15,23,42,.08);
+        color:var(--fa-dark);
+        font-weight:700;
+        padding:5px 10px 5px 24px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+        border:0;
+        color:var(--fa-muted);
+        left:7px;
+        top:5px;
+    }
+
+    .select2-dropdown{
+        border:1px solid var(--fa-border);
+        border-radius:18px;
+        overflow:hidden;
+        box-shadow:var(--fa-shadow-md);
+    }
+
+    .food-blocked-list{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .food-blocked-chip{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        border:1px solid var(--fa-border);
+        border-radius:999px;
+        padding:8px 12px;
+        background:#fff;
+        font-weight:800;
+        box-shadow:0 10px 22px rgba(15,23,42,.06);
+    }
+
+    .food-blocked-chip i{
+        color:var(--fa-danger);
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="admin-topbar">
     <div>
@@ -173,7 +240,33 @@
                     </div>
                     <div class="col-12">
                         <label class="form-label fw-bold admin-label-icon"><i class="bi bi-card-checklist"></i>Alimentos que no quiere incluir</label>
-                        <textarea class="form-control input-soft py-3" rows="3" placeholder="Ej. atun, huevo, lacteos, picante, etc."></textarea>
+                        <select class="form-select input-soft" multiple data-food-exclusions-select>
+                            @foreach($catalogs ?? [] as $catalog)
+                                <optgroup label="{{ $catalog['name'] }}">
+                                    @foreach($catalog['foods'] ?? [] as $food)
+                                        <option
+                                            value="{{ $food['id'] }}"
+                                            data-name="{{ $food['name'] }}"
+                                            data-unit="{{ $food['base_unit'] }}"
+                                            data-category="{{ $food['category'] }}"
+                                        >
+                                            {{ $food['name'] }} - {{ $food['base_unit'] }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+
+                        <div class="admin-helper-note mt-3">
+                            <div class="fw-bold mb-1"><i class="bi bi-ban me-1 text-danger"></i>Alimentos bloqueados para este usuario</div>
+                            <div class="admin-mini mb-3">
+                                Estos alimentos deben excluirse al crear su plan nutricional.
+                            </div>
+                            <div class="food-blocked-list" data-food-exclusions-list>
+                                <div class="admin-mini" data-food-exclusions-empty>Sin alimentos seleccionados.</div>
+                            </div>
+                            <div data-food-exclusions-inputs></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -352,3 +445,60 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const select = document.querySelector('[data-food-exclusions-select]');
+        const list = document.querySelector('[data-food-exclusions-list]');
+        const empty = document.querySelector('[data-food-exclusions-empty]');
+        const inputs = document.querySelector('[data-food-exclusions-inputs]');
+
+        if (window.jQuery && jQuery.fn.select2 && select) {
+            jQuery(select).select2({
+                placeholder: 'Buscar y seleccionar alimentos...',
+                width: '100%',
+                closeOnSelect: false,
+            });
+        }
+
+        const renderExclusions = () => {
+            if (!select || !list || !inputs) {
+                return;
+            }
+
+            const selected = Array.from(select.selectedOptions);
+            list.querySelectorAll('.food-blocked-chip').forEach((chip) => chip.remove());
+            inputs.replaceChildren();
+
+            if (empty) {
+                empty.classList.toggle('d-none', selected.length > 0);
+            }
+
+            selected.forEach((option) => {
+                const chip = document.createElement('div');
+                chip.className = 'food-blocked-chip';
+                chip.innerHTML = `<i class="bi bi-ban"></i><span></span>`;
+                chip.querySelector('span').textContent = `${option.dataset.name || option.text} (${option.dataset.unit || 'porcion'})`;
+                list.appendChild(chip);
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'excluded_food_ids[]';
+                input.value = option.value;
+                inputs.appendChild(input);
+            });
+        };
+
+        select?.addEventListener('change', renderExclusions);
+
+        if (window.jQuery) {
+            jQuery(select).on('select2:select select2:unselect change', renderExclusions);
+        }
+
+        renderExclusions();
+    });
+</script>
+@endpush

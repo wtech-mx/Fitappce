@@ -107,6 +107,39 @@
         font-size:.82rem;
         font-weight:700;
     }
+
+    .excluded-food-list{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .excluded-food-item{
+        display:flex;
+        align-items:flex-start;
+        gap:10px;
+        border:1px solid var(--fa-border);
+        border-radius:16px;
+        background:#fff;
+        padding:10px 12px;
+    }
+
+    .excluded-food-icon{
+        width:34px;
+        height:34px;
+        border-radius:13px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:rgba(220,53,69,.1);
+        color:#dc3545;
+        flex:0 0 34px;
+    }
+
+    .food-option-blocked{
+        color:#dc3545;
+        font-weight:700;
+    }
 </style>
 @endpush
 
@@ -313,8 +346,9 @@
                                                             data-protein="{{ $food['protein'] }}"
                                                             data-carbohydrates="{{ $food['carbohydrates'] }}"
                                                             data-fat="{{ $food['fat'] }}"
+                                                            @disabled($food['is_excluded'] ?? false)
                                                         >
-                                                            {{ $food['name'] }} - {{ $food['base_unit'] }}
+                                                            {{ $food['name'] }} - {{ $food['base_unit'] }}{{ ($food['is_excluded'] ?? false) ? ' | No incluir' : '' }}
                                                         </option>
                                                     @endforeach
                                                 </optgroup>
@@ -350,35 +384,34 @@
         <div class="admin-form-card">
             <div class="admin-form-card-head">
                 <div class="admin-section-heading">
-                    <div class="admin-section-icon warn">
-                        <i class="bi bi-boxes"></i>
+                    <div class="admin-section-icon danger">
+                        <i class="bi bi-ban"></i>
                     </div>
                     <div>
-                        <h2 class="admin-panel-title mb-1">Catalogo de alimentos</h2>
-                        <div class="admin-mini">Base sugerida para armar planes rapido.</div>
+                        <h2 class="admin-panel-title mb-1">Alimentos no permitidos</h2>
+                        <div class="admin-mini">Restricciones tomadas del expediente del usuario.</div>
                     </div>
                 </div>
             </div>
             <div class="admin-form-card-body">
-                <div class="admin-search mb-3">
-                    <input type="text" class="form-control input-soft" placeholder="Buscar alimento...">
-                </div>
-
-                <div class="admin-list">
-                    @foreach($catalogs as $catalog)
-                        <div class="admin-list-item">
-                            <div class="admin-list-row align-items-start">
-                                <div class="admin-section-icon {{ $loop->odd ? 'success' : '' }}" style="width:38px;height:38px;border-radius:14px;font-size:1rem;">
-                                    <i class="bi {{ $catalog['icon'] }}"></i>
-                                </div>
+                @if(! empty($excludedFoods))
+                    <div class="excluded-food-list">
+                        @foreach($excludedFoods as $food)
+                            <div class="excluded-food-item">
+                                <div class="excluded-food-icon"><i class="bi bi-ban"></i></div>
                                 <div>
-                                    <div class="fw-bold">{{ $catalog['name'] }}</div>
-                                    <div class="small text-muted">{{ $catalog['items'] }}</div>
+                                    <div class="fw-bold">{{ $food['name'] }}</div>
+                                    <div class="admin-mini">{{ $food['category'] }} | {{ $food['base_unit'] }}</div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="admin-helper-note mb-0">
+                        <div class="fw-bold mb-1"><i class="bi bi-info-circle me-1 text-primary-custom"></i>Sin restricciones cargadas</div>
+                        <div class="admin-mini">Cuando el usuario tenga alimentos bloqueados, apareceran aqui y no se podran seleccionar en el plan.</div>
+                    </div>
+                @endif
             </div>
         </div>
 
