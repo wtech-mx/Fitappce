@@ -594,6 +594,13 @@ a{
 }
 
 .human-map{
+    --body-chest-width:112px;
+    --body-waist-width:84px;
+    --body-hip-width:118px;
+    --body-arm-width:34px;
+    --body-leg-width:42px;
+    --body-calf-width:34px;
+    --body-arm-offset:72px;
     width:100%;
     max-width:330px;
     height:520px;
@@ -646,7 +653,7 @@ a{
 }
 
 .human-torso{
-    width:112px;
+    width:var(--body-chest-width);
     height:138px;
     border-radius:48px 48px 30px 30px;
     top:98px;
@@ -656,7 +663,7 @@ a{
 }
 
 .human-waist{
-    width:84px;
+    width:var(--body-waist-width);
     height:48px;
     border-radius:18px;
     top:216px;
@@ -665,7 +672,7 @@ a{
 }
 
 .human-hips{
-    width:118px;
+    width:var(--body-hip-width);
     height:68px;
     border-radius:28px 28px 42px 42px;
     top:252px;
@@ -674,52 +681,52 @@ a{
 }
 
 .human-arm{
-    width:34px;
+    width:var(--body-arm-width);
     height:158px;
     border-radius:22px;
     top:116px;
 }
 
 .human-arm-left{
-    left:72px;
+    left:var(--body-arm-offset);
     transform:rotate(8deg);
     transform-origin:top center;
 }
 
 .human-arm-right{
-    right:72px;
+    right:var(--body-arm-offset);
     transform:rotate(-8deg);
     transform-origin:top center;
 }
 
 .human-leg{
-    width:42px;
+    width:var(--body-leg-width);
     height:132px;
     border-radius:24px;
     top:312px;
 }
 
 .human-leg-left{
-    left:119px;
+    left:calc(50% - var(--body-leg-width) - 4px);
 }
 
 .human-leg-right{
-    right:119px;
+    right:calc(50% - var(--body-leg-width) - 4px);
 }
 
 .human-calf{
-    width:34px;
+    width:var(--body-calf-width);
     height:72px;
     border-radius:20px;
     top:428px;
 }
 
 .human-calf-left{
-    left:123px;
+    left:calc(50% - var(--body-calf-width) - 6px);
 }
 
 .human-calf-right{
-    right:123px;
+    right:calc(50% - var(--body-calf-width) - 6px);
 }
 
 .human-scan{
@@ -759,20 +766,20 @@ a{
 }
 
 .ring-chest{
-    width:136px;
+    width:calc(var(--body-chest-width) + 24px);
     height:28px;
     top:148px;
 }
 
 .ring-waist{
-    width:104px;
+    width:calc(var(--body-waist-width) + 20px);
     height:24px;
     top:230px;
     animation-delay:.35s;
 }
 
 .ring-hip{
-    width:142px;
+    width:calc(var(--body-hip-width) + 24px);
     height:30px;
     top:282px;
     animation-delay:.7s;
@@ -1047,16 +1054,27 @@ a{
 }
 
 .mini-human{
-    height:230px;
+    --mini-chest-width:70px;
+    --mini-waist-width:56px;
+    --mini-hip-width:76px;
+    --mini-arm-width:20px;
+    --mini-leg-width:26px;
+    --mini-calf-width:22px;
+    height:286px;
     position:relative;
     margin:0 auto 10px;
-    max-width:150px;
+    width:160px;
+    max-width:100%;
 }
 
 .mini-human-head,
+.mini-human-neck,
 .mini-human-body,
+.mini-human-waist,
+.mini-human-hips,
 .mini-human-arm,
-.mini-human-leg{
+.mini-human-leg,
+.mini-human-calf{
     position:absolute;
     background:
         radial-gradient(circle at 34% 24%, rgba(255,255,255,.78), transparent 22%),
@@ -1066,9 +1084,13 @@ a{
 }
 
 .mini-human.is-current .mini-human-head,
+.mini-human.is-current .mini-human-neck,
 .mini-human.is-current .mini-human-body,
+.mini-human.is-current .mini-human-waist,
+.mini-human.is-current .mini-human-hips,
 .mini-human.is-current .mini-human-arm,
-.mini-human.is-current .mini-human-leg{
+.mini-human.is-current .mini-human-leg,
+.mini-human.is-current .mini-human-calf{
     background:
         radial-gradient(circle at 34% 24%, rgba(255,255,255,.82), transparent 22%),
         linear-gradient(135deg, rgba(46,134,171,.42), rgba(46,134,171,.14));
@@ -1083,46 +1105,88 @@ a{
     transform:translateX(-50%);
 }
 
+.mini-human-neck{
+    width:22px;
+    height:20px;
+    border-radius:10px;
+    top:38px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
 .mini-human-body{
-    width:70px;
-    height:104px;
+    width:var(--mini-chest-width);
+    height:86px;
     border-radius:34px 34px 22px 22px;
     clip-path:polygon(16% 0, 84% 0, 100% 32%, 78% 100%, 22% 100%, 0 32%);
-    top:48px;
+    top:56px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.mini-human-waist{
+    width:var(--mini-waist-width);
+    height:34px;
+    border-radius:14px;
+    top:130px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.mini-human-hips{
+    width:var(--mini-hip-width);
+    height:46px;
+    border-radius:22px 22px 32px 32px;
+    top:154px;
     left:50%;
     transform:translateX(-50%);
 }
 
 .mini-human-arm{
-    width:20px;
-    height:92px;
+    width:var(--mini-arm-width);
+    height:104px;
     border-radius:999px;
-    top:62px;
+    top:68px;
 }
 
 .mini-human-arm.left{
-    left:20px;
+    left:calc(50% - (var(--mini-chest-width) / 2) - var(--mini-arm-width) - 5px);
     transform:rotate(8deg);
 }
 
 .mini-human-arm.right{
-    right:20px;
+    right:calc(50% - (var(--mini-chest-width) / 2) - var(--mini-arm-width) - 5px);
     transform:rotate(-8deg);
 }
 
 .mini-human-leg{
-    width:26px;
-    height:78px;
+    width:var(--mini-leg-width);
+    height:58px;
     border-radius:999px;
-    top:148px;
+    top:192px;
 }
 
 .mini-human-leg.left{
-    left:47px;
+    left:calc(50% - var(--mini-leg-width) - 4px);
 }
 
 .mini-human-leg.right{
-    right:47px;
+    right:calc(50% - var(--mini-leg-width) - 4px);
+}
+
+.mini-human-calf{
+    width:var(--mini-calf-width);
+    height:38px;
+    border-radius:999px;
+    top:244px;
+}
+
+.mini-human-calf.left{
+    left:calc(50% - var(--mini-calf-width) - 6px);
+}
+
+.mini-human-calf.right{
+    right:calc(50% - var(--mini-calf-width) - 6px);
 }
 
 .mini-measure{
@@ -1136,16 +1200,23 @@ a{
 }
 
 .mini-measure.chest{
-    width:86px;
+    width:calc(var(--mini-chest-width) + 18px);
     height:20px;
-    top:82px;
+    top:88px;
 }
 
 .mini-measure.waist{
-    width:68px;
+    width:calc(var(--mini-waist-width) + 16px);
     height:18px;
-    top:126px;
+    top:140px;
     animation-delay:.4s;
+}
+
+.mini-measure.hip{
+    width:calc(var(--mini-hip-width) + 18px);
+    height:20px;
+    top:168px;
+    animation-delay:.8s;
 }
 
 .compare-body-foot{

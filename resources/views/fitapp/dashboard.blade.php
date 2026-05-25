@@ -92,7 +92,7 @@
     </div>
 
     <div class="d-grid gap-3 mb-4">
-        <a href="{{ route('fitapp.rutina') }}" class="day-card-link">
+        <a href="{{ route('fitapp.rutina-dia') }}" class="day-card-link">
             <div class="day-card p-3 is-clickable">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -104,7 +104,7 @@
             </div>
         </a>
 
-        <a href="{{ route('fitapp.rutina') }}" class="day-card-link">
+        <a href="{{ route('fitapp.rutina-dia') }}" class="day-card-link">
             <div class="day-card p-3 is-clickable is-today">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -116,7 +116,7 @@
             </div>
         </a>
 
-        <a href="{{ route('fitapp.rutina') }}" class="day-card-link">
+        <a href="{{ route('fitapp.rutina-dia') }}" class="day-card-link">
             <div class="day-card p-3 is-clickable">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -128,7 +128,7 @@
             </div>
         </a>
 
-        <a href="{{ route('fitapp.rutina') }}" class="day-card-link">
+        <a href="{{ route('fitapp.rutina-dia') }}" class="day-card-link">
             <div class="day-card p-3 is-clickable">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>

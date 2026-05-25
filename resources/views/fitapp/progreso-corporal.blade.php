@@ -20,6 +20,21 @@
         ['name' => 'Pantorrilla', 'value' => '36.20 cm', 'change' => '+0.30', 'class' => 'zone-calf-right'],
     ];
 
+    $measurementValue = fn (string $zoneName) => (float) str_replace(',', '.', collect($bodyZones)->firstWhere('name', $zoneName)['value'] ?? 0);
+    $visualSize = fn (float $value, float $minValue, float $maxValue, int $minPixels, int $maxPixels) => round(
+        $minPixels + ((max($minValue, min($value, $maxValue)) - $minValue) / ($maxValue - $minValue)) * ($maxPixels - $minPixels)
+    );
+
+    $bodyShape = [
+        'chest' => $visualSize($measurementValue('Torax'), 78, 125, 92, 146),
+        'waist' => $visualSize($measurementValue('Cintura'), 58, 115, 62, 126),
+        'hips' => $visualSize($measurementValue('Cadera'), 78, 130, 94, 152),
+        'arm' => $visualSize($measurementValue('Brazo flex.'), 24, 46, 24, 44),
+        'leg' => $visualSize($measurementValue('Muslo'), 42, 75, 34, 58),
+        'calf' => $visualSize($measurementValue('Pantorrilla'), 28, 50, 26, 44),
+    ];
+    $bodyShape['armOffset'] = round(165 - ($bodyShape['chest'] / 2) - $bodyShape['arm'] - 5);
+
     $history = [
         ['month' => 'Ene', 'fat' => 72, 'muscle' => 44, 'weight' => '66.8 kg', 'waist' => '84.0 cm'],
         ['month' => 'Feb', 'fat' => 62, 'muscle' => 52, 'weight' => '66.1 kg', 'waist' => '83.0 cm'],
@@ -96,7 +111,7 @@
         </div>
 
         <div class="body-map-wrap">
-            <div class="human-map" aria-label="Mapa corporal visual">
+            <div class="human-map" aria-label="Mapa corporal visual" style="--body-chest-width: {{ $bodyShape['chest'] }}px; --body-waist-width: {{ $bodyShape['waist'] }}px; --body-hip-width: {{ $bodyShape['hips'] }}px; --body-arm-width: {{ $bodyShape['arm'] }}px; --body-leg-width: {{ $bodyShape['leg'] }}px; --body-calf-width: {{ $bodyShape['calf'] }}px; --body-arm-offset: {{ $bodyShape['armOffset'] }}px;">
                 <div class="human-scan"></div>
                 <div class="human-head"></div>
                 <div class="human-neck"></div>
@@ -205,13 +220,19 @@
                     <span>Febrero</span>
                     <strong>Medicion anterior</strong>
                 </div>
-                <div class="mini-human">
+                <div class="mini-human is-wide" style="--mini-chest-width: 92px; --mini-waist-width: 78px; --mini-hip-width: 96px; --mini-arm-width: 24px; --mini-leg-width: 32px; --mini-calf-width: 26px;">
                     <div class="mini-human-head"></div>
+                    <div class="mini-human-neck"></div>
                     <div class="mini-human-body"></div>
+                    <div class="mini-human-waist"></div>
+                    <div class="mini-human-hips"></div>
                     <div class="mini-human-arm left"></div>
                     <div class="mini-human-arm right"></div>
                     <div class="mini-human-leg left"></div>
                     <div class="mini-human-leg right"></div>
+                    <div class="mini-human-calf left"></div>
+                    <div class="mini-human-calf right"></div>
+                    <div class="mini-measure hip"></div>
                     <div class="mini-measure waist"></div>
                     <div class="mini-measure chest"></div>
                 </div>
@@ -226,13 +247,19 @@
                     <span>Abril</span>
                     <strong>Medicion actual</strong>
                 </div>
-                <div class="mini-human is-current">
+                <div class="mini-human is-current is-lean" style="--mini-chest-width: 78px; --mini-waist-width: 58px; --mini-hip-width: 80px; --mini-arm-width: 20px; --mini-leg-width: 26px; --mini-calf-width: 22px;">
                     <div class="mini-human-head"></div>
+                    <div class="mini-human-neck"></div>
                     <div class="mini-human-body"></div>
+                    <div class="mini-human-waist"></div>
+                    <div class="mini-human-hips"></div>
                     <div class="mini-human-arm left"></div>
                     <div class="mini-human-arm right"></div>
                     <div class="mini-human-leg left"></div>
                     <div class="mini-human-leg right"></div>
+                    <div class="mini-human-calf left"></div>
+                    <div class="mini-human-calf right"></div>
+                    <div class="mini-measure hip"></div>
                     <div class="mini-measure waist"></div>
                     <div class="mini-measure chest"></div>
                 </div>
