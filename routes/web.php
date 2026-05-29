@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\NutritionController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -11,9 +12,12 @@ Route::redirect('/dashboard', '/fitapp/dashboard')->name('dashboard');
 
 Route::prefix('fitapp')->name('fitapp.')->group(function () {
     Route::view('/splash', 'fitapp.splash')->name('splash');
-    Route::view('/auth', 'fitapp.auth')->name('auth');
+    Route::get('/auth', [AuthController::class, 'show'])->name('auth');
+    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/register', [AuthController::class, 'register'])->name('register');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::prefix('onboarding')->name('onboarding.')->group(function () {
+    Route::prefix('onboarding')->name('onboarding.')->middleware(['auth', 'role:user,admin'])->group(function () {
         Route::redirect('/', '/fitapp/onboarding/bienvenida')->name('index');
         Route::view('/bienvenida', 'fitapp.onboarding.welcome')->name('welcome');
         Route::view('/objetivo', 'fitapp.onboarding.goal')->name('goal');
@@ -24,19 +28,21 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/gracias', 'fitapp.onboarding.thankyou')->name('thankyou');
     });
 
-    Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
-    Route::view('/rutina', 'fitapp.rutina')->name('rutina');
-    Route::view('/rutina-dia', 'fitapp.rutina-dia')->name('rutina-dia');
-    Route::view('/nutricion-diaria', 'fitapp.nutricion')->name('nutricion');
+    Route::middleware(['auth', 'role:user,admin'])->group(function () {
+        Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
+        Route::view('/rutina', 'fitapp.rutina')->name('rutina');
+        Route::view('/rutina-dia', 'fitapp.rutina-dia')->name('rutina-dia');
+        Route::view('/nutricion-diaria', 'fitapp.nutricion')->name('nutricion');
 
-    Route::view('/plan-alimentario', 'fitapp.plan-alimentario')->name('plan');
-    Route::view('/recetas', 'fitapp.recetas')->name('recetas');
-    Route::view('/progreso', 'fitapp.progreso-corporal')->name('progreso');
-    Route::redirect('/progreso-corporal', '/fitapp/progreso')->name('progreso-corporal');
-    Route::view('/perfil', 'fitapp.perfil')->name('perfil');
+        Route::view('/plan-alimentario', 'fitapp.plan-alimentario')->name('plan');
+        Route::view('/recetas', 'fitapp.recetas')->name('recetas');
+        Route::view('/progreso', 'fitapp.progreso-corporal')->name('progreso');
+        Route::redirect('/progreso-corporal', '/fitapp/progreso')->name('progreso-corporal');
+        Route::view('/perfil', 'fitapp.perfil')->name('perfil');
+    });
 });
 
-Route::prefix('admin')->name('fitapp.admin.')->group(function () {
+Route::prefix('admin')->name('fitapp.admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::redirect('/', '/admin/dashboard')->name('index');
     Route::view('/dashboard', 'fitapp.admin.dashboard')->name('dashboard');
     Route::view('/citas', 'fitapp.admin.citas')->name('citas');

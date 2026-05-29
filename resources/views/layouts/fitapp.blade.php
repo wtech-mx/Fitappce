@@ -17,7 +17,7 @@
 
     @stack('styles')
 </head>
-<body>
+<body class="@yield('body_class')">
     <div class="app-shell">
         <main class="app-page">
             @yield('content')

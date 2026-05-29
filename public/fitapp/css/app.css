@@ -2047,6 +2047,22 @@ a{
         border-radius:30px;
         min-height:calc(100vh - 48px);
     }
+
+    body.auth-screen{
+        padding:0;
+        min-height:100vh;
+        display:flex;
+        justify-content:flex-end;
+        background:
+            linear-gradient(90deg, rgba(8,18,25,.82) 0%, rgba(8,18,25,.48) 48%, rgba(232,238,242,.86) 100%),
+            url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1800&q=80") center left / cover no-repeat;
+    }
+
+    body.auth-screen .app-shell{
+        margin:32px clamp(44px, 9vw, 150px) 32px auto;
+        max-height:calc(100vh - 64px);
+        overflow:auto;
+    }
 }
 
 
@@ -2105,6 +2121,12 @@ a{
     border-radius:16px;
     font-weight:700;
     transition:.18s ease;
+}
+
+.admin-nav-button{
+    border:0;
+    background:transparent;
+    text-align:left;
 }
 
 .admin-nav-link:hover{

@@ -19,9 +19,12 @@ class DatabaseSeeder extends Seeder
 
         User::firstOrCreate(
             ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'password' => 'password']
+            ['name' => 'Test User', 'password' => 'password', 'role' => 'user']
         );
 
-        $this->call(FoodCatalogSeeder::class);
+        $this->call([
+            AdminUserSeeder::class,
+            FoodCatalogSeeder::class,
+        ]);
     }
 }

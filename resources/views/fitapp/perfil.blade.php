@@ -70,9 +70,12 @@
         <button class="btn btn-primary-custom w-100">Editar perfil</button>
     </div>
 
-    <a href="{{ route('fitapp.auth') }}" class="btn btn-outline-danger w-100 rounded-4">
+    <form method="POST" action="{{ route('fitapp.logout') }}">
+        @csrf
+        <button type="submit" class="btn btn-outline-danger w-100 rounded-4">
         Cerrar sesión
-    </a>
+        </button>
+    </form>
 </div>
 @endsection
 

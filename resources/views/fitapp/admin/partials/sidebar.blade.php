@@ -63,10 +63,13 @@
             Vista usuario
         </a>
 
-        <a href="{{ route('fitapp.auth') }}" class="admin-nav-link">
+        <form method="POST" action="{{ route('fitapp.logout') }}" class="m-0">
+            @csrf
+            <button type="submit" class="admin-nav-link admin-nav-button w-100">
             <i class="bi bi-box-arrow-right"></i>
             Salir
-        </a>
+            </button>
+        </form>
     </nav>
 
     <div class="mt-auto pt-2">

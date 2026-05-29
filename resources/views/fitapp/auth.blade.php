@@ -1,6 +1,7 @@
 @extends('layouts.fitapp')
 
 @section('title', 'Acceso | FitApp')
+@section('body_class', 'auth-screen')
 
 @push('styles')
 <style>
@@ -99,35 +100,45 @@
     </div>
 
     <ul class="nav nav-pills auth-entry-actions mb-4" id="authTabs" role="tablist">
-        <li class="nav-item w-50" role="presentation">
-            <button class="nav-link w-100" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane" type="button" data-auth-trigger>
+        <li class="nav-item w-100" role="presentation">
+            <button class="nav-link w-100 active" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane" type="button" data-auth-trigger>
                 Iniciar sesión
             </button>
         </li>
+        {{--
         <li class="nav-item w-50" role="presentation">
-            <button class="nav-link w-100" id="register-tab" data-bs-toggle="pill" data-bs-target="#register-pane" type="button" data-auth-trigger>
+            <button class="nav-link w-100 {{ $errors->has('name') || $errors->has('password_confirmation') ? 'active' : '' }}" id="register-tab" data-bs-toggle="pill" data-bs-target="#register-pane" type="button" data-auth-trigger>
                 Crear cuenta
             </button>
         </li>
+        --}}
     </ul>
 
-    <div class="tab-content d-none" id="authPanels">
+    @if ($errors->any())
+        <div class="alert alert-danger rounded-4 mb-4">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
+    <div class="tab-content" id="authPanels">
         {{-- LOGIN --}}
-        <div class="tab-pane fade" id="login-pane">
+        <div class="tab-pane fade show active" id="login-pane">
             <div class="surface-card p-4 mb-3">
+                <form method="POST" action="{{ route('fitapp.login') }}">
+                    @csrf
                 <div class="mb-3">
                     <label class="form-label fw-bold">Correo electrónico</label>
-                    <input type="email" class="form-control input-soft" placeholder="coachfit@correo.com">
+                    <input type="email" class="form-control input-soft" id="loginEmail" name="email" value="{{ old('email') }}" placeholder="coachfit@correo.com" autocomplete="email" required>
                 </div>
 
                 <div class="mb-2">
                     <label class="form-label fw-bold">Contraseña</label>
-                    <input type="password" class="form-control input-soft" placeholder="********">
+                    <input type="password" class="form-control input-soft" id="loginPassword" name="password" placeholder="********" autocomplete="current-password" required>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember" value="1">
                         <label class="form-check-label small" for="rememberMe">
                             Recordarme
                         </label>
@@ -138,22 +149,23 @@
                     </a>
                 </div>
 
-                <a href="{{ route('fitapp.dashboard') }}" class="btn btn-primary-custom w-100">
-                    Entrar como usuario
-                </a>
-
-                <a href="{{ route('fitapp.admin.dashboard') }}" class="btn btn-soft-custom w-100 mt-2">
-                    Entrar como administrador
-                </a>
+                <button type="submit" class="btn btn-primary-custom w-100">
+                    Iniciar sesión
+                </button>
+                </form>
             </div>
         </div>
 
         {{-- REGISTER --}}
-        <div class="tab-pane fade" id="register-pane">
+        {{--
+        <div class="tab-pane fade {{ $errors->has('name') || $errors->has('password_confirmation') ? 'show active' : '' }}" id="register-pane">
             <div class="surface-card p-4 mb-3">
+                <form method="POST" action="{{ route('fitapp.register') }}">
+                    @csrf
+
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Nombre completo</label>
-                    <input type="text" class="form-control input-soft" placeholder="Tu nombre">
+                    <label class="form-label fw-bold" for="registerName">Nombre completo</label>
+                    <input type="text" class="form-control input-soft" id="registerName" name="name" value="{{ old('name') }}" placeholder="Tu nombre" autocomplete="name" required>
                 </div>
 
                 <div class="row g-3">
@@ -190,22 +202,23 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Correo electrónico</label>
-                    <input type="email" class="form-control input-soft" placeholder="correo@ejemplo.com">
+                    <input type="email" class="form-control input-soft" id="registerEmail" name="email" value="{{ old('email') }}" placeholder="correo@ejemplo.com" autocomplete="email" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">Contraseña</label>
-                    <input type="password" class="form-control input-soft" placeholder="********">
+                    <input type="password" class="form-control input-soft" id="registerPassword" name="password" placeholder="********" autocomplete="new-password" required>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">Confirmar contraseña</label>
-                    <input type="password" class="form-control input-soft" placeholder="********">
+                    <input type="password" class="form-control input-soft" id="registerPasswordConfirmation" name="password_confirmation" placeholder="********" autocomplete="new-password" required>
                 </div>
 
-                <a href="{{ route('fitapp.onboarding.welcome') }}" class="btn btn-primary-custom w-100">
+                <button type="submit" class="btn btn-primary-custom w-100">
                     Crear cuenta y empezar onboarding
-                </a>
+                </button>
+                </form>
             </div>
 
             <div class="card-soft p-3 rounded-24">
@@ -215,6 +228,7 @@
                 </div>
             </div>
         </div>
+        --}}
     </div>
 </div>
 @endsection
