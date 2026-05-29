@@ -3,6 +3,12 @@
 @section('title', 'Progreso | FitApp')
 
 @section('content')
+@php
+    $current = $display['current'];
+    $latestDate = $display['latest_date'];
+    $formatNumber = fn ($value, int $decimals = 2) => filled($value) ? number_format((float) $value, $decimals) : '-';
+@endphp
+
 <div class="section-pad">
     <div class="app-bar">
         <div>
@@ -20,15 +26,15 @@
         <div class="col-6">
             <div class="metric-card">
                 <div class="metric-label">Peso actual</div>
-                <div class="metric-value">72.4</div>
+                <div class="metric-value">{{ $formatNumber($current['weight'], 1) }}</div>
                 <small class="text-muted">kg</small>
             </div>
         </div>
         <div class="col-6">
             <div class="metric-card">
-                <div class="metric-label">Cumplimiento</div>
-                <div class="metric-value">85%</div>
-                <small class="text-muted">este mes</small>
+                <div class="metric-label">Mediciones</div>
+                <div class="metric-value">{{ $measurements->count() }}</div>
+                <small class="text-muted">registradas</small>
             </div>
         </div>
     </div>
@@ -36,22 +42,22 @@
     <div class="hero-card hero-dark mb-4">
         <div class="fw-bold mb-2">Resumen mensual</div>
         <div class="fit-subtitle text-white-50 mb-3">
-            Vas bien. Tus entrenamientos y evidencias muestran buena constancia.
+            {{ $latestMeasurement ? 'Tu ultima medicion ya esta registrada. Revisa tus cambios y el reporte visual.' : 'Aun no tienes mediciones registradas. Tu coach capturara tu primera valoracion pronto.' }}
         </div>
 
         <div class="d-flex justify-content-between mb-2">
-            <span class="text-white-50">Rutinas completadas</span>
-            <span class="fw-bold">12 / 16</span>
+            <span class="text-white-50">Ultima valoracion</span>
+            <span class="fw-bold">{{ $latestDate ? $latestDate->format('d/m/Y') : 'Pendiente' }}</span>
         </div>
 
         <div class="d-flex justify-content-between mb-2">
-            <span class="text-white-50">Fotos de comida enviadas</span>
-            <span class="fw-bold">18</span>
+            <span class="text-white-50">Grasa corporal</span>
+            <span class="fw-bold">{{ $formatNumber($current['body_fat']) }}%</span>
         </div>
 
         <div class="d-flex justify-content-between">
-            <span class="text-white-50">Evaluaciones del coach</span>
-            <span class="fw-bold">6</span>
+            <span class="text-white-50">Cintura</span>
+            <span class="fw-bold">{{ $formatNumber($current['waist']) }} cm</span>
         </div>
     </div>
 
@@ -93,33 +99,33 @@
         <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
             <div>
                 <div class="fw-bold">Mediciones corporales</div>
-                <div class="fit-subtitle">Ultima valoracion: 15 de Abril 2026</div>
+                <div class="fit-subtitle">Ultima valoracion: {{ $latestDate ? $latestDate->format('d/m/Y') : 'Pendiente' }}</div>
             </div>
-            <span class="status-pill status-ok">Registrada</span>
+            <span class="status-pill {{ $latestMeasurement ? 'status-ok' : 'status-warn' }}">{{ $latestMeasurement ? 'Registrada' : 'Pendiente' }}</span>
         </div>
 
         <div class="row g-3 mb-3">
             <div class="col-6">
                 <div class="profile-stat">
-                    <div class="value">14.73%</div>
+                    <div class="value">{{ $formatNumber($current['body_fat']) }}%</div>
                     <div class="label">Grasa corporal</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="profile-stat">
-                    <div class="value">65.3 kg</div>
+                    <div class="value">{{ $formatNumber($current['weight'], 1) }} kg</div>
                     <div class="label">Peso corporal</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="profile-stat">
-                    <div class="value">55.68 kg</div>
+                    <div class="value">{{ $formatNumber($current['lean_mass']) }} kg</div>
                     <div class="label">Masa magra</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="profile-stat">
-                    <div class="value">81.2 cm</div>
+                    <div class="value">{{ $formatNumber($current['waist'], 1) }} cm</div>
                     <div class="label">Cintura</div>
                 </div>
             </div>
@@ -127,33 +133,30 @@
 
         <div class="soft-divider"></div>
 
-        <a href="{{ route('fitapp.progreso') }}" class="btn btn-primary-custom w-100 mb-3">
+        <a href="{{ route('fitapp.progreso-corporal') }}" class="btn btn-primary-custom w-100 mb-3">
             Ver reporte visual de resultados
         </a>
 
         <div class="fw-bold mb-3">Historial</div>
         <div class="d-grid gap-3">
-            <div class="d-flex justify-content-between align-items-start gap-3">
-                <div>
-                    <div class="fw-bold">15 Abr 2026</div>
-                    <div class="fit-subtitle">Seguimiento con medicion completa</div>
+            @forelse($measurements->take(4) as $measurement)
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                    <div>
+                        <div class="fw-bold">{{ $measurement->measured_at->format('d/m/Y') }}</div>
+                        <div class="fit-subtitle">{{ $measurement->appointment_type }} - {{ $measurement->weight ? $measurement->weight.' kg' : 'peso pendiente' }}</div>
+                    </div>
+                    <span class="status-pill {{ $loop->first ? 'status-ok' : 'status-warn' }}">{{ $loop->first ? 'Actual' : 'Anterior' }}</span>
                 </div>
-                <span class="status-pill status-ok">Actual</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-start gap-3">
-                <div>
-                    <div class="fw-bold">15 Mar 2026</div>
-                    <div class="fit-subtitle">Valoracion anterior para comparativo</div>
-                </div>
-                <span class="status-pill status-warn">Anterior</span>
-            </div>
+            @empty
+                <div class="fit-subtitle">Aun no hay historial de mediciones.</div>
+            @endforelse
         </div>
     </div>
 
     <div class="surface-card p-4">
         <div class="fw-bold mb-3">Notas del coach</div>
         <div class="fit-subtitle">
-            Buena adherencia general. En la próxima semana se puede subir un poco la intensidad en espalda y mejorar la distribución de proteína por la noche.
+            {{ $latestMeasurement?->notes ?: 'Tu coach aun no ha dejado notas sobre la ultima medicion.' }}
         </div>
     </div>
 </div>

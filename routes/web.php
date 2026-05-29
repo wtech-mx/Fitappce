@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientProgressController;
+use App\Http\Controllers\ClientProfileController;
+use App\Http\Controllers\ClientNutritionController;
 use App\Http\Controllers\Admin\NutritionController;
+use App\Http\Controllers\Admin\MeasurementController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,13 +37,14 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
         Route::view('/rutina', 'fitapp.rutina')->name('rutina');
         Route::view('/rutina-dia', 'fitapp.rutina-dia')->name('rutina-dia');
-        Route::view('/nutricion-diaria', 'fitapp.nutricion')->name('nutricion');
+        Route::get('/nutricion-diaria', [ClientNutritionController::class, 'daily'])->name('nutricion');
 
-        Route::view('/plan-alimentario', 'fitapp.plan-alimentario')->name('plan');
+        Route::get('/plan-alimentario', [ClientNutritionController::class, 'plan'])->name('plan');
         Route::view('/recetas', 'fitapp.recetas')->name('recetas');
-        Route::view('/progreso', 'fitapp.progreso-corporal')->name('progreso');
-        Route::redirect('/progreso-corporal', '/fitapp/progreso')->name('progreso-corporal');
-        Route::view('/perfil', 'fitapp.perfil')->name('perfil');
+        Route::get('/progreso', [ClientProgressController::class, 'index'])->name('progreso');
+        Route::get('/progreso-corporal', [ClientProgressController::class, 'report'])->name('progreso-corporal');
+        Route::get('/perfil', [ClientProfileController::class, 'show'])->name('perfil');
+        Route::put('/perfil/visual', [ClientProfileController::class, 'updateVisual'])->name('perfil.visual');
     });
 });
 
@@ -46,13 +52,17 @@ Route::prefix('admin')->name('fitapp.admin.')->middleware(['auth', 'role:admin']
     Route::redirect('/', '/admin/dashboard')->name('index');
     Route::view('/dashboard', 'fitapp.admin.dashboard')->name('dashboard');
     Route::view('/citas', 'fitapp.admin.citas')->name('citas');
-    Route::view('/usuarios', 'fitapp.admin.usuarios')->name('usuarios');
+    Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
     Route::get('/usuarios/alta', [UserController::class, 'create'])->name('usuarios.alta');
-    Route::view('/usuarios/detalle', 'fitapp.admin.usuario-detalle')->name('usuarios.detalle');
-    Route::view('/mediciones', 'fitapp.admin.mediciones')->name('mediciones');
-    Route::view('/mediciones/crear', 'fitapp.admin.mediciones-crear')->name('mediciones.crear');
+    Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
+    Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
+    Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
+    Route::get('/usuarios/{user}', [UserController::class, 'show'])->name('usuarios.detalle');
+    Route::get('/mediciones', [MeasurementController::class, 'index'])->name('mediciones');
+    Route::get('/mediciones/crear', [MeasurementController::class, 'create'])->name('mediciones.crear');
+    Route::post('/mediciones', [MeasurementController::class, 'store'])->name('mediciones.store');
     Route::view('/mediciones/reporte', 'fitapp.admin.mediciones-reporte')->name('mediciones.reporte');
-    Route::view('/planes', 'fitapp.admin.planes')->name('planes');
+    Route::get('/planes', [PlanController::class, 'index'])->name('planes');
     Route::view('/planes/crear', 'fitapp.admin.planes-crear')->name('planes.crear');
     Route::view('/planes/detalle', 'fitapp.admin.plan-detalle')->name('planes.detalle');
     Route::view('/rutinas', 'fitapp.admin.rutinas')->name('rutinas');
@@ -62,8 +72,9 @@ Route::prefix('admin')->name('fitapp.admin.')->middleware(['auth', 'role:admin']
     Route::view('/ejercicios/crear', 'fitapp.admin.ejercicios-crear')->name('ejercicios.crear');
     Route::view('/ejercicios/detalle', 'fitapp.admin.ejercicio-detalle')->name('ejercicios.detalle');
     Route::view('/evidencias', 'fitapp.admin.evidencias')->name('evidencias');
-    Route::view('/nutricion', 'fitapp.admin.nutricion')->name('nutricion');
+    Route::get('/nutricion', [NutritionController::class, 'index'])->name('nutricion');
     Route::get('/nutricion/crear', [NutritionController::class, 'create'])->name('nutricion.crear');
+    Route::post('/nutricion', [NutritionController::class, 'store'])->name('nutricion.store');
     Route::view('/pagos', 'fitapp.admin.pagos')->name('pagos');
     Route::view('/configuracion', 'fitapp.admin.configuracion')->name('configuracion');
 });

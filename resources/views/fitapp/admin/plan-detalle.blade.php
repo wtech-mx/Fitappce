@@ -109,14 +109,14 @@
                                 <td>01 Abr</td>
                                 <td>2 de 8</td>
                                 <td><span class="admin-tag blue">Activo</span></td>
-                                <td><a href="{{ route('fitapp.admin.usuarios.detalle') }}" class="admin-btn-soft">Perfil</a></td>
+                                <td><a href="{{ route('fitapp.admin.usuarios') }}" class="admin-btn-soft">Perfil</a></td>
                             </tr>
                             <tr>
                                 <td><strong>Adrián López</strong><div class="small text-muted">Solo entrenamiento</div></td>
                                 <td>15 Abr</td>
                                 <td>1 de 8</td>
                                 <td><span class="admin-tag yellow">Nuevo</span></td>
-                                <td><a href="{{ route('fitapp.admin.usuarios.detalle') }}" class="admin-btn-soft">Perfil</a></td>
+                                <td><a href="{{ route('fitapp.admin.usuarios') }}" class="admin-btn-soft">Perfil</a></td>
                             </tr>
                         </tbody>
                     </table>

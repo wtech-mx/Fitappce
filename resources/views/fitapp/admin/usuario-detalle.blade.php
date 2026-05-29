@@ -1,20 +1,37 @@
 @extends('layouts.fitapp-admin')
 
-@section('title', 'Perfil de usuario | FitCoach Admin')
+@section('title', $user->name.' | FitCoach Admin')
 
 @section('content')
+@php
+    $statusLabels = [
+        'prospect' => ['label' => 'Prospecto', 'class' => ''],
+        'active' => ['label' => 'Activo', 'class' => 'blue'],
+        'appointment_pending' => ['label' => 'Pendiente de cita', 'class' => 'yellow'],
+        'paused' => ['label' => 'Pausado', 'class' => 'red'],
+    ];
+    $status = $statusLabels[$user->status] ?? $statusLabels['prospect'];
+@endphp
+
 <div class="admin-topbar">
     <div>
-        <h1 class="admin-topbar-title">María González</h1>
+        <h1 class="admin-topbar-title">{{ $user->name }}</h1>
         <div class="admin-topbar-subtitle">Expediente visual del usuario: onboarding, planes, nutricion, medidas, pagos y evidencias.</div>
     </div>
 
     <div class="admin-topbar-actions">
         <a href="{{ route('fitapp.admin.usuarios') }}" class="btn btn-soft-custom px-4">Volver</a>
-        <a href="{{ route('fitapp.admin.planes') }}" class="btn btn-primary-custom px-4">Asignar plan</a>
+        <a href="{{ route('fitapp.admin.usuarios.edit', $user) }}" class="btn btn-soft-custom px-4">Editar usuario</a>
+        <a href="{{ route('fitapp.admin.planes', ['user' => $user->id]) }}" class="btn btn-primary-custom px-4">Planes</a>
         <div class="admin-avatar">C</div>
     </div>
 </div>
+
+@if (session('status'))
+    <div class="alert alert-success rounded-4 mb-4">
+        {{ session('status') }}
+    </div>
+@endif
 
 <div class="admin-detail-layout">
     <div class="admin-section-stack">
@@ -25,28 +42,28 @@
                         <h2 class="admin-panel-title mb-1">Perfil general</h2>
                         <div class="admin-mini">Datos base para seguimiento.</div>
                     </div>
-                    <span class="admin-tag blue">Activa</span>
+                    <span class="admin-tag {{ $status['class'] }}">{{ $status['label'] }}</span>
                 </div>
             </div>
             <div class="admin-form-card-body">
                 <div class="d-flex gap-3 mb-3">
-                    <div class="admin-avatar-lg">M</div>
+                    <div class="admin-avatar-lg">{{ $user->initials() }}</div>
                     <div>
-                        <div class="admin-card-title">María González</div>
-                        <div class="admin-card-text">maria@email.com - +52 000 000 0000</div>
+                        <div class="admin-card-title">{{ $user->name }}</div>
+                        <div class="admin-card-text">{{ $user->email }} - {{ $user->phone ?: 'Sin telefono' }}</div>
                         <div class="d-flex flex-wrap gap-2 mt-2">
-                            <span class="admin-tag">Rutina + nutricion</span>
-                            <span class="admin-tag yellow">Personalizado mensual</span>
-                            <span class="admin-tag blue">Masa muscular</span>
+                            <span class="admin-tag">{{ $user->service ?: 'Servicio pendiente' }}</span>
+                            <span class="admin-tag yellow">{{ $user->plan_type ?: 'Plan pendiente' }}</span>
+                            <span class="admin-tag blue">{{ $user->goal ?: 'Objetivo pendiente' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="routine-summary-grid">
-                    <div><span>Nivel</span><strong>Intermedio</strong></div>
-                    <div><span>Entrena</span><strong>Gimnasio</strong></div>
-                    <div><span>Frecuencia</span><strong>4 dias</strong></div>
-                    <div><span>Sesion</span><strong>60 min</strong></div>
+                    <div><span>Nivel</span><strong>{{ $user->training_level ?: 'Pendiente' }}</strong></div>
+                    <div><span>Entrena</span><strong>{{ $user->training_place ?: 'Pendiente' }}</strong></div>
+                    <div><span>Frecuencia</span><strong>{{ $user->training_days ? $user->training_days.' dias' : 'Pendiente' }}</strong></div>
+                    <div><span>Edad</span><strong>{{ $user->age ? $user->age.' anos' : 'Pendiente' }}</strong></div>
                 </div>
             </div>
         </div>
@@ -63,16 +80,16 @@
                         <div class="routine-exercise-main">
                             <div class="d-flex justify-content-between gap-3 mb-2">
                                 <div>
-                                    <div class="fw-bold">Personalizado mensual - Mes 2</div>
-                                    <div class="admin-mini">Vigencia: 01 Abr a 30 Abr - cambio mensual segun progreso</div>
+                                    <div class="fw-bold">{{ $user->plan_type ?: 'Rutina pendiente de asignar' }}</div>
+                                    <div class="admin-mini">{{ $user->service ?: 'Define el servicio del cliente para vincular una rutina.' }}</div>
                                 </div>
-                                <a href="{{ route('fitapp.admin.planes.detalle') }}" class="admin-btn-soft">Ver plan</a>
+                                <a href="{{ route('fitapp.admin.planes', ['user' => $user->id]) }}" class="admin-btn-soft">Ver planes</a>
                             </div>
                             <div class="routine-prescription-grid">
-                                <div><span>Rutinas</span><strong>3</strong></div>
-                                <div><span>Dias</span><strong>5</strong></div>
-                                <div><span>Evidencias</span><strong>9</strong></div>
-                                <div><span>Estado</span><strong>Activo</strong></div>
+                                <div><span>Rutina</span><strong>Pendiente</strong></div>
+                                <div><span>Dias</span><strong>{{ $user->training_days ?: '-' }}</strong></div>
+                                <div><span>Evidencias</span><strong>0</strong></div>
+                                <div><span>Estado</span><strong>{{ $status['label'] }}</strong></div>
                                 <div><span>Renueva</span><strong>Mensual</strong></div>
                             </div>
                         </div>
@@ -83,17 +100,17 @@
                         <div class="routine-exercise-main">
                             <div class="d-flex justify-content-between gap-3 mb-2">
                                 <div>
-                                    <div class="fw-bold">Plan alimentario - 2168 kcal</div>
-                                    <div class="admin-mini">5 comidas - 143.98g proteina - 3 litros de agua</div>
+                                    <div class="fw-bold">Plan alimentario pendiente</div>
+                                    <div class="admin-mini">{{ $user->meals_per_day ? $user->meals_per_day.' comidas' : 'Comidas pendientes' }} - Restriccion: {{ $user->nutrition_restriction ?: 'Ninguna' }}</div>
                                 </div>
                                 <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-btn-soft">Ver nutricion</a>
                             </div>
                             <div class="routine-prescription-grid">
-                                <div><span>Kcal</span><strong>2168</strong></div>
-                                <div><span>Proteina</span><strong>143.98g</strong></div>
-                                <div><span>Carbs</span><strong>266.35g</strong></div>
-                                <div><span>Grasas</span><strong>64.25g</strong></div>
-                                <div><span>Agua</span><strong>3L</strong></div>
+                                <div><span>Kcal</span><strong>-</strong></div>
+                                <div><span>Proteina</span><strong>-</strong></div>
+                                <div><span>Carbs</span><strong>-</strong></div>
+                                <div><span>Grasas</span><strong>-</strong></div>
+                                <div><span>Agua</span><strong>-</strong></div>
                             </div>
                         </div>
                     </div>
@@ -104,14 +121,14 @@
         <div class="admin-form-card">
             <div class="admin-form-card-head">
                 <h2 class="admin-panel-title mb-1">Medidas corporales</h2>
-                <div class="admin-mini">Basado en el tipo de documento de valoracion y plan alimentario.</div>
+                <div class="admin-mini">Registro inicial capturado desde alta de usuario.</div>
             </div>
             <div class="admin-form-card-body">
                 <div class="routine-summary-grid mb-3">
-                    <div><span>Grasa corporal</span><strong>14.73%</strong></div>
-                    <div><span>Masa magra</span><strong>55.681 kg</strong></div>
-                    <div><span>Masa grasa</span><strong>9.619 kg</strong></div>
-                    <div><span>Peso</span><strong>65.300 kg</strong></div>
+                    <div><span>Grasa corporal</span><strong>{{ $latestMeasurement?->body_fat ? $latestMeasurement->body_fat.'%' : ($user->initial_body_fat ? $user->initial_body_fat.'%' : '-') }}</strong></div>
+                    <div><span>Masa magra</span><strong>{{ $latestMeasurement?->lean_mass ? $latestMeasurement->lean_mass.' kg' : ($user->initial_lean_mass ? $user->initial_lean_mass.' kg' : '-') }}</strong></div>
+                    <div><span>Cintura</span><strong>{{ $latestMeasurement?->waist ? $latestMeasurement->waist.' cm' : ($user->initial_waist ? $user->initial_waist.' cm' : '-') }}</strong></div>
+                    <div><span>Peso</span><strong>{{ $latestMeasurement?->weight ? $latestMeasurement->weight.' kg' : ($user->initial_weight ? $user->initial_weight.' kg' : '-') }}</strong></div>
                 </div>
 
                 <div class="admin-table-wrap">
@@ -121,21 +138,21 @@
                                 <th>Medida</th>
                                 <th>Valor</th>
                                 <th>Meta</th>
-                                <th>Cambio</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>Grasa corporal</td><td>14.73%</td><td>14.00%</td><td><span class="admin-tag blue">-0.73%</span></td></tr>
-                            <tr><td>Cintura</td><td>81.20 cm</td><td>79.00 cm</td><td><span class="admin-tag yellow">Pendiente</span></td></tr>
-                            <tr><td>Cadera</td><td>92.50 cm</td><td>94.00 cm</td><td><span class="admin-tag">Seguimiento</span></td></tr>
-                            <tr><td>Brazo flexionado</td><td>33.80 cm</td><td>34.50 cm</td><td><span class="admin-tag">Seguimiento</span></td></tr>
+                            <tr><td>Pecho / torax</td><td>{{ $latestMeasurement?->chest ? $latestMeasurement->chest.' cm' : ($user->initial_chest ? $user->initial_chest.' cm' : '-') }}</td><td>{{ $user->goal_chest ? $user->goal_chest.' cm' : '-' }}</td><td><span class="admin-tag">{{ $latestMeasurement ? 'Actual' : 'Base' }}</span></td></tr>
+                            <tr><td>Cadera</td><td>{{ $latestMeasurement?->hip ? $latestMeasurement->hip.' cm' : ($user->initial_hip ? $user->initial_hip.' cm' : '-') }}</td><td>{{ $user->goal_hip ? $user->goal_hip.' cm' : '-' }}</td><td><span class="admin-tag">{{ $latestMeasurement ? 'Actual' : 'Base' }}</span></td></tr>
+                            <tr><td>Brazo flexionado</td><td>{{ $latestMeasurement?->arm ? $latestMeasurement->arm.' cm' : ($user->initial_arm ? $user->initial_arm.' cm' : '-') }}</td><td>{{ $user->goal_arm ? $user->goal_arm.' cm' : '-' }}</td><td><span class="admin-tag">{{ $latestMeasurement ? 'Actual' : 'Base' }}</span></td></tr>
+                            <tr><td>Muslo</td><td>{{ $latestMeasurement?->thigh ? $latestMeasurement->thigh.' cm' : ($user->initial_thigh ? $user->initial_thigh.' cm' : '-') }}</td><td>{{ $user->goal_thigh ? $user->goal_thigh.' cm' : '-' }}</td><td><span class="admin-tag">{{ $latestMeasurement ? 'Actual' : 'Base' }}</span></td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="admin-card-actions">
-                    <a href="{{ route('fitapp.admin.mediciones.crear') }}" class="admin-btn-soft"><i class="bi bi-plus-circle"></i> Nueva medicion</a>
-                    <a href="{{ route('fitapp.admin.mediciones') }}" class="admin-btn-soft"><i class="bi bi-file-earmark-text"></i> Ver historial</a>
+                    <a href="{{ route('fitapp.admin.mediciones.crear', ['user' => $user->id]) }}" class="admin-btn-soft"><i class="bi bi-plus-circle"></i> Nueva medicion</a>
+                    <a href="{{ route('fitapp.admin.mediciones', ['user' => $user->id]) }}" class="admin-btn-soft"><i class="bi bi-file-earmark-text"></i> Ver historial</a>
                     <a href="{{ route('fitapp.admin.mediciones.reporte') }}" class="admin-btn-soft"><i class="bi bi-eye"></i> Reporte visual</a>
                 </div>
             </div>
@@ -150,48 +167,23 @@
             </div>
             <div class="admin-form-card-body">
                 <div class="admin-list">
-                    <div class="admin-list-item"><div class="admin-list-row"><span>Objetivo</span><strong>Masa muscular</strong></div></div>
-                    <div class="admin-list-item"><div class="admin-list-row"><span>Servicio</span><strong>Rutina + nutricion</strong></div></div>
-                    <div class="admin-list-item"><div class="admin-list-row"><span>Plan</span><strong>Personalizado</strong></div></div>
-                    <div class="admin-list-item"><div class="admin-list-row"><span>Restricciones</span><strong>Ninguna</strong></div></div>
+                    <div class="admin-list-item"><div class="admin-list-row"><span>Objetivo</span><strong>{{ $user->goal ?: 'Pendiente' }}</strong></div></div>
+                    <div class="admin-list-item"><div class="admin-list-row"><span>Servicio</span><strong>{{ $user->service ?: 'Pendiente' }}</strong></div></div>
+                    <div class="admin-list-item"><div class="admin-list-row"><span>Plan</span><strong>{{ $user->plan_type ?: 'Pendiente' }}</strong></div></div>
+                    <div class="admin-list-item"><div class="admin-list-row"><span>Restricciones</span><strong>{{ $user->nutrition_restriction ?: 'Ninguna' }}</strong></div></div>
+                    <div class="admin-list-item"><div class="admin-list-row"><span>Horario dificil</span><strong>{{ $user->difficult_schedule ?: 'Pendiente' }}</strong></div></div>
                 </div>
             </div>
         </div>
 
         <div class="admin-form-card">
             <div class="admin-form-card-head">
-                <h2 class="admin-panel-title mb-1">Pendientes</h2>
-                <div class="admin-mini">Acciones rapidas del coach.</div>
+                <h2 class="admin-panel-title mb-1">Notas medicas</h2>
+                <div class="admin-mini">Lesiones, enfermedades o contraindicaciones.</div>
             </div>
             <div class="admin-form-card-body">
-                <div class="admin-list">
-                    <div class="admin-list-item">
-                        <div class="admin-list-row">
-                            <div>
-                                <div class="fw-bold">Revisar video de hip thrust</div>
-                                <div class="small text-muted">Evidencia enviada ayer</div>
-                            </div>
-                            <span class="admin-tag yellow">Pendiente</span>
-                        </div>
-                    </div>
-                    <div class="admin-list-item">
-                        <div class="admin-list-row">
-                            <div>
-                                <div class="fw-bold">Actualizar plan mes 3</div>
-                                <div class="small text-muted">Vence el 30 de abril</div>
-                            </div>
-                            <span class="admin-tag red">Urgente</span>
-                        </div>
-                    </div>
-                    <div class="admin-list-item">
-                        <div class="admin-list-row">
-                            <div>
-                                <div class="fw-bold">Confirmar pago</div>
-                                <div class="small text-muted">Mensualidad enviada por Mercado Pago</div>
-                            </div>
-                            <span class="admin-tag blue">Nuevo</span>
-                        </div>
-                    </div>
+                <div class="admin-text-block">
+                    {{ $user->medical_notes ?: 'Sin notas medicas capturadas.' }}
                 </div>
             </div>
         </div>
@@ -199,7 +191,7 @@
         <div class="admin-helper-note">
             <div class="fw-bold mb-1">Vista de expediente</div>
             <div class="admin-mini">
-                Esta pantalla concentra todo lo que despues se guardara por usuario: datos, respuestas, planes, nutricion, medidas, evidencias y pagos.
+                Esta pantalla ya lee datos reales del usuario. Los planes, mediciones historicas, evidencias y pagos se conectaran a este expediente.
             </div>
         </div>
     </div>

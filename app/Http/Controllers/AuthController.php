@@ -53,6 +53,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => $validated['password'],
             'role' => 'user',
+            'body_visual_type' => 'avatar',
         ]);
 
         Auth::login($user);

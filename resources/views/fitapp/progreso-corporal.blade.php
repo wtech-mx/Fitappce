@@ -4,20 +4,33 @@
 
 @section('content')
 @php
+    $current = $display['current'];
+    $before = $display['before'];
+    $latestDate = $display['latest_date'];
+    $formatValue = fn ($value, string $suffix = '', int $decimals = 2) => filled($value) ? number_format((float) $value, $decimals).$suffix : '-';
+    $changeValue = function ($currentValue, $beforeValue, string $suffix = '', int $decimals = 2) {
+        if (! filled($currentValue) || ! filled($beforeValue)) {
+            return '-';
+        }
+
+        $change = (float) $currentValue - (float) $beforeValue;
+        return ($change > 0 ? '+' : '').number_format($change, $decimals).$suffix;
+    };
+
     $metrics = [
-        ['label' => 'Grasa corporal', 'before' => '15.46%', 'current' => '14.73%', 'change' => '-0.73%', 'tone' => 'good'],
-        ['label' => 'Masa magra', 'before' => '55.20 kg', 'current' => '55.68 kg', 'change' => '+0.48 kg', 'tone' => 'good'],
-        ['label' => 'Masa grasa', 'before' => '10.10 kg', 'current' => '9.62 kg', 'change' => '-0.48 kg', 'tone' => 'good'],
-        ['label' => 'Peso corporal', 'before' => '65.30 kg', 'current' => '65.30 kg', 'change' => '0.00 kg', 'tone' => 'neutral'],
+        ['label' => 'Grasa corporal', 'before' => $formatValue($before['body_fat'], '%'), 'current' => $formatValue($current['body_fat'], '%'), 'change' => $changeValue($current['body_fat'], $before['body_fat'], '%'), 'tone' => filled($before['body_fat']) && filled($current['body_fat']) && (float) $current['body_fat'] <= (float) $before['body_fat'] ? 'good' : 'neutral'],
+        ['label' => 'Masa magra', 'before' => $formatValue($before['lean_mass'], ' kg'), 'current' => $formatValue($current['lean_mass'], ' kg'), 'change' => $changeValue($current['lean_mass'], $before['lean_mass'], ' kg'), 'tone' => filled($before['lean_mass']) && filled($current['lean_mass']) && (float) $current['lean_mass'] >= (float) $before['lean_mass'] ? 'good' : 'neutral'],
+        ['label' => 'Masa grasa', 'before' => $formatValue($before['fat_mass'], ' kg'), 'current' => $formatValue($current['fat_mass'], ' kg'), 'change' => $changeValue($current['fat_mass'], $before['fat_mass'], ' kg'), 'tone' => filled($before['fat_mass']) && filled($current['fat_mass']) && (float) $current['fat_mass'] <= (float) $before['fat_mass'] ? 'good' : 'neutral'],
+        ['label' => 'Peso corporal', 'before' => $formatValue($before['weight'], ' kg'), 'current' => $formatValue($current['weight'], ' kg'), 'change' => $changeValue($current['weight'], $before['weight'], ' kg'), 'tone' => 'neutral'],
     ];
 
     $bodyZones = [
-        ['name' => 'Brazo flex.', 'value' => '33.80 cm', 'change' => '+0.70', 'class' => 'zone-arm-left'],
-        ['name' => 'Torax', 'value' => '97.00 cm', 'change' => '+1.20', 'class' => 'zone-chest'],
-        ['name' => 'Cintura', 'value' => '81.20 cm', 'change' => '-1.80', 'class' => 'zone-waist'],
-        ['name' => 'Cadera', 'value' => '92.50 cm', 'change' => '+0.80', 'class' => 'zone-hip'],
-        ['name' => 'Muslo', 'value' => '56.10 cm', 'change' => '+0.60', 'class' => 'zone-leg-left'],
-        ['name' => 'Pantorrilla', 'value' => '36.20 cm', 'change' => '+0.30', 'class' => 'zone-calf-right'],
+        ['name' => 'Brazo flex.', 'value' => $formatValue($current['arm'], ' cm'), 'change' => $changeValue($current['arm'], $before['arm'], '', 2), 'class' => 'zone-arm-left'],
+        ['name' => 'Torax', 'value' => $formatValue($current['chest'], ' cm'), 'change' => $changeValue($current['chest'], $before['chest'], '', 2), 'class' => 'zone-chest'],
+        ['name' => 'Cintura', 'value' => $formatValue($current['waist'], ' cm'), 'change' => $changeValue($current['waist'], $before['waist'], '', 2), 'class' => 'zone-waist'],
+        ['name' => 'Cadera', 'value' => $formatValue($current['hip'], ' cm'), 'change' => $changeValue($current['hip'], $before['hip'], '', 2), 'class' => 'zone-hip'],
+        ['name' => 'Muslo', 'value' => $formatValue($current['thigh'], ' cm'), 'change' => $changeValue($current['thigh'], $before['thigh'], '', 2), 'class' => 'zone-leg-left'],
+        ['name' => 'Pantorrilla', 'value' => $formatValue($current['calf'], ' cm'), 'change' => $changeValue($current['calf'], $before['calf'], '', 2), 'class' => 'zone-calf-right'],
     ];
 
     $measurementValue = fn (string $zoneName) => (float) str_replace(',', '.', collect($bodyZones)->firstWhere('name', $zoneName)['value'] ?? 0);
@@ -34,28 +47,93 @@
         'calf' => $visualSize($measurementValue('Pantorrilla'), 28, 50, 26, 44),
     ];
     $bodyShape['armOffset'] = round(165 - ($bodyShape['chest'] / 2) - $bodyShape['arm'] - 5);
-
-    $history = [
-        ['month' => 'Ene', 'fat' => 72, 'muscle' => 44, 'weight' => '66.8 kg', 'waist' => '84.0 cm'],
-        ['month' => 'Feb', 'fat' => 62, 'muscle' => 52, 'weight' => '66.1 kg', 'waist' => '83.0 cm'],
-        ['month' => 'Mar', 'fat' => 54, 'muscle' => 58, 'weight' => '65.3 kg', 'waist' => '82.1 cm'],
-        ['month' => 'Abr', 'fat' => 46, 'muscle' => 66, 'weight' => '65.3 kg', 'waist' => '81.2 cm'],
+    $miniShape = fn (array $source, bool $isCurrent = false) => [
+        'chest' => $visualSize((float) ($source['chest'] ?: 95), 78, 125, $isCurrent ? 76 : 82, $isCurrent ? 106 : 116),
+        'waist' => $visualSize((float) ($source['waist'] ?: 78), 58, 115, $isCurrent ? 54 : 60, $isCurrent ? 102 : 110),
+        'hip' => $visualSize((float) ($source['hip'] ?: 96), 78, 130, $isCurrent ? 74 : 82, $isCurrent ? 112 : 120),
+        'arm' => $visualSize((float) ($source['arm'] ?: 30), 24, 46, $isCurrent ? 18 : 20, $isCurrent ? 32 : 36),
+        'leg' => $visualSize((float) ($source['thigh'] ?: 52), 42, 75, $isCurrent ? 24 : 26, $isCurrent ? 42 : 48),
+        'calf' => $visualSize((float) ($source['calf'] ?: 34), 28, 50, $isCurrent ? 20 : 22, $isCurrent ? 36 : 40),
     ];
+    $previousMiniShape = $miniShape($before, false);
+    $currentMiniShape = $miniShape($current, true);
+    $morphClass = function (array $source): string {
+        $bodyFat = filled($source['body_fat'] ?? null) ? (float) $source['body_fat'] : null;
+        $waist = filled($source['waist'] ?? null) ? (float) $source['waist'] : null;
+        $leanMass = filled($source['lean_mass'] ?? null) ? (float) $source['lean_mass'] : null;
+
+        if (($bodyFat !== null && $bodyFat >= 28) || ($waist !== null && $waist >= 95)) {
+            return 'morph-full';
+        }
+
+        if (($bodyFat !== null && $bodyFat <= 16) || ($leanMass !== null && $leanMass >= 58)) {
+            return 'morph-athletic';
+        }
+
+        if (($bodyFat !== null && $bodyFat <= 20) || ($waist !== null && $waist <= 72)) {
+            return 'morph-slim';
+        }
+
+        return 'morph-balanced';
+    };
+    $genderClass = ($user->gender ?? '') === 'Femenino' ? 'gender-female' : 'gender-male';
+    $previousMorphClass = $morphClass($before);
+    $currentMorphClass = $morphClass($current);
+    $avatarPosition = function (string $genderClass, string $morphClass): string {
+        $columns = [
+            'morph-full' => 0,
+            'morph-slim' => 33.333,
+            'morph-balanced' => 66.666,
+            'morph-athletic' => 100,
+        ];
+
+        return 'background-position: '.($columns[$morphClass] ?? 66.666).'% '.($genderClass === 'gender-female' ? 100 : 0).'%;';
+    };
+    $visualClass = match ($bodyVisualType ?? 'scan') {
+        'avatar' => 'visual-avatar',
+        'realistic' => 'visual-realistic',
+        'silhouette' => 'visual-silhouette',
+        'athletic' => 'visual-athletic',
+        default => 'visual-scan',
+    };
+
+    $history = $measurements
+        ->sortBy('measured_at')
+        ->take(-4)
+        ->values()
+        ->map(fn ($measurement) => [
+            'month' => $measurement->measured_at->translatedFormat('M'),
+            'fat' => filled($measurement->body_fat) ? max(8, min(100, (float) $measurement->body_fat * 3)) : 12,
+            'muscle' => filled($measurement->lean_mass) ? max(8, min(100, (float) $measurement->lean_mass * 1.2)) : 12,
+            'weight' => $measurement->weight ? $measurement->weight.' kg' : '-',
+            'waist' => $measurement->waist ? $measurement->waist.' cm' : '-',
+        ])
+        ->all();
+
+    if (empty($history)) {
+        $history = [[
+            'month' => 'Base',
+            'fat' => filled($current['body_fat']) ? max(8, min(100, (float) $current['body_fat'] * 3)) : 12,
+            'muscle' => filled($current['lean_mass']) ? max(8, min(100, (float) $current['lean_mass'] * 1.2)) : 12,
+            'weight' => $formatValue($current['weight'], ' kg'),
+            'waist' => $formatValue($current['waist'], ' cm'),
+        ]];
+    }
 
     $monthlyChanges = [
-        ['label' => 'Grasa corporal', 'start' => '16.80%', 'current' => '14.73%', 'total' => '-2.07%', 'result' => 'Bajo constante'],
-        ['label' => 'Masa magra', 'start' => '54.40 kg', 'current' => '55.68 kg', 'total' => '+1.28 kg', 'result' => 'Subio'],
-        ['label' => 'Cintura', 'start' => '84.00 cm', 'current' => '81.20 cm', 'total' => '-2.80 cm', 'result' => 'Redujo'],
-        ['label' => 'Peso', 'start' => '66.80 kg', 'current' => '65.30 kg', 'total' => '-1.50 kg', 'result' => 'Controlado'],
+        ['label' => 'Grasa corporal', 'start' => $formatValue($before['body_fat'], '%'), 'current' => $formatValue($current['body_fat'], '%'), 'total' => $changeValue($current['body_fat'], $before['body_fat'], '%'), 'result' => 'Seguimiento'],
+        ['label' => 'Masa magra', 'start' => $formatValue($before['lean_mass'], ' kg'), 'current' => $formatValue($current['lean_mass'], ' kg'), 'total' => $changeValue($current['lean_mass'], $before['lean_mass'], ' kg'), 'result' => 'Seguimiento'],
+        ['label' => 'Cintura', 'start' => $formatValue($before['waist'], ' cm'), 'current' => $formatValue($current['waist'], ' cm'), 'total' => $changeValue($current['waist'], $before['waist'], ' cm'), 'result' => 'Seguimiento'],
+        ['label' => 'Peso', 'start' => $formatValue($before['weight'], ' kg'), 'current' => $formatValue($current['weight'], ' kg'), 'total' => $changeValue($current['weight'], $before['weight'], ' kg'), 'result' => 'Seguimiento'],
     ];
 
     $compareZones = [
-        ['name' => 'Brazo flex.', 'previous' => '33.10 cm', 'current' => '33.80 cm', 'change' => '+0.70'],
-        ['name' => 'Torax', 'previous' => '95.80 cm', 'current' => '97.00 cm', 'change' => '+1.20'],
-        ['name' => 'Cintura', 'previous' => '83.00 cm', 'current' => '81.20 cm', 'change' => '-1.80'],
-        ['name' => 'Cadera', 'previous' => '91.70 cm', 'current' => '92.50 cm', 'change' => '+0.80'],
-        ['name' => 'Muslo', 'previous' => '55.50 cm', 'current' => '56.10 cm', 'change' => '+0.60'],
-        ['name' => 'Pantorrilla', 'previous' => '35.90 cm', 'current' => '36.20 cm', 'change' => '+0.30'],
+        ['name' => 'Brazo flex.', 'previous' => $formatValue($before['arm'], ' cm'), 'current' => $formatValue($current['arm'], ' cm'), 'change' => $changeValue($current['arm'], $before['arm'])],
+        ['name' => 'Torax', 'previous' => $formatValue($before['chest'], ' cm'), 'current' => $formatValue($current['chest'], ' cm'), 'change' => $changeValue($current['chest'], $before['chest'])],
+        ['name' => 'Cintura', 'previous' => $formatValue($before['waist'], ' cm'), 'current' => $formatValue($current['waist'], ' cm'), 'change' => $changeValue($current['waist'], $before['waist'])],
+        ['name' => 'Cadera', 'previous' => $formatValue($before['hip'], ' cm'), 'current' => $formatValue($current['hip'], ' cm'), 'change' => $changeValue($current['hip'], $before['hip'])],
+        ['name' => 'Muslo', 'previous' => $formatValue($before['thigh'], ' cm'), 'current' => $formatValue($current['thigh'], ' cm'), 'change' => $changeValue($current['thigh'], $before['thigh'])],
+        ['name' => 'Pantorrilla', 'previous' => $formatValue($before['calf'], ' cm'), 'current' => $formatValue($current['calf'], ' cm'), 'change' => $changeValue($current['calf'], $before['calf'])],
     ];
 @endphp
 
@@ -64,7 +142,7 @@
         <a href="{{ route('fitapp.progreso') }}" class="app-bar-btn text-dark">
             <i class="bi bi-arrow-left"></i>
         </a>
-        <span class="step-badge">15 Abr 2026</span>
+        <span class="step-badge">{{ $latestDate ? $latestDate->format('d/m/Y') : 'Sin medicion' }}</span>
     </div>
 
     <div class="body-report-hero mb-4">
@@ -73,15 +151,15 @@
         </div>
         <h1 class="fit-title text-white mb-2">Tu entrenamiento si se nota</h1>
         <p class="text-white-50 mb-0">
-            Bajaste grasa, mantuviste peso y subiste masa magra. El cuerpo esta cambiando aunque la bascula no se mueva.
+            {{ $latestMeasurement ? 'Estos son tus datos mas recientes capturados por tu coach.' : 'Aun no tienes una medicion completa registrada. Esta vista se actualizara cuando tu coach capture tus datos.' }}
         </p>
     </div>
 
     <div class="body-report-score mb-4">
         <div>
             <div class="body-score-label">Lectura del coach</div>
-            <div class="body-score-title">Progreso positivo</div>
-            <div class="fit-subtitle">Comparado contra tu medicion anterior.</div>
+            <div class="body-score-title">{{ $previousMeasurement ? 'Comparativo disponible' : 'Medicion base' }}</div>
+            <div class="fit-subtitle">{{ $previousMeasurement ? 'Comparado contra tu medicion anterior.' : 'Primer punto de partida para tu progreso.' }}</div>
         </div>
         <div class="body-score-ring">
             <span>86</span>
@@ -220,25 +298,34 @@
                     <span>Febrero</span>
                     <strong>Medicion anterior</strong>
                 </div>
-                <div class="mini-human is-wide" style="--mini-chest-width: 92px; --mini-waist-width: 78px; --mini-hip-width: 96px; --mini-arm-width: 24px; --mini-leg-width: 32px; --mini-calf-width: 26px;">
-                    <div class="mini-human-head"></div>
-                    <div class="mini-human-neck"></div>
-                    <div class="mini-human-body"></div>
-                    <div class="mini-human-waist"></div>
-                    <div class="mini-human-hips"></div>
-                    <div class="mini-human-arm left"></div>
-                    <div class="mini-human-arm right"></div>
-                    <div class="mini-human-leg left"></div>
-                    <div class="mini-human-leg right"></div>
-                    <div class="mini-human-calf left"></div>
-                    <div class="mini-human-calf right"></div>
-                    <div class="mini-measure hip"></div>
-                    <div class="mini-measure waist"></div>
-                    <div class="mini-measure chest"></div>
-                </div>
+                @if(($bodyVisualType ?? 'avatar') === 'avatar')
+                    <div class="body-avatar-figure" style="{{ $avatarPosition($genderClass, $previousMorphClass) }}">
+                        <div class="mini-measure hip"></div>
+                        <div class="mini-measure waist"></div>
+                        <div class="mini-measure chest"></div>
+                    </div>
+                @else
+                    <div class="mini-human {{ $visualClass }} {{ $genderClass }} {{ $previousMorphClass }} is-wide" style="--mini-chest-width: {{ $previousMiniShape['chest'] }}px; --mini-waist-width: {{ $previousMiniShape['waist'] }}px; --mini-hip-width: {{ $previousMiniShape['hip'] }}px; --mini-arm-width: {{ $previousMiniShape['arm'] }}px; --mini-leg-width: {{ $previousMiniShape['leg'] }}px; --mini-calf-width: {{ $previousMiniShape['calf'] }}px;">
+                        <div class="mini-human-head"></div>
+                        <div class="mini-human-neck"></div>
+                        <div class="mini-human-body"></div>
+                        <div class="mini-human-chest"></div>
+                        <div class="mini-human-waist"></div>
+                        <div class="mini-human-hips"></div>
+                        <div class="mini-human-arm left"></div>
+                        <div class="mini-human-arm right"></div>
+                        <div class="mini-human-leg left"></div>
+                        <div class="mini-human-leg right"></div>
+                        <div class="mini-human-calf left"></div>
+                        <div class="mini-human-calf right"></div>
+                        <div class="mini-measure hip"></div>
+                        <div class="mini-measure waist"></div>
+                        <div class="mini-measure chest"></div>
+                    </div>
+                @endif
                 <div class="compare-body-foot">
-                    <span>Grasa 15.46%</span>
-                    <span>Cintura 83.00 cm</span>
+                    <span>Grasa {{ $formatValue($before['body_fat'], '%') }}</span>
+                    <span>Cintura {{ $formatValue($before['waist'], ' cm') }}</span>
                 </div>
             </div>
 
@@ -247,25 +334,34 @@
                     <span>Abril</span>
                     <strong>Medicion actual</strong>
                 </div>
-                <div class="mini-human is-current is-lean" style="--mini-chest-width: 78px; --mini-waist-width: 58px; --mini-hip-width: 80px; --mini-arm-width: 20px; --mini-leg-width: 26px; --mini-calf-width: 22px;">
-                    <div class="mini-human-head"></div>
-                    <div class="mini-human-neck"></div>
-                    <div class="mini-human-body"></div>
-                    <div class="mini-human-waist"></div>
-                    <div class="mini-human-hips"></div>
-                    <div class="mini-human-arm left"></div>
-                    <div class="mini-human-arm right"></div>
-                    <div class="mini-human-leg left"></div>
-                    <div class="mini-human-leg right"></div>
-                    <div class="mini-human-calf left"></div>
-                    <div class="mini-human-calf right"></div>
-                    <div class="mini-measure hip"></div>
-                    <div class="mini-measure waist"></div>
-                    <div class="mini-measure chest"></div>
-                </div>
+                @if(($bodyVisualType ?? 'avatar') === 'avatar')
+                    <div class="body-avatar-figure" style="{{ $avatarPosition($genderClass, $currentMorphClass) }}">
+                        <div class="mini-measure hip"></div>
+                        <div class="mini-measure waist"></div>
+                        <div class="mini-measure chest"></div>
+                    </div>
+                @else
+                    <div class="mini-human {{ $visualClass }} {{ $genderClass }} {{ $currentMorphClass }} is-current is-lean" style="--mini-chest-width: {{ $currentMiniShape['chest'] }}px; --mini-waist-width: {{ $currentMiniShape['waist'] }}px; --mini-hip-width: {{ $currentMiniShape['hip'] }}px; --mini-arm-width: {{ $currentMiniShape['arm'] }}px; --mini-leg-width: {{ $currentMiniShape['leg'] }}px; --mini-calf-width: {{ $currentMiniShape['calf'] }}px;">
+                        <div class="mini-human-head"></div>
+                        <div class="mini-human-neck"></div>
+                        <div class="mini-human-body"></div>
+                        <div class="mini-human-chest"></div>
+                        <div class="mini-human-waist"></div>
+                        <div class="mini-human-hips"></div>
+                        <div class="mini-human-arm left"></div>
+                        <div class="mini-human-arm right"></div>
+                        <div class="mini-human-leg left"></div>
+                        <div class="mini-human-leg right"></div>
+                        <div class="mini-human-calf left"></div>
+                        <div class="mini-human-calf right"></div>
+                        <div class="mini-measure hip"></div>
+                        <div class="mini-measure waist"></div>
+                        <div class="mini-measure chest"></div>
+                    </div>
+                @endif
                 <div class="compare-body-foot">
-                    <span>Grasa 14.73%</span>
-                    <span>Cintura 81.20 cm</span>
+                    <span>Grasa {{ $formatValue($current['body_fat'], '%') }}</span>
+                    <span>Cintura {{ $formatValue($current['waist'], ' cm') }}</span>
                 </div>
             </div>
         </div>
@@ -290,7 +386,7 @@
             <i class="bi bi-arrow-down-right"></i>
             <div>
                 <div class="fw-bold">Bajaste grasa corporal</div>
-                <div class="fit-subtitle">La grasa paso de 15.46% a 14.73%. Es una mejora clara para un mes de trabajo.</div>
+                <div class="fit-subtitle">Grasa actual: {{ $formatValue($current['body_fat'], '%') }}. Anterior: {{ $formatValue($before['body_fat'], '%') }}.</div>
             </div>
         </div>
 
@@ -298,7 +394,7 @@
             <i class="bi bi-arrow-up-right"></i>
             <div>
                 <div class="fw-bold">Subiste masa magra</div>
-                <div class="fit-subtitle">Ganaste 0.48 kg de masa magra. Esto sugiere mejor respuesta al entrenamiento.</div>
+                <div class="fit-subtitle">Masa magra actual: {{ $formatValue($current['lean_mass'], ' kg') }}. Cambio: {{ $changeValue($current['lean_mass'], $before['lean_mass'], ' kg') }}.</div>
             </div>
         </div>
 
@@ -306,7 +402,7 @@
             <i class="bi bi-dash-lg"></i>
             <div>
                 <div class="fw-bold">El peso se mantuvo</div>
-                <div class="fit-subtitle">Aunque la bascula no cambio, tu composicion corporal si mejoro.</div>
+                <div class="fit-subtitle">Peso actual: {{ $formatValue($current['weight'], ' kg') }}. Cambio: {{ $changeValue($current['weight'], $before['weight'], ' kg') }}.</div>
             </div>
         </div>
     </div>
@@ -314,7 +410,7 @@
     <div class="coach-summary-card mb-4">
         <div class="fw-bold mb-2">Siguiente ajuste del coach</div>
         <p class="mb-3">
-            Mantener calorias cerca de 2168 kcal, subir ligeramente intensidad en pierna y cuidar evidencia tecnica en ejercicios base.
+            {{ $latestMeasurement?->notes ?: 'Tu coach aun no ha dejado notas sobre esta medicion.' }}
         </p>
         <div class="d-flex flex-wrap gap-2">
             <span class="admin-tag blue">Plan continua</span>

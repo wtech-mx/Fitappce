@@ -23,6 +23,6 @@ class NutritionPlanMeal extends Model
      */
     public function items(): HasMany
     {
-        return $this->hasMany(NutritionPlanItem::class);
+        return $this->hasMany(NutritionPlanItem::class)->orderBy('sort_order');
     }
 }

@@ -1070,6 +1070,7 @@ a{
 .mini-human-head,
 .mini-human-neck,
 .mini-human-body,
+.mini-human-chest,
 .mini-human-waist,
 .mini-human-hips,
 .mini-human-arm,
@@ -1122,6 +1123,17 @@ a{
     top:56px;
     left:50%;
     transform:translateX(-50%);
+}
+
+.mini-human-chest{
+    display:none;
+    width:calc(var(--mini-chest-width) * .76);
+    height:28px;
+    border-radius:999px 999px 18px 18px;
+    top:72px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:1;
 }
 
 .mini-human-waist{
@@ -1217,6 +1229,326 @@ a{
     height:20px;
     top:168px;
     animation-delay:.8s;
+}
+
+.mini-human.visual-avatar{
+    --skin-a:#ffd7bd;
+    --skin-b:#eda77f;
+    --skin-c:#b96f51;
+    --hair:#3f281d;
+    --active-wear:#172331;
+    --wear-accent:#2e86ab;
+}
+
+.mini-human.visual-avatar .mini-human-head,
+.mini-human.visual-avatar .mini-human-neck,
+.mini-human.visual-avatar .mini-human-body,
+.mini-human.visual-avatar .mini-human-chest,
+.mini-human.visual-avatar .mini-human-waist,
+.mini-human.visual-avatar .mini-human-hips,
+.mini-human.visual-avatar .mini-human-arm,
+.mini-human.visual-avatar .mini-human-leg,
+.mini-human.visual-avatar .mini-human-calf{
+    background:
+        radial-gradient(circle at 35% 20%, rgba(255,255,255,.55), transparent 19%),
+        linear-gradient(135deg, var(--skin-a), var(--skin-b) 56%, var(--skin-c));
+    border-color:rgba(127,69,44,.16);
+    box-shadow:inset -8px 0 16px rgba(92,49,30,.13);
+}
+
+.mini-human.visual-avatar .mini-human-head::before{
+    content:"";
+    position:absolute;
+    left:3px;
+    right:3px;
+    top:-4px;
+    height:15px;
+    border-radius:16px 16px 8px 8px;
+    background:var(--hair);
+    box-shadow:0 5px 0 -2px var(--hair);
+}
+
+.mini-human.visual-avatar .mini-human-head::after{
+    content:"";
+    position:absolute;
+    left:11px;
+    right:11px;
+    top:18px;
+    height:7px;
+    border-top:2px solid rgba(76,42,28,.65);
+    border-radius:50%;
+}
+
+.mini-human.visual-avatar .mini-human-body{
+    height:94px;
+    border-radius:34px 34px 24px 24px;
+    clip-path:polygon(10% 0, 90% 0, 100% 30%, 78% 100%, 22% 100%, 0 30%);
+}
+
+.mini-human.visual-avatar .mini-human-chest{
+    display:block;
+    background:linear-gradient(135deg, var(--active-wear), #233346);
+    border-color:rgba(255,255,255,.22);
+    box-shadow:inset 0 -8px 14px rgba(255,255,255,.08);
+}
+
+.mini-human.visual-avatar.gender-male .mini-human-chest{
+    background:
+        linear-gradient(90deg, transparent 48%, rgba(124,67,44,.32) 49% 51%, transparent 52%),
+        linear-gradient(135deg, rgba(255,215,189,.85), rgba(237,167,127,.88));
+    border-color:transparent;
+    box-shadow:none;
+}
+
+.mini-human.visual-avatar.gender-female .mini-human-body{
+    border-radius:38px 38px 22px 22px;
+}
+
+.mini-human.visual-avatar.gender-female .mini-human-chest{
+    width:calc(var(--mini-chest-width) * .82);
+    height:30px;
+}
+
+.mini-human.visual-avatar .mini-human-waist{
+    background:
+        repeating-linear-gradient(to bottom, rgba(123,64,39,.22) 0 1px, transparent 1px 13px),
+        linear-gradient(135deg, var(--skin-a), var(--skin-b));
+}
+
+.mini-human.visual-avatar .mini-human-hips{
+    background:linear-gradient(135deg, var(--active-wear), #253a4c);
+}
+
+.mini-human.visual-avatar.gender-female .mini-human-hips{
+    border-radius:28px 28px 38px 38px;
+    background:linear-gradient(135deg, #243246, var(--wear-accent));
+}
+
+.mini-human.visual-avatar.morph-full .mini-human-body{
+    width:calc(var(--mini-chest-width) + 12px);
+}
+
+.mini-human.visual-avatar.morph-full .mini-human-waist{
+    width:calc(var(--mini-waist-width) + 22px);
+    height:46px;
+    top:124px;
+    border-radius:50% 50% 38px 38px;
+}
+
+.mini-human.visual-avatar.morph-full .mini-human-waist::after{
+    content:"";
+    position:absolute;
+    inset:5px -7px -4px;
+    border-radius:50%;
+    background:linear-gradient(135deg, rgba(255,215,189,.75), rgba(221,139,92,.82));
+    box-shadow:inset -7px 0 14px rgba(92,49,30,.14);
+}
+
+.mini-human.visual-avatar.morph-slim .mini-human-body{
+    width:calc(var(--mini-chest-width) - 8px);
+}
+
+.mini-human.visual-avatar.morph-slim .mini-human-waist{
+    width:calc(var(--mini-waist-width) - 6px);
+}
+
+.mini-human.visual-avatar.morph-athletic .mini-human-body::after,
+.mini-human.visual-avatar.morph-athletic .mini-human-waist::before{
+    content:"";
+    position:absolute;
+    left:31%;
+    right:31%;
+    top:16px;
+    bottom:10px;
+    border-left:1px solid rgba(112,58,37,.28);
+    border-right:1px solid rgba(112,58,37,.28);
+    background:repeating-linear-gradient(to bottom, transparent 0 12px, rgba(112,58,37,.24) 13px 14px);
+    border-radius:999px;
+}
+
+.mini-human.visual-avatar .mini-measure{
+    border-color:rgba(255,229,82,.62);
+}
+
+.body-avatar-figure{
+    width:162px;
+    height:286px;
+    max-width:100%;
+    position:relative;
+    margin:0 auto 10px;
+    border-radius:18px;
+    background-image:url("../img/body-avatar-sprite.png");
+    background-size:400% 200%;
+    background-repeat:no-repeat;
+    background-color:#181b1f;
+    overflow:hidden;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+.body-avatar-figure .mini-measure{
+    left:50%;
+}
+
+.body-avatar-figure .mini-measure.chest{
+    width:88px;
+    top:102px;
+}
+
+.body-avatar-figure .mini-measure.waist{
+    width:74px;
+    top:152px;
+}
+
+.body-avatar-figure .mini-measure.hip{
+    width:92px;
+    top:188px;
+}
+
+.body-avatar-figure.is-preview{
+    width:62px;
+    height:92px;
+    margin:0;
+    border-radius:12px;
+    background-position:100% 0%;
+}
+
+.mini-human.visual-realistic .mini-human-head,
+.mini-human.visual-realistic .mini-human-neck,
+.mini-human.visual-realistic .mini-human-body,
+.mini-human.visual-realistic .mini-human-waist,
+.mini-human.visual-realistic .mini-human-hips,
+.mini-human.visual-realistic .mini-human-arm,
+.mini-human.visual-realistic .mini-human-leg,
+.mini-human.visual-realistic .mini-human-calf{
+    background:
+        radial-gradient(circle at 35% 22%, rgba(255,255,255,.55), transparent 20%),
+        linear-gradient(135deg, #ffd0ad 0%, #efab80 48%, #c9815f 100%);
+    border-color:rgba(138,78,46,.16);
+    box-shadow:inset -9px 0 18px rgba(92,49,30,.14);
+}
+
+.mini-human.visual-realistic.is-current .mini-human-body,
+.mini-human.visual-realistic.is-current .mini-human-waist,
+.mini-human.visual-realistic.is-current .mini-human-hips{
+    background:
+        radial-gradient(circle at 35% 22%, rgba(255,255,255,.6), transparent 20%),
+        linear-gradient(135deg, #ffd9bd 0%, #f0b084 52%, #b96f4f 100%);
+}
+
+.mini-human.visual-silhouette .mini-human-head,
+.mini-human.visual-silhouette .mini-human-neck,
+.mini-human.visual-silhouette .mini-human-body,
+.mini-human.visual-silhouette .mini-human-waist,
+.mini-human.visual-silhouette .mini-human-hips,
+.mini-human.visual-silhouette .mini-human-arm,
+.mini-human.visual-silhouette .mini-human-leg,
+.mini-human.visual-silhouette .mini-human-calf{
+    background:linear-gradient(135deg, #234653, #0f2f39);
+    border-color:rgba(15,47,57,.08);
+    box-shadow:inset -8px 0 16px rgba(255,255,255,.08);
+}
+
+.mini-human.visual-silhouette.is-current .mini-human-head,
+.mini-human.visual-silhouette.is-current .mini-human-neck,
+.mini-human.visual-silhouette.is-current .mini-human-body,
+.mini-human.visual-silhouette.is-current .mini-human-waist,
+.mini-human.visual-silhouette.is-current .mini-human-hips,
+.mini-human.visual-silhouette.is-current .mini-human-arm,
+.mini-human.visual-silhouette.is-current .mini-human-leg,
+.mini-human.visual-silhouette.is-current .mini-human-calf{
+    background:linear-gradient(135deg, #2e86ab, #1f596e);
+}
+
+.mini-human.visual-athletic .mini-human-head,
+.mini-human.visual-athletic .mini-human-neck,
+.mini-human.visual-athletic .mini-human-body,
+.mini-human.visual-athletic .mini-human-waist,
+.mini-human.visual-athletic .mini-human-hips,
+.mini-human.visual-athletic .mini-human-arm,
+.mini-human.visual-athletic .mini-human-leg,
+.mini-human.visual-athletic .mini-human-calf{
+    background:
+        radial-gradient(circle at 35% 22%, rgba(255,255,255,.52), transparent 20%),
+        linear-gradient(135deg, #f8c39f, #db8e63);
+    border-color:rgba(125,64,38,.15);
+    box-shadow:inset -8px 0 16px rgba(91,42,22,.15);
+}
+
+.mini-human.visual-athletic.is-current .mini-human-body::after{
+    content:"";
+    position:absolute;
+    inset:18px 31% 16px;
+    border-left:1px solid rgba(112,58,37,.28);
+    border-right:1px solid rgba(112,58,37,.28);
+    background:repeating-linear-gradient(to bottom, transparent 0 12px, rgba(112,58,37,.25) 13px 14px);
+    border-radius:999px;
+}
+
+.mini-human.visual-athletic.is-current .mini-human-waist{
+    box-shadow:
+        inset -8px 0 16px rgba(91,42,22,.15),
+        inset 0 0 0 1px rgba(255,255,255,.24);
+}
+
+.profile-visual-grid{
+    display:grid;
+    gap:12px;
+}
+
+.profile-visual-option{
+    display:grid;
+    grid-template-columns:78px 1fr;
+    gap:12px;
+    align-items:center;
+    border:1px solid var(--fa-border);
+    border-radius:18px;
+    padding:12px;
+    background:#fff;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.profile-visual-option input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.profile-visual-option.active,
+.profile-visual-option:has(input:checked){
+    border-color:rgba(46,134,171,.45);
+    background:#f5fbfd;
+    box-shadow:0 12px 28px rgba(46,134,171,.12);
+}
+
+.profile-visual-preview{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:96px;
+    border-radius:16px;
+    background:#eef6f9;
+    overflow:hidden;
+}
+
+.profile-visual-preview .mini-human{
+    height:92px;
+    width:62px;
+    margin:0;
+    transform:scale(.32);
+    transform-origin:center;
+    flex:0 0 160px;
+}
+
+.profile-visual-copy strong,
+.profile-visual-copy small{
+    display:block;
+}
+
+.profile-visual-copy small{
+    margin-top:3px;
+    color:var(--fa-muted);
+    line-height:1.35;
 }
 
 .compare-body-foot{
@@ -2533,6 +2865,7 @@ a{
     display:inline-flex;
     align-items:center;
     gap:8px;
+    text-decoration:none;
     padding:10px 14px;
     border-radius:999px;
     background:#fff;
@@ -3124,6 +3457,46 @@ a{
     background:#f9fcfd;
     border:1px dashed rgba(46,134,171,.25);
     padding:14px;
+}
+
+.admin-password-suggestion{
+    display:inline-flex;
+    align-items:center;
+    min-height:42px;
+    border-radius:14px;
+    background:#fff;
+    border:1px solid var(--fa-border);
+    padding:9px 12px;
+    color:var(--fa-dark);
+    font-weight:800;
+}
+
+.excluded-food-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.excluded-food-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    border:1px solid var(--fa-border);
+    border-radius:16px;
+    background:#fff;
+    padding:10px 12px;
+}
+
+.excluded-food-icon{
+    width:34px;
+    height:34px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(220,53,69,.1);
+    color:#dc3545;
+    flex:0 0 34px;
 }
 
 .admin-flow-list{

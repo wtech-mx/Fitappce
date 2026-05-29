@@ -15,62 +15,71 @@
 
     <div class="mb-4">
         <div class="page-kicker">
-            <i class="bi bi-journal-text"></i> Nutrición
+            <i class="bi bi-journal-text"></i> Nutricion
         </div>
         <h1 class="fit-title mb-2">Tu plan alimentario</h1>
         <p class="fit-subtitle mb-0">
-            Este resumen concentra las comidas del día, lineamientos y enfoque que definió el entrenador.
+            {{ $activePlan ? $activePlan->name : 'Tu coach aun no ha asignado un plan activo.' }}
         </p>
     </div>
 
     <div class="hero-card hero-blue mb-4">
         <div class="row text-center g-3">
             <div class="col-4">
-                <div class="fw-bold fs-5">2100</div>
+                <div class="fw-bold fs-5">{{ $activePlan ? number_format((float) $activePlan->target_calories, 0) : '-' }}</div>
                 <small class="text-white-50">Kcal</small>
             </div>
             <div class="col-4">
-                <div class="fw-bold fs-5">160g</div>
-                <small class="text-white-50">Proteína</small>
+                <div class="fw-bold fs-5">{{ $activePlan ? number_format((float) $activePlan->target_protein, 0).'g' : '-' }}</div>
+                <small class="text-white-50">Proteina</small>
             </div>
             <div class="col-4">
-                <div class="fw-bold fs-5">5</div>
+                <div class="fw-bold fs-5">{{ $activePlan?->meals->count() ?: '-' }}</div>
                 <small class="text-white-50">Comidas</small>
             </div>
         </div>
     </div>
 
-    <div class="d-grid gap-3 mb-4">
-        <div class="day-card p-3">
-            <div class="fw-bold mb-1">Desayuno</div>
-            <div class="fit-subtitle">Avena + plátano + claras + café</div>
+    @if ($activePlan)
+        <div class="d-grid gap-3 mb-4">
+            @foreach ($activePlan->meals as $meal)
+                <div class="day-card p-3">
+                    <div class="fw-bold mb-1">{{ $meal->name }}</div>
+                    <div class="fit-subtitle">
+                        {{ $meal->items->pluck('food_name')->join(' + ') ?: 'Sin alimentos capturados' }}
+                    </div>
+                    @if ($meal->items->isNotEmpty())
+                        <div class="soft-divider"></div>
+                        <div class="d-grid gap-2">
+                            @foreach ($meal->items as $item)
+                                <div class="d-flex justify-content-between gap-3">
+                                    <span>{{ $item->food_name }}</span>
+                                    <strong>{{ number_format((float) $item->quantity, 0) }} {{ $item->unit }}</strong>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endforeach
         </div>
 
-        <div class="day-card p-3">
-            <div class="fw-bold mb-1">Colación</div>
-            <div class="fit-subtitle">Yogurt griego + nueces</div>
+        <div class="surface-card p-4 mb-4">
+            <div class="fw-bold mb-3">Indicaciones del entrenador</div>
+            <ul class="info-list mb-0">
+                <li>Agua diaria: {{ $activePlan->daily_water ?: 'Pendiente' }}</li>
+                <li>Carbohidratos: {{ number_format((float) $activePlan->target_carbohydrates, 0) }} g</li>
+                <li>Grasas: {{ number_format((float) $activePlan->target_fat, 0) }} g</li>
+                @if ($activePlan->notes)
+                    <li>{{ $activePlan->notes }}</li>
+                @endif
+            </ul>
         </div>
-
-        <div class="day-card p-3">
-            <div class="fw-bold mb-1">Comida</div>
-            <div class="fit-subtitle">Pollo a la plancha + arroz + verduras</div>
+    @else
+        <div class="surface-card p-4 mb-4">
+            <div class="fw-bold mb-2">Plan pendiente</div>
+            <div class="fit-subtitle">Cuando tu coach active tu plan alimentario, aparecera aqui con comidas, porciones y notas.</div>
         </div>
-
-        <div class="day-card p-3">
-            <div class="fw-bold mb-1">Cena</div>
-            <div class="fit-subtitle">Atún con aguacate + ensalada</div>
-        </div>
-    </div>
-
-    <div class="surface-card p-4 mb-4">
-        <div class="fw-bold mb-3">Indicaciones del entrenador</div>
-        <ul class="info-list mb-0">
-            <li>Priorizar proteína en cada comida</li>
-            <li>Evitar bebidas azucaradas</li>
-            <li>Tomar 2 litros de agua mínimo</li>
-            <li>Mandar foto de comida y cena</li>
-        </ul>
-    </div>
+    @endif
 
     <a href="{{ route('fitapp.recetas') }}" class="btn btn-primary-custom w-100">
         Ver recetas sugeridas

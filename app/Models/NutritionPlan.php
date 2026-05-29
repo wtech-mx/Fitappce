@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'target_fat',
     'daily_water',
     'status',
+    'preference',
     'notes',
 ])]
 class NutritionPlan extends Model
@@ -36,6 +37,6 @@ class NutritionPlan extends Model
      */
     public function meals(): HasMany
     {
-        return $this->hasMany(NutritionPlanMeal::class);
+        return $this->hasMany(NutritionPlanMeal::class)->orderBy('sort_order');
     }
 }
