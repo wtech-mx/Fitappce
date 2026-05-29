@@ -4,10 +4,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientProgressController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ClientNutritionController;
+use App\Http\Controllers\ClientWorkoutController;
 use App\Http\Controllers\Admin\NutritionController;
 use App\Http\Controllers\Admin\MeasurementController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\WorkoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/fitapp/auth')->name('home');
@@ -35,8 +37,8 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
 
     Route::middleware(['auth', 'role:user,admin'])->group(function () {
         Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
-        Route::view('/rutina', 'fitapp.rutina')->name('rutina');
-        Route::view('/rutina-dia', 'fitapp.rutina-dia')->name('rutina-dia');
+        Route::get('/rutina', [ClientWorkoutController::class, 'index'])->name('rutina');
+        Route::get('/rutina-dia/{day?}', [ClientWorkoutController::class, 'day'])->name('rutina-dia');
         Route::get('/nutricion-diaria', [ClientNutritionController::class, 'daily'])->name('nutricion');
 
         Route::get('/plan-alimentario', [ClientNutritionController::class, 'plan'])->name('plan');
@@ -65,9 +67,12 @@ Route::prefix('admin')->name('fitapp.admin.')->middleware(['auth', 'role:admin']
     Route::get('/planes', [PlanController::class, 'index'])->name('planes');
     Route::view('/planes/crear', 'fitapp.admin.planes-crear')->name('planes.crear');
     Route::view('/planes/detalle', 'fitapp.admin.plan-detalle')->name('planes.detalle');
-    Route::view('/rutinas', 'fitapp.admin.rutinas')->name('rutinas');
-    Route::view('/rutinas/crear', 'fitapp.admin.rutinas-crear')->name('rutinas.crear');
-    Route::view('/rutinas/detalle', 'fitapp.admin.rutina-detalle')->name('rutinas.detalle');
+    Route::get('/rutinas', [WorkoutController::class, 'index'])->name('rutinas');
+    Route::get('/rutinas/crear', [WorkoutController::class, 'create'])->name('rutinas.crear');
+    Route::post('/rutinas', [WorkoutController::class, 'store'])->name('rutinas.store');
+    Route::get('/rutinas/{routine}', [WorkoutController::class, 'show'])->name('rutinas.detalle');
+    Route::get('/rutinas/{routine}/editar', [WorkoutController::class, 'edit'])->name('rutinas.edit');
+    Route::put('/rutinas/{routine}', [WorkoutController::class, 'update'])->name('rutinas.update');
     Route::view('/ejercicios', 'fitapp.admin.ejercicios')->name('ejercicios');
     Route::view('/ejercicios/crear', 'fitapp.admin.ejercicios-crear')->name('ejercicios.crear');
     Route::view('/ejercicios/detalle', 'fitapp.admin.ejercicio-detalle')->name('ejercicios.detalle');
@@ -75,6 +80,9 @@ Route::prefix('admin')->name('fitapp.admin.')->middleware(['auth', 'role:admin']
     Route::get('/nutricion', [NutritionController::class, 'index'])->name('nutricion');
     Route::get('/nutricion/crear', [NutritionController::class, 'create'])->name('nutricion.crear');
     Route::post('/nutricion', [NutritionController::class, 'store'])->name('nutricion.store');
+    Route::get('/nutricion/{nutrition}', [NutritionController::class, 'show'])->name('nutricion.show');
+    Route::get('/nutricion/{nutrition}/editar', [NutritionController::class, 'edit'])->name('nutricion.edit');
+    Route::put('/nutricion/{nutrition}', [NutritionController::class, 'update'])->name('nutricion.update');
     Route::view('/pagos', 'fitapp.admin.pagos')->name('pagos');
     Route::view('/configuracion', 'fitapp.admin.configuracion')->name('configuracion');
 });

@@ -101,4 +101,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(NutritionPlan::class);
     }
+
+    public function workoutPlans(): HasMany
+    {
+        return $this->hasMany(WorkoutPlan::class);
+    }
 }

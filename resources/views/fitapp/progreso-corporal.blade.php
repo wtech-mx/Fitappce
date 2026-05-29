@@ -189,32 +189,49 @@
         </div>
 
         <div class="body-map-wrap">
-            <div class="human-map" aria-label="Mapa corporal visual" style="--body-chest-width: {{ $bodyShape['chest'] }}px; --body-waist-width: {{ $bodyShape['waist'] }}px; --body-hip-width: {{ $bodyShape['hips'] }}px; --body-arm-width: {{ $bodyShape['arm'] }}px; --body-leg-width: {{ $bodyShape['leg'] }}px; --body-calf-width: {{ $bodyShape['calf'] }}px; --body-arm-offset: {{ $bodyShape['armOffset'] }}px;">
-                <div class="human-scan"></div>
-                <div class="human-head"></div>
-                <div class="human-neck"></div>
-                <div class="human-torso"></div>
-                <div class="human-waist"></div>
-                <div class="human-hips"></div>
-                <div class="human-arm human-arm-left"></div>
-                <div class="human-arm human-arm-right"></div>
-                <div class="human-leg human-leg-left"></div>
-                <div class="human-leg human-leg-right"></div>
-                <div class="human-calf human-calf-left"></div>
-                <div class="human-calf human-calf-right"></div>
-                <div class="human-core-line"></div>
-                <div class="measure-ring ring-chest"></div>
-                <div class="measure-ring ring-waist"></div>
-                <div class="measure-ring ring-hip"></div>
+            @if(($bodyVisualType ?? 'avatar') === 'avatar')
+                <div class="human-map body-avatar-map" aria-label="Mapa corporal visual" style="{{ $avatarPosition($genderClass, $currentMorphClass) }}">
+                    <div class="human-scan"></div>
+                    <div class="measure-ring ring-chest"></div>
+                    <div class="measure-ring ring-waist"></div>
+                    <div class="measure-ring ring-hip"></div>
 
-                @foreach($bodyZones as $zone)
-                    <div class="body-zone {{ $zone['class'] }}">
-                        <span>{{ $zone['name'] }}</span>
-                        <strong>{{ $zone['value'] }}</strong>
-                        <em>{{ $zone['change'] }}</em>
-                    </div>
-                @endforeach
-            </div>
+                    @foreach($bodyZones as $zone)
+                        <div class="body-zone {{ $zone['class'] }}">
+                            <span>{{ $zone['name'] }}</span>
+                            <strong>{{ $zone['value'] }}</strong>
+                            <em>{{ $zone['change'] }}</em>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="human-map" aria-label="Mapa corporal visual" style="--body-chest-width: {{ $bodyShape['chest'] }}px; --body-waist-width: {{ $bodyShape['waist'] }}px; --body-hip-width: {{ $bodyShape['hips'] }}px; --body-arm-width: {{ $bodyShape['arm'] }}px; --body-leg-width: {{ $bodyShape['leg'] }}px; --body-calf-width: {{ $bodyShape['calf'] }}px; --body-arm-offset: {{ $bodyShape['armOffset'] }}px;">
+                    <div class="human-scan"></div>
+                    <div class="human-head"></div>
+                    <div class="human-neck"></div>
+                    <div class="human-torso"></div>
+                    <div class="human-waist"></div>
+                    <div class="human-hips"></div>
+                    <div class="human-arm human-arm-left"></div>
+                    <div class="human-arm human-arm-right"></div>
+                    <div class="human-leg human-leg-left"></div>
+                    <div class="human-leg human-leg-right"></div>
+                    <div class="human-calf human-calf-left"></div>
+                    <div class="human-calf human-calf-right"></div>
+                    <div class="human-core-line"></div>
+                    <div class="measure-ring ring-chest"></div>
+                    <div class="measure-ring ring-waist"></div>
+                    <div class="measure-ring ring-hip"></div>
+
+                    @foreach($bodyZones as $zone)
+                        <div class="body-zone {{ $zone['class'] }}">
+                            <span>{{ $zone['name'] }}</span>
+                            <strong>{{ $zone['value'] }}</strong>
+                            <em>{{ $zone['change'] }}</em>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
 
         <div class="body-map-legend">

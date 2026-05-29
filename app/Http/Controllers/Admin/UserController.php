@@ -91,10 +91,24 @@ class UserController extends Controller
     {
         abort_unless($user->role === 'user', 404);
 
-        $user->load(['measurements' => fn ($query) => $query->latest('measured_at')->latest()]);
+        $user->load([
+            'measurements' => fn ($query) => $query->latest('measured_at')->latest(),
+            'nutritionPlans' => fn ($query) => $query
+                ->with('meals.items')
+                ->where('status', 'active')
+                ->latest('plan_date')
+                ->latest(),
+            'workoutPlans' => fn ($query) => $query
+                ->with('days.exercises')
+                ->where('status', 'active')
+                ->latest('plan_date')
+                ->latest(),
+        ]);
         $latestMeasurement = $user->measurements->first();
+        $activeNutritionPlan = $user->nutritionPlans->first();
+        $activeWorkoutPlan = $user->workoutPlans->first();
 
-        return view('fitapp.admin.usuario-detalle', compact('user', 'latestMeasurement'));
+        return view('fitapp.admin.usuario-detalle', compact('user', 'latestMeasurement', 'activeNutritionPlan', 'activeWorkoutPlan'));
     }
 
     public function edit(User $user): View

@@ -67,6 +67,7 @@
         @else
             <div class="admin-card-grid">
                 @foreach($plans as $plan)
+                    @php $totals = $plan->macroTotals(); @endphp
                     <div class="admin-plan-card">
                         <div class="admin-card-body">
                             <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
@@ -78,17 +79,19 @@
                             </div>
 
                             <div class="routine-summary-grid mb-3">
-                                <div><span><i class="bi bi-fire me-1"></i>Kcal</span><strong>{{ number_format((float) $plan->target_calories, 0) }}</strong></div>
-                                <div><span><i class="bi bi-lightning-charge me-1"></i>Proteina</span><strong>{{ number_format((float) $plan->target_protein, 1) }}g</strong></div>
-                                <div><span><i class="bi bi-bar-chart me-1"></i>Hidratos</span><strong>{{ number_format((float) $plan->target_carbohydrates, 1) }}g</strong></div>
-                                <div><span><i class="bi bi-droplet-half me-1"></i>Grasas</span><strong>{{ number_format((float) $plan->target_fat, 1) }}g</strong></div>
+                                <div><span><i class="bi bi-fire me-1"></i>Kcal</span><strong>{{ number_format($totals['calories'], 0) }}</strong></div>
+                                <div><span><i class="bi bi-lightning-charge me-1"></i>Proteina</span><strong>{{ number_format($totals['protein'], 1) }}g</strong></div>
+                                <div><span><i class="bi bi-bar-chart me-1"></i>Hidratos</span><strong>{{ number_format($totals['carbohydrates'], 1) }}g</strong></div>
+                                <div><span><i class="bi bi-droplet-half me-1"></i>Grasas</span><strong>{{ number_format($totals['fat'], 1) }}g</strong></div>
                             </div>
 
                             <div class="admin-card-text mb-3">
-                                {{ $plan->meals->count() }} comidas · {{ $plan->meals->sum(fn ($meal) => $meal->items->count()) }} alimentos · Agua: {{ $plan->daily_water ?: 'Pendiente' }}
+                                {{ $plan->meals->count() }} comidas - {{ $plan->foodItemsCount() }} alimentos - Agua: {{ $plan->daily_water ?: 'Pendiente' }}
                             </div>
 
                             <div class="admin-card-actions">
+                                <a href="{{ route('fitapp.admin.nutricion.show', $plan) }}" class="admin-btn-soft"><i class="bi bi-eye"></i> Ver nutricion</a>
+                                <a href="{{ route('fitapp.admin.nutricion.edit', $plan) }}" class="admin-btn-soft"><i class="bi bi-pencil"></i> Editar</a>
                                 <a href="{{ route('fitapp.admin.nutricion.crear', ['user' => $plan->user_id]) }}" class="admin-btn-soft"><i class="bi bi-plus-circle"></i> Nuevo para usuario</a>
                                 <a href="{{ route('fitapp.plan') }}" class="admin-btn-soft"><i class="bi bi-phone"></i> Vista usuario</a>
                                 @if ($plan->user)

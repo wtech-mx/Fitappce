@@ -25,6 +25,35 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class NutritionPlan extends Model
 {
     /**
+     * @return array{calories: float, protein: float, carbohydrates: float, fat: float}
+     */
+    public function macroTotals(): array
+    {
+        $items = $this->relationLoaded('meals')
+            ? $this->meals->flatMap(fn (NutritionPlanMeal $meal) => $meal->items)
+            : $this->meals()->with('items')->get()->flatMap(fn (NutritionPlanMeal $meal) => $meal->items);
+
+        return [
+            'calories' => round((float) $items->sum('calories'), 2),
+            'protein' => round((float) $items->sum('protein'), 2),
+            'carbohydrates' => round((float) $items->sum('carbohydrates'), 2),
+            'fat' => round((float) $items->sum('fat'), 2),
+        ];
+    }
+
+    public function foodItemsCount(): int
+    {
+        if ($this->relationLoaded('meals')) {
+            return (int) $this->meals->sum(fn (NutritionPlanMeal $meal) => $meal->items->count());
+        }
+
+        return (int) $this->meals()
+            ->withCount('items')
+            ->get()
+            ->sum('items_count');
+    }
+
+    /**
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo

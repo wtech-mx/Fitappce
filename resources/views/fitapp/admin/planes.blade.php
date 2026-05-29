@@ -85,6 +85,7 @@
 @else
     <div class="admin-card-grid">
         @foreach($plans as $plan)
+            @php $totals = $plan->macroTotals(); @endphp
             <div class="admin-plan-card">
                 <div class="admin-card-body">
                     <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
@@ -106,15 +107,15 @@
                     </div>
 
                     <div class="routine-summary-grid mb-3">
-                        <div><span>Kcal</span><strong>{{ number_format((float) $plan->target_calories, 0) }}</strong></div>
-                        <div><span>Proteina</span><strong>{{ number_format((float) $plan->target_protein, 0) }}g</strong></div>
-                        <div><span>Carbs</span><strong>{{ number_format((float) $plan->target_carbohydrates, 0) }}g</strong></div>
-                        <div><span>Grasas</span><strong>{{ number_format((float) $plan->target_fat, 0) }}g</strong></div>
+                        <div><span>Kcal</span><strong>{{ number_format($totals['calories'], 0) }}</strong></div>
+                        <div><span>Proteina</span><strong>{{ number_format($totals['protein'], 1) }}g</strong></div>
+                        <div><span>Carbs</span><strong>{{ number_format($totals['carbohydrates'], 1) }}g</strong></div>
+                        <div><span>Grasas</span><strong>{{ number_format($totals['fat'], 1) }}g</strong></div>
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 mb-3">
                         <span class="admin-tag">{{ $plan->meals->count() }} comidas</span>
-                        <span class="admin-tag blue">{{ $plan->meals->sum(fn ($meal) => $meal->items->count()) }} alimentos</span>
+                        <span class="admin-tag blue">{{ $plan->foodItemsCount() }} alimentos</span>
                         @if ($plan->preference === 'favorite')
                             <span class="admin-tag blue">Favorita</span>
                         @elseif ($plan->preference === 'least_favorite')
@@ -125,7 +126,7 @@
                     <div class="admin-card-text">{{ $plan->notes ?: 'Sin notas del coach para este plan.' }}</div>
 
                     <div class="admin-card-actions">
-                        <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-btn-soft"><i class="bi bi-eye"></i> Ver nutricion</a>
+                        <a href="{{ route('fitapp.admin.nutricion.show', $plan) }}" class="admin-btn-soft"><i class="bi bi-eye"></i> Ver nutricion</a>
                         @if ($plan->user)
                             <a href="{{ route('fitapp.admin.nutricion.crear', ['user' => $plan->user_id]) }}" class="admin-btn-soft"><i class="bi bi-plus-circle"></i> Nuevo plan</a>
                             <a href="{{ route('fitapp.admin.usuarios.detalle', $plan->user) }}" class="admin-btn-soft"><i class="bi bi-person-vcard"></i> Usuario</a>

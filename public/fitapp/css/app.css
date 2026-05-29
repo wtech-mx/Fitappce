@@ -614,6 +614,55 @@ a{
     overflow:hidden;
 }
 
+.body-avatar-map{
+    background-image:
+        linear-gradient(180deg, rgba(248,251,252,.18), rgba(238,245,248,.26)),
+        url("../img/body-avatar-sprite.png");
+    background-size:100% 100%, 400% 200%;
+    background-repeat:no-repeat;
+    background-color:#181b1f;
+    border-color:rgba(46,134,171,.20);
+}
+
+.body-avatar-map::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(90deg, rgba(248,251,252,.92) 0 13%, transparent 26% 74%, rgba(248,251,252,.92) 87% 100%),
+        linear-gradient(180deg, transparent 0 8%, rgba(255,255,255,.10) 36%, transparent 78% 100%);
+    pointer-events:none;
+    z-index:1;
+}
+
+.body-avatar-map .human-scan,
+.body-avatar-map .measure-ring,
+.body-avatar-map .body-zone{
+    z-index:3;
+}
+
+.body-avatar-map .ring-chest{
+    width:124px;
+    top:170px;
+}
+
+.body-avatar-map .ring-waist{
+    width:96px;
+    top:250px;
+}
+
+.body-avatar-map .ring-hip{
+    width:128px;
+    top:314px;
+}
+
+.body-avatar-map .zone-arm-left{ top:154px; left:10px; }
+.body-avatar-map .zone-chest{ top:132px; right:10px; }
+.body-avatar-map .zone-waist{ top:254px; left:10px; }
+.body-avatar-map .zone-hip{ top:318px; right:10px; }
+.body-avatar-map .zone-leg-left{ top:388px; left:10px; }
+.body-avatar-map .zone-calf-right{ top:444px; right:10px; }
+
 .human-head,
 .human-neck,
 .human-torso,

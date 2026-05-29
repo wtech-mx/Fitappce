@@ -11,6 +11,7 @@
         'paused' => ['label' => 'Pausado', 'class' => 'red'],
     ];
     $status = $statusLabels[$user->status] ?? $statusLabels['prospect'];
+    $nutritionTotals = $activeNutritionPlan?->macroTotals();
 @endphp
 
 <div class="admin-topbar">
@@ -80,17 +81,19 @@
                         <div class="routine-exercise-main">
                             <div class="d-flex justify-content-between gap-3 mb-2">
                                 <div>
-                                    <div class="fw-bold">{{ $user->plan_type ?: 'Rutina pendiente de asignar' }}</div>
-                                    <div class="admin-mini">{{ $user->service ?: 'Define el servicio del cliente para vincular una rutina.' }}</div>
+                                    <div class="fw-bold">{{ $activeWorkoutPlan?->name ?: ($user->plan_type ?: 'Rutina pendiente de asignar') }}</div>
+                                    <div class="admin-mini">{{ $activeWorkoutPlan?->goal ?: ($user->service ?: 'Define el servicio del cliente para vincular una rutina.') }}</div>
                                 </div>
-                                <a href="{{ route('fitapp.admin.planes', ['user' => $user->id]) }}" class="admin-btn-soft">Ver planes</a>
+                                <a href="{{ $activeWorkoutPlan ? route('fitapp.admin.rutinas.detalle', $activeWorkoutPlan) : route('fitapp.admin.rutinas.crear', ['user' => $user->id]) }}" class="admin-btn-soft">
+                                    {{ $activeWorkoutPlan ? 'Ver rutina' : 'Asignar rutina' }}
+                                </a>
                             </div>
                             <div class="routine-prescription-grid">
-                                <div><span>Rutina</span><strong>Pendiente</strong></div>
-                                <div><span>Dias</span><strong>{{ $user->training_days ?: '-' }}</strong></div>
-                                <div><span>Evidencias</span><strong>0</strong></div>
-                                <div><span>Estado</span><strong>{{ $status['label'] }}</strong></div>
-                                <div><span>Renueva</span><strong>Mensual</strong></div>
+                                <div><span>Ejercicios</span><strong>{{ $activeWorkoutPlan ? $activeWorkoutPlan->exerciseCount() : '-' }}</strong></div>
+                                <div><span>Dias</span><strong>{{ $activeWorkoutPlan?->days_per_week ?: ($user->training_days ?: '-') }}</strong></div>
+                                <div><span>Evidencias</span><strong>{{ $activeWorkoutPlan ? $activeWorkoutPlan->evidenceCount() : '0' }}</strong></div>
+                                <div><span>Estado</span><strong>{{ $activeWorkoutPlan ? ($activeWorkoutPlan->status === 'active' ? 'Activo' : ($activeWorkoutPlan->status === 'archived' ? 'Archivado' : 'Borrador')) : $status['label'] }}</strong></div>
+                                <div><span>Duracion</span><strong>{{ $activeWorkoutPlan?->duration ?: 'Mensual' }}</strong></div>
                             </div>
                         </div>
                     </div>
@@ -100,17 +103,25 @@
                         <div class="routine-exercise-main">
                             <div class="d-flex justify-content-between gap-3 mb-2">
                                 <div>
-                                    <div class="fw-bold">Plan alimentario pendiente</div>
-                                    <div class="admin-mini">{{ $user->meals_per_day ? $user->meals_per_day.' comidas' : 'Comidas pendientes' }} - Restriccion: {{ $user->nutrition_restriction ?: 'Ninguna' }}</div>
+                                    <div class="fw-bold">{{ $activeNutritionPlan?->name ?: 'Plan alimentario pendiente' }}</div>
+                                    <div class="admin-mini">
+                                        {{ $activeNutritionPlan ? $activeNutritionPlan->meals->count().' comidas' : ($user->meals_per_day ? $user->meals_per_day.' comidas' : 'Comidas pendientes') }}
+                                        - Restriccion: {{ $user->nutrition_restriction ?: 'Ninguna' }}
+                                        @if($activeNutritionPlan?->daily_water)
+                                            - Agua: {{ $activeNutritionPlan->daily_water }}
+                                        @endif
+                                    </div>
                                 </div>
-                                <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-btn-soft">Ver nutricion</a>
+                                <a href="{{ $activeNutritionPlan ? route('fitapp.admin.nutricion.show', $activeNutritionPlan) : route('fitapp.admin.nutricion.crear', ['user' => $user->id]) }}" class="admin-btn-soft">
+                                    {{ $activeNutritionPlan ? 'Ver nutricion' : 'Asignar nutricion' }}
+                                </a>
                             </div>
                             <div class="routine-prescription-grid">
-                                <div><span>Kcal</span><strong>-</strong></div>
-                                <div><span>Proteina</span><strong>-</strong></div>
-                                <div><span>Carbs</span><strong>-</strong></div>
-                                <div><span>Grasas</span><strong>-</strong></div>
-                                <div><span>Agua</span><strong>-</strong></div>
+                                <div><span>Kcal</span><strong>{{ $nutritionTotals ? number_format($nutritionTotals['calories'], 0) : '-' }}</strong></div>
+                                <div><span>Proteina</span><strong>{{ $nutritionTotals ? number_format($nutritionTotals['protein'], 1).'g' : '-' }}</strong></div>
+                                <div><span>Carbs</span><strong>{{ $nutritionTotals ? number_format($nutritionTotals['carbohydrates'], 1).'g' : '-' }}</strong></div>
+                                <div><span>Grasas</span><strong>{{ $nutritionTotals ? number_format($nutritionTotals['fat'], 1).'g' : '-' }}</strong></div>
+                                <div><span>Agua</span><strong>{{ $activeNutritionPlan?->daily_water ?: '-' }}</strong></div>
                             </div>
                         </div>
                     </div>
