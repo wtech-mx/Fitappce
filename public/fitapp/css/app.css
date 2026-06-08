@@ -3737,3 +3737,299 @@ a{
         grid-template-columns:1fr;
     }
 }
+
+.achievement-admin-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at 35% 25%, rgba(245,247,73,.36), transparent 30%),
+        linear-gradient(145deg, rgba(46,134,171,.18), rgba(95,168,160,.18));
+    border:1px solid rgba(46,134,171,.18);
+    color:var(--fa-primary);
+    flex:0 0 auto;
+    overflow:hidden;
+}
+
+.achievement-admin-icon img,
+.achievement-image-preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.achievement-admin-icon i{
+    font-size:1.6rem;
+}
+
+.achievement-unlock-form{
+    display:grid;
+    grid-template-columns:minmax(150px, 1fr) minmax(120px, 1fr) auto;
+    gap:8px;
+}
+
+.achievement-image-preview{
+    min-height:240px;
+    border-radius:24px;
+    border:1px dashed rgba(46,134,171,.35);
+    background:
+        radial-gradient(circle at top, rgba(245,247,73,.26), transparent 30%),
+        linear-gradient(180deg, #f8fbfd, #edf5f8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    color:var(--fa-primary);
+}
+
+.achievement-image-preview i{
+    font-size:4rem;
+}
+
+.trophy-page{
+    background:
+        radial-gradient(circle at 20% 0%, rgba(245,247,73,.14), transparent 22%),
+        linear-gradient(180deg, #122433 0%, #1f3946 46%, #eef6f8 46%, #eef6f8 100%);
+    min-height:100vh;
+    margin:-1px;
+}
+
+.trophy-hero{
+    border-radius:28px;
+    padding:22px;
+    background:
+        linear-gradient(145deg, rgba(18,36,51,.94), rgba(46,134,171,.72)),
+        radial-gradient(circle at top right, rgba(245,247,73,.34), transparent 28%);
+    box-shadow:0 22px 55px rgba(18,36,51,.22);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:18px;
+}
+
+.trophy-progress-ring{
+    width:86px;
+    height:86px;
+    border-radius:50%;
+    border:8px solid rgba(255,255,255,.20);
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+}
+
+.trophy-progress-ring strong{
+    font-size:1.15rem;
+    line-height:1;
+}
+
+.trophy-progress-ring span{
+    font-size:.74rem;
+    color:rgba(255,255,255,.72);
+}
+
+.trophy-cabinet{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:20px 10px;
+    padding:22px 12px 26px;
+    border-radius:28px;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(255,255,255,.96), rgba(255,255,255,.18) 18%, transparent 35%),
+        radial-gradient(circle at 78% 8%, rgba(245,247,73,.20), transparent 22%),
+        linear-gradient(180deg, #eaf8fc 0%, #f8fdff 62%, #e8f6fb 100%);
+    border:1px solid rgba(188,224,235,.9);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), inset 0 -18px 34px rgba(46,134,171,.06), 0 18px 44px rgba(46,134,171,.13);
+    position:relative;
+    overflow:hidden;
+}
+
+.trophy-cabinet::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 28% 32%, rgba(255,255,255,.52) 0 5px, transparent 6px),
+        radial-gradient(circle at 72% 42%, rgba(255,255,255,.46) 0 4px, transparent 5px),
+        radial-gradient(circle at 46% 76%, rgba(255,255,255,.40) 0 6px, transparent 7px);
+    opacity:.8;
+    pointer-events:none;
+}
+
+.trophy-cabinet::after{
+    content:"";
+    position:absolute;
+    left:10%;
+    right:10%;
+    bottom:16px;
+    height:22px;
+    border-radius:50%;
+    background:rgba(46,134,171,.08);
+    filter:blur(10px);
+    pointer-events:none;
+}
+
+.trophy-cabinet.is-compact{
+    gap:17px 8px;
+    padding:18px 8px 22px;
+    border-radius:22px;
+    background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,.95), rgba(255,255,255,.18) 18%, transparent 35%),
+        linear-gradient(180deg, #eaf8fc 0%, #fbfeff 62%, #eaf7fb 100%);
+    border:1px solid rgba(188,224,235,.95);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9), 0 12px 30px rgba(46,134,171,.09);
+}
+
+.trophy-piece{
+    min-height:122px;
+    border:0;
+    background:transparent;
+    padding:0 2px;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    gap:5px;
+    position:relative;
+    z-index:1;
+}
+
+.trophy-piece::after{
+    content:"";
+    width:62px;
+    height:9px;
+    border-radius:50%;
+    background:rgba(46,134,171,.16);
+    filter:blur(4px);
+    position:absolute;
+    bottom:36px;
+}
+
+.trophy-piece-art{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at 34% 24%, rgba(255,255,255,.94), transparent 23%),
+        linear-gradient(145deg, #eefbff, #b7ebf4 45%, #7cc5dc);
+    color:#122433;
+    border:1px solid rgba(255,255,255,.78);
+    box-shadow:inset 0 1px 8px rgba(255,255,255,.7), 0 12px 24px rgba(46,134,171,.20);
+    overflow:hidden;
+    position:relative;
+    z-index:1;
+}
+
+.trophy-piece-art::after{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    left:12px;
+    top:9px;
+    background:rgba(255,255,255,.58);
+    filter:blur(1px);
+    pointer-events:none;
+}
+
+.trophy-piece-art img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.trophy-piece-art i{
+    font-size:2.2rem;
+}
+
+.trophy-piece-title{
+    width:100%;
+    max-width:106px;
+    color:#0f1d29;
+    font-weight:800;
+    font-size:.80rem;
+    line-height:1.12;
+    min-height:28px;
+}
+
+.trophy-piece-status{
+    font-size:.68rem;
+    font-weight:800;
+    color:var(--fa-primary);
+}
+
+.trophy-piece.is-locked .trophy-piece-art{
+    filter:grayscale(1);
+    opacity:.42;
+    background:#e8f4f8;
+    color:#87949d;
+    box-shadow:inset 0 1px 8px rgba(255,255,255,.55), 0 8px 18px rgba(46,134,171,.10);
+}
+
+.trophy-piece.is-locked .trophy-piece-status{
+    color:#7c8992;
+}
+
+.achievement-mini-progress{
+    font-size:.86rem;
+    color:#52606a;
+}
+
+.achievement-modal-art{
+    width:132px;
+    height:132px;
+    border-radius:34px;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at 35% 25%, rgba(245,247,73,.42), transparent 32%),
+        linear-gradient(145deg, #e8f6fa, #fff);
+    border:1px solid rgba(46,134,171,.18);
+    overflow:hidden;
+    color:var(--fa-primary);
+}
+
+.achievement-modal-art img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.achievement-modal-art i{
+    font-size:4rem;
+}
+
+.achievement-modal-art.is-locked{
+    filter:grayscale(1);
+    opacity:.58;
+}
+
+@media (max-width: 991px){
+    .achievement-unlock-form{
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width: 380px){
+    .trophy-cabinet{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+    }
+
+    .trophy-hero{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+}

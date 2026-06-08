@@ -22,7 +22,7 @@
         </div>
 
         <div class="col">
-            <a href="{{ route('fitapp.progreso') }}" class="{{ request()->routeIs('fitapp.progreso') || request()->routeIs('fitapp.progreso-corporal') ? 'active' : '' }}">
+            <a href="{{ route('fitapp.progreso') }}" class="{{ request()->routeIs('fitapp.progreso') || request()->routeIs('fitapp.progreso-corporal') || request()->routeIs('fitapp.logros') ? 'active' : '' }}">
                 <i class="bi bi-graph-up-arrow"></i>
                 Progreso
             </a>

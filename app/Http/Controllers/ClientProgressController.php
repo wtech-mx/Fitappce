@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Achievement;
 use App\Models\ClientMeasurement;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -23,6 +24,10 @@ class ClientProgressController extends Controller
             'previousMeasurement' => $previous,
             'display' => $this->displayData($user, $latest, $previous),
             'bodyVisualType' => $user->body_visual_type ?? 'avatar',
+            'activeNutritionPlan' => $user->nutritionPlans()->with('meals.items')->where('status', 'active')->latest()->first(),
+            'activeWorkoutPlan' => $user->workoutPlans()->with('days.exercises')->where('status', 'active')->latest()->first(),
+            'achievements' => Achievement::where('is_active', true)->orderBy('category')->orderBy('id')->get(),
+            'userAchievements' => $user->clientAchievements()->with('achievement')->get()->keyBy('achievement_id'),
         ]);
     }
 

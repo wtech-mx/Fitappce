@@ -44,6 +44,11 @@
             Evidencias
         </a>
 
+        <a href="{{ route('fitapp.admin.logros') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.logros*') ? 'active' : '' }}">
+            <i class="bi bi-trophy-fill"></i>
+            Logros
+        </a>
+
         <a href="{{ route('fitapp.admin.nutricion') }}" class="admin-nav-link {{ request()->routeIs('fitapp.admin.nutricion*') ? 'active' : '' }}">
             <i class="bi bi-journal-medical"></i>
             Nutrición

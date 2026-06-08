@@ -106,4 +106,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(WorkoutPlan::class);
     }
+
+    public function clientAchievements(): HasMany
+    {
+        return $this->hasMany(ClientAchievement::class);
+    }
 }
