@@ -29,7 +29,7 @@ class ClientWorkoutController extends Controller
         }
 
         $selectedDay = $day && $day->workout_plan_id === $activePlan->id
-            ? $day->loadMissing('exercises')
+            ? $day->loadMissing('exercises.exercise')
             : $activePlan->days->first();
 
         return view('fitapp.rutina-dia', [
@@ -42,7 +42,7 @@ class ClientWorkoutController extends Controller
     {
         return $request->user()
             ->workoutPlans()
-            ->with('days.exercises')
+            ->with('days.exercises.exercise')
             ->where('status', 'active')
             ->latest()
             ->first();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Exercise;
 use App\Models\User;
 use App\Models\WorkoutPlan;
 use Illuminate\Http\RedirectResponse;
@@ -14,7 +15,7 @@ class WorkoutController extends Controller
 {
     public function index(Request $request): View
     {
-        $plans = WorkoutPlan::with(['user', 'days.exercises'])
+        $plans = WorkoutPlan::with(['user', 'days.exercises.exercise'])
             ->when($request->filled('q'), function ($query) use ($request) {
                 $search = $request->string('q')->toString();
 
@@ -42,7 +43,9 @@ class WorkoutController extends Controller
         $mode = 'create';
         $plan = null;
 
-        return view('fitapp.admin.rutinas-crear', compact('users', 'selectedUser', 'mode', 'plan'));
+        $exerciseCatalog = Exercise::where('is_active', true)->orderBy('name')->get();
+
+        return view('fitapp.admin.rutinas-crear', compact('users', 'selectedUser', 'mode', 'plan', 'exerciseCatalog'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -69,20 +72,22 @@ class WorkoutController extends Controller
 
     public function show(WorkoutPlan $routine): View
     {
-        $routine->load(['user', 'days.exercises']);
+        $routine->load(['user', 'days.exercises.exercise']);
 
         return view('fitapp.admin.rutina-detalle', ['plan' => $routine]);
     }
 
     public function edit(WorkoutPlan $routine): View
     {
-        $routine->load(['days.exercises']);
+        $routine->load(['days.exercises.exercise']);
         $users = User::where('role', 'user')->orderBy('name')->get();
         $selectedUser = $routine->user ?: $users->first();
         $mode = 'edit';
         $plan = $routine;
 
-        return view('fitapp.admin.rutinas-crear', compact('users', 'selectedUser', 'mode', 'plan'));
+        $exerciseCatalog = Exercise::where('is_active', true)->orderBy('name')->get();
+
+        return view('fitapp.admin.rutinas-crear', compact('users', 'selectedUser', 'mode', 'plan', 'exerciseCatalog'));
     }
 
     public function update(Request $request, WorkoutPlan $routine): RedirectResponse
@@ -125,6 +130,7 @@ class WorkoutController extends Controller
             'days.*.focus' => ['nullable', 'string', 'max:120'],
             'days.*.estimated_time' => ['nullable', 'string', 'max:80'],
             'days.*.exercises' => ['nullable', 'array'],
+            'days.*.exercises.*.exercise_id' => ['nullable', 'exists:exercises,id'],
             'days.*.exercises.*.name' => ['nullable', 'string', 'max:160'],
             'days.*.exercises.*.block_type' => ['nullable', 'string', 'max:80'],
             'days.*.exercises.*.sets' => ['nullable', 'string', 'max:40'],
@@ -154,6 +160,13 @@ class WorkoutController extends Controller
 
     private function storeDays(WorkoutPlan $plan, array $days): void
     {
+        $exerciseIds = collect($days)
+            ->flatMap(fn ($day) => collect($day['exercises'] ?? [])->pluck('exercise_id'))
+            ->filter()
+            ->unique()
+            ->values();
+        $catalog = Exercise::whereIn('id', $exerciseIds)->get()->keyBy('id');
+
         foreach ($days as $dayIndex => $dayData) {
             $day = $plan->days()->create([
                 'day_name' => $dayData['day_name'],
@@ -163,12 +176,18 @@ class WorkoutController extends Controller
             ]);
 
             foreach (($dayData['exercises'] ?? []) as $exerciseIndex => $exerciseData) {
-                if (blank($exerciseData['name'] ?? null)) {
+                $catalogExercise = filled($exerciseData['exercise_id'] ?? null)
+                    ? $catalog->get((int) $exerciseData['exercise_id'])
+                    : null;
+                $exerciseName = $catalogExercise?->name ?? ($exerciseData['name'] ?? null);
+
+                if (blank($exerciseName)) {
                     continue;
                 }
 
                 $day->exercises()->create([
-                    'name' => $exerciseData['name'],
+                    'exercise_id' => $catalogExercise?->id,
+                    'name' => $exerciseName,
                     'block_type' => $exerciseData['block_type'] ?? 'Individual',
                     'sets' => $exerciseData['sets'] ?? null,
                     'reps' => $exerciseData['reps'] ?? null,

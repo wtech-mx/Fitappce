@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
     'workout_plan_day_id',
+    'exercise_id',
     'name',
     'block_type',
     'sets',
@@ -23,5 +24,10 @@ class WorkoutPlanExercise extends Model
     public function day(): BelongsTo
     {
         return $this->belongsTo(WorkoutPlanDay::class, 'workout_plan_day_id');
+    }
+
+    public function exercise(): BelongsTo
+    {
+        return $this->belongsTo(Exercise::class);
     }
 }

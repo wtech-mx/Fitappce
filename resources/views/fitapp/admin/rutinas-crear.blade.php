@@ -136,7 +136,20 @@
                                     @for($exerciseIndex = 0; $exerciseIndex < $exerciseCount; $exerciseIndex++)
                                         @php $exercise = $exercises->get($exerciseIndex); @endphp
                                         <tr>
-                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][name]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.name", $exercise?->name) }}" class="form-control input-soft" placeholder="Hip Thrust"></td>
+                                            <td>
+                                                <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][exercise_id]" class="form-select input-soft">
+                                                    <option value="">Selecciona ejercicio</option>
+                                                    @foreach($exerciseCatalog as $catalogExercise)
+                                                        <option value="{{ $catalogExercise->id }}" @selected(old("days.$dayIndex.exercises.$exerciseIndex.exercise_id", $exercise?->exercise_id) == $catalogExercise->id)>
+                                                            {{ $catalogExercise->name }}{{ $catalogExercise->category ? ' - '.$catalogExercise->category : '' }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if($exercise && ! $exercise->exercise_id)
+                                                    <input type="hidden" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][name]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.name", $exercise->name) }}">
+                                                    <div class="admin-mini mt-1">Anterior: {{ $exercise->name }}</div>
+                                                @endif
+                                            </td>
                                             <td>
                                                 <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][block_type]" class="form-select input-soft">
                                                     @foreach(['Individual', 'Biserie', 'Circuito'] as $type)

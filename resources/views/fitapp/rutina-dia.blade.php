@@ -64,6 +64,7 @@
             @forelse($exercises as $exercise)
                 @php
                     $modalId = 'exerciseModal'.$exercise->id;
+                    $catalogExercise = $exercise->exercise;
                     $exerciseLine = collect([
                         $exercise->sets ? $exercise->sets.' series' : null,
                         $exercise->reps ? $exercise->reps.' reps' : null,
@@ -100,11 +101,11 @@
                             <i class="bi bi-chevron-right text-muted"></i>
                         </div>
 
-                        @if($exercise->notes || $exercise->tempo)
+                        @if($exercise->notes || $exercise->tempo || $catalogExercise?->purpose)
                             <div class="exercise-purpose">
                                 <div class="exercise-purpose-title">Indicacion</div>
                                 <div class="exercise-purpose-text">
-                                    {{ $exercise->notes ?: 'Tempo: '.$exercise->tempo }}
+                                    {{ $exercise->notes ?: ($catalogExercise?->purpose ?: 'Tempo: '.$exercise->tempo) }}
                                 </div>
                             </div>
                         @endif
@@ -131,6 +132,7 @@
     @foreach($exercises as $exercise)
         @php
             $modalId = 'exerciseModal'.$exercise->id;
+            $catalogExercise = $exercise->exercise;
         @endphp
 
         <div class="modal fade modal-fitapp" id="{{ $modalId }}" tabindex="-1" aria-hidden="true">
@@ -148,13 +150,11 @@
 
                     <div class="modal-body">
                         <div class="exercise-demo-box mb-3">
-                            <div>
-                                <i class="bi bi-play-circle-fill"></i>
-                                <div class="fw-bold mb-1">Demo del ejercicio</div>
-                                <div class="small text-muted">
-                                    Aqui podra ir el video, GIF o imagen que el coach agregue al catalogo de ejercicios.
-                                </div>
-                            </div>
+                            @include('fitapp.partials.exercise-demo', [
+                                'exercise' => $catalogExercise,
+                                'emptyTitle' => 'Demo del ejercicio',
+                                'emptyText' => 'Aqui podra ir el video, GIF o imagen que el coach agregue al catalogo de ejercicios.',
+                            ])
                         </div>
 
                         <div class="surface-card p-3 mb-3">
@@ -169,7 +169,13 @@
                                 @if($exercise->notes)
                                     <li>{{ $exercise->notes }}</li>
                                 @endif
-                                @if(! $exercise->block_type && ! $exercise->tempo && ! $exercise->notes)
+                                @if($catalogExercise?->coach_notes)
+                                    <li>{{ $catalogExercise->coach_notes }}</li>
+                                @endif
+                                @if($catalogExercise?->common_mistakes)
+                                    <li>Errores comunes: {{ $catalogExercise->common_mistakes }}</li>
+                                @endif
+                                @if(! $exercise->block_type && ! $exercise->tempo && ! $exercise->notes && ! $catalogExercise?->coach_notes)
                                     <li>Sigue el rango, descanso y tecnica indicados por tu coach.</li>
                                 @endif
                             </ul>
