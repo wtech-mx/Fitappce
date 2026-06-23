@@ -43,6 +43,7 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::get('/rutina', [ClientWorkoutController::class, 'index'])->name('rutina');
         Route::get('/rutina-dia/{day?}', [ClientWorkoutController::class, 'day'])->name('rutina-dia');
+        Route::put('/rutina-dia/{day}/progreso', [ClientWorkoutController::class, 'updateProgress'])->name('rutina-dia.progreso');
         Route::get('/nutricion-diaria', [ClientNutritionController::class, 'daily'])->name('nutricion');
 
         Route::get('/plan-alimentario', [ClientNutritionController::class, 'plan'])->name('plan');

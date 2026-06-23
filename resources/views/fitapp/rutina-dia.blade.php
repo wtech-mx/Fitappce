@@ -61,56 +61,98 @@
         </div>
 
         <div class="d-grid gap-3">
-            @forelse($exercises as $exercise)
-                @php
-                    $modalId = 'exerciseModal'.$exercise->id;
-                    $catalogExercise = $exercise->exercise;
-                    $exerciseLine = collect([
-                        $exercise->sets ? $exercise->sets.' series' : null,
-                        $exercise->reps ? $exercise->reps.' reps' : null,
-                        $exercise->rest ? 'descanso '.$exercise->rest : null,
-                    ])->filter()->join(' x ');
-                @endphp
-
-                <button type="button" class="exercise-card-btn" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
-                    <div class="exercise-card">
-                        <div class="exercise-card-head">
-                            <div class="d-flex gap-3 flex-grow-1">
-                                <div class="exercise-thumb">
-                                    <i class="bi bi-play-circle"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="exercise-title">{{ $exercise->name }}</div>
-                                    <div class="exercise-sub">{{ $exerciseLine ?: 'Indicaciones del coach' }}</div>
-
-                                    <div class="exercise-tags">
-                                        @if($exercise->block_type)
-                                            <span class="exercise-tag is-coach">
-                                                <i class="bi bi-ui-checks-grid"></i> {{ $exercise->block_type }}{{ $exercise->block_group ? ' '.$exercise->block_group : '' }}
-                                            </span>
-                                        @endif
-                                        @if($exercise->requires_evidence)
-                                            <span class="exercise-tag is-required">
-                                                <i class="bi bi-upload"></i> Evidencia requerida
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
+            @forelse($blocks as $block)
+                <section class="workout-exercise-block tone-{{ $block['tone'] }} {{ $block['type'] !== 'Individual' ? 'is-grouped' : '' }} {{ $block['is_completed'] ? 'is-completed' : '' }}">
+                    @if($block['type'] !== 'Individual')
+                        <div class="workout-block-head">
+                            <div>
+                                <span class="workout-block-kicker">{{ $block['type'] }} {{ $block['group'] }}</span>
+                                <div class="fw-bold">Realiza los ejercicios juntos antes de descansar</div>
                             </div>
-
-                            <i class="bi bi-chevron-right text-muted"></i>
+                            <span class="workout-block-count">{{ $block['exercises']->count() }} ejercicios</span>
                         </div>
+                    @endif
 
-                        @if($exercise->notes || $exercise->tempo || $catalogExercise?->purpose)
-                            <div class="exercise-purpose">
-                                <div class="exercise-purpose-title">Indicacion</div>
-                                <div class="exercise-purpose-text">
-                                    {{ $exercise->notes ?: ($catalogExercise?->purpose ? strip_tags($catalogExercise->purpose) : 'Tempo: '.$exercise->tempo) }}
+                    <div class="workout-block-exercises">
+                        @foreach($block['exercises'] as $exercise)
+                            @php
+                                $modalId = 'exerciseModal'.$exercise->id;
+                                $catalogExercise = $exercise->exercise;
+                                $exerciseLine = collect([
+                                    $exercise->sets ? $exercise->sets.' series' : null,
+                                    $exercise->reps ? $exercise->reps.' reps' : null,
+                                    $exercise->rest ? 'descanso '.$exercise->rest : null,
+                                ])->filter()->join(' x ');
+                            @endphp
+
+                            <button type="button" class="exercise-card-btn" data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+                                <div class="exercise-card">
+                                    <div class="exercise-card-head">
+                                        <div class="d-flex gap-3 flex-grow-1">
+                                            <div class="exercise-thumb"><i class="bi bi-play-circle"></i></div>
+                                            <div class="flex-grow-1">
+                                                <div class="exercise-title">{{ $exercise->name }}</div>
+                                                <div class="exercise-sub">{{ $exerciseLine ?: 'Indicaciones del coach' }}</div>
+                                                <div class="exercise-tags">
+                                                    <span class="exercise-tag is-coach"><i class="bi bi-ui-checks-grid"></i> {{ $exercise->block_type }}{{ $exercise->block_group ? ' '.$exercise->block_group : '' }}</span>
+                                                    @if($exercise->requires_evidence)
+                                                        <span class="exercise-tag is-required"><i class="bi bi-upload"></i> Evidencia requerida</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <i class="bi bi-chevron-right text-muted"></i>
+                                    </div>
+                                    @if($exercise->notes || $exercise->tempo || $catalogExercise?->purpose)
+                                        <div class="exercise-purpose">
+                                            <div class="exercise-purpose-title">Indicacion</div>
+                                            <div class="exercise-purpose-text">{{ $exercise->notes ?: ($catalogExercise?->purpose ? strip_tags($catalogExercise->purpose) : 'Tempo: '.$exercise->tempo) }}</div>
+                                        </div>
+                                    @endif
                                 </div>
-                            </div>
-                        @endif
+                            </button>
+                        @endforeach
                     </div>
-                </button>
+
+                    @if($block['total_sets'] > 0)
+                        <div class="set-progress-panel"
+                             data-progress-url="{{ route('fitapp.rutina-dia.progreso', $day) }}"
+                             data-progress-key="{{ $block['key'] }}"
+                             data-total-sets="{{ $block['total_sets'] }}"
+                             data-completed-sets="{{ $block['completed_sets'] }}"
+                             data-rest-seconds="{{ $block['rest_seconds'] }}"
+                             data-remaining-seconds="{{ $block['remaining_seconds'] }}">
+                            <div class="set-progress-head">
+                                <div>
+                                    <div class="fw-bold">Progreso de series</div>
+                                    <div class="mini-note set-progress-copy">{{ $block['completed_sets'] }} de {{ $block['total_sets'] }} completadas</div>
+                                </div>
+                                <span class="status-pill set-progress-status {{ $block['is_completed'] ? 'status-ok' : 'status-warn' }}">{{ $block['is_completed'] ? 'Completado' : 'En progreso' }}</span>
+                            </div>
+
+                            <div class="set-dots" aria-label="Series completadas">
+                                @for($set = 1; $set <= $block['total_sets']; $set++)
+                                    <span class="set-dot {{ $set <= $block['completed_sets'] ? 'is-done' : '' }}"><i class="bi {{ $set <= $block['completed_sets'] ? 'bi-check-lg' : 'bi-circle' }}"></i><small>{{ $set }}</small></span>
+                                @endfor
+                            </div>
+
+                            <div class="rest-countdown {{ $block['remaining_seconds'] > 0 ? 'is-active' : '' }}">
+                                <div class="rest-timer-ring" style="--timer-progress:0deg"><strong class="rest-timer-value">00:00</strong></div>
+                                <div><div class="fw-bold">Tiempo de descanso</div><div class="mini-note">La siguiente serie inicia cuando llegue a cero.</div></div>
+                            </div>
+
+                            <div class="set-progress-actions">
+                                <button type="button" class="btn btn-primary-custom mark-set-btn" {{ $block['is_completed'] ? 'disabled' : '' }}>
+                                    <i class="bi bi-check2-circle me-1"></i>
+                                    <span>{{ $block['is_completed'] ? 'Bloque completado' : 'Marcar serie '.($block['completed_sets'] + 1) }}</span>
+                                </button>
+                                <button type="button" class="btn btn-soft-custom undo-set-btn" {{ $block['completed_sets'] <= 0 ? 'disabled' : '' }} title="Deshacer ultima serie">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+                </section>
             @empty
                 <div class="coach-note-box">
                     <div class="fw-bold mb-2">Sin ejercicios capturados</div>
@@ -218,3 +260,122 @@
 @section('bottom_nav')
     @include('fitapp.partials.bottom-nav')
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const csrfToken = @json(csrf_token());
+    const timers = new WeakMap();
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainder = seconds % 60;
+        return String(minutes).padStart(2, '0') + ':' + String(remainder).padStart(2, '0');
+    }
+
+    function stopTimer(panel) {
+        if (timers.has(panel)) {
+            clearInterval(timers.get(panel));
+            timers.delete(panel);
+        }
+    }
+
+    function startTimer(panel, seconds) {
+        stopTimer(panel);
+        const countdown = panel.querySelector('.rest-countdown');
+        const value = panel.querySelector('.rest-timer-value');
+        const ring = panel.querySelector('.rest-timer-ring');
+        const total = Math.max(1, Number(panel.dataset.restSeconds || seconds));
+        let remaining = Math.max(0, Number(seconds));
+
+        if (remaining <= 0) {
+            countdown.classList.remove('is-active');
+            value.textContent = '00:00';
+            ring.style.setProperty('--timer-progress', '360deg');
+            return;
+        }
+
+        countdown.classList.add('is-active');
+        const tick = function () {
+            value.textContent = formatTime(remaining);
+            ring.style.setProperty('--timer-progress', ((1 - remaining / total) * 360) + 'deg');
+            if (remaining <= 0) {
+                stopTimer(panel);
+                countdown.classList.remove('is-active');
+                return;
+            }
+            remaining--;
+        };
+        tick();
+        timers.set(panel, setInterval(tick, 1000));
+    }
+
+    function renderProgress(panel, completedSets, totalSets, isCompleted) {
+        panel.dataset.completedSets = completedSets;
+        panel.querySelector('.set-progress-copy').textContent = completedSets + ' de ' + totalSets + ' completadas';
+        const status = panel.querySelector('.set-progress-status');
+        status.textContent = isCompleted ? 'Completado' : 'En progreso';
+        status.classList.toggle('status-ok', isCompleted);
+        status.classList.toggle('status-warn', !isCompleted);
+        panel.closest('.workout-exercise-block').classList.toggle('is-completed', isCompleted);
+
+        panel.querySelectorAll('.set-dot').forEach((dot, index) => {
+            const done = index < completedSets;
+            dot.classList.toggle('is-done', done);
+            dot.querySelector('i').className = 'bi ' + (done ? 'bi-check-lg' : 'bi-circle');
+        });
+
+        const markButton = panel.querySelector('.mark-set-btn');
+        const undoButton = panel.querySelector('.undo-set-btn');
+        markButton.disabled = isCompleted;
+        undoButton.disabled = completedSets <= 0;
+        markButton.querySelector('span').textContent = isCompleted ? 'Bloque completado' : 'Marcar serie ' + (completedSets + 1);
+    }
+
+    async function saveProgress(panel, completedSets) {
+        const previousSets = Number(panel.dataset.completedSets);
+        const totalSets = Number(panel.dataset.totalSets);
+        const buttons = panel.querySelectorAll('button');
+        buttons.forEach(button => button.disabled = true);
+
+        try {
+            const response = await fetch(panel.dataset.progressUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    progress_key: panel.dataset.progressKey,
+                    completed_sets: completedSets
+                })
+            });
+
+            if (!response.ok) throw new Error('No se pudo guardar el progreso.');
+            const data = await response.json();
+            renderProgress(panel, data.completed_sets, data.total_sets, data.is_completed);
+            startTimer(panel, data.rest_seconds);
+        } catch (error) {
+            window.alert(error.message);
+            renderProgress(panel, previousSets, totalSets, previousSets >= totalSets);
+        }
+    }
+
+    document.querySelectorAll('.set-progress-panel').forEach(panel => {
+        const completed = Number(panel.dataset.completedSets || 0);
+        const total = Number(panel.dataset.totalSets || 0);
+        renderProgress(panel, completed, total, completed >= total);
+        startTimer(panel, Number(panel.dataset.remainingSeconds || 0));
+
+        panel.querySelector('.mark-set-btn').addEventListener('click', function () {
+            saveProgress(panel, Math.min(total, Number(panel.dataset.completedSets) + 1));
+        });
+        panel.querySelector('.undo-set-btn').addEventListener('click', function () {
+            stopTimer(panel);
+            saveProgress(panel, Math.max(0, Number(panel.dataset.completedSets) - 1));
+        });
+    });
+});
+</script>
+@endpush

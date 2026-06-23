@@ -111,4 +111,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ClientAchievement::class);
     }
+
+    public function workoutSetProgress(): HasMany
+    {
+        return $this->hasMany(WorkoutSetProgress::class);
+    }
 }

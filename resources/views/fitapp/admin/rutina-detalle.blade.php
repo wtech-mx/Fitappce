@@ -51,6 +51,14 @@
                     @if($day->exercises->isEmpty())
                         <div class="admin-helper-note mb-0">Este dia no tiene ejercicios capturados.</div>
                     @else
+                        @php
+                            $groupToneMap = $day->exercises
+                                ->filter(fn ($item) => $item->block_group)
+                                ->map(fn ($item) => $item->block_type.'|'.$item->block_group)
+                                ->unique()
+                                ->values()
+                                ->mapWithKeys(fn ($key, $index) => [$key => ($index % 5) + 1]);
+                        @endphp
                         <div class="routine-table-wrap">
                             <table class="routine-table">
                                 <thead>
@@ -65,7 +73,11 @@
                                 </thead>
                                 <tbody>
                                     @foreach($day->exercises as $exercise)
-                                        <tr>
+                                        @php
+                                            $groupKey = $exercise->block_group ? $exercise->block_type.'|'.$exercise->block_group : null;
+                                            $groupTone = $groupKey ? $groupToneMap->get($groupKey) : null;
+                                        @endphp
+                                        <tr class="{{ $groupTone ? 'routine-admin-group tone-'.$groupTone : '' }}">
                                             <td><span class="routine-order compact">{{ $loop->iteration }}</span></td>
                                             <td>
                                                 <div class="fw-bold">{{ $exercise->name }}</div>
