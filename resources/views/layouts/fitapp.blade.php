@@ -11,7 +11,8 @@
     @endauth
     <title>@yield('title', 'FitApp')</title>
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
-    <link rel="icon" href="{{ asset('fitapp/img/pwa-icon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('fitapp/img/pwa-icon-192.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('fitapp/img/pwa-icon-192.png') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

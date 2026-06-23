@@ -1,10 +1,14 @@
-const STATIC_CACHE = 'fitapp-static-v1';
+const STATIC_CACHE = 'fitapp-static-v2';
 const PAGE_CACHE = 'fitapp-pages-v1';
 const MEDIA_CACHE = 'fitapp-media-v1';
 const PRECACHE = [
   '/fitapp/offline',
+  '/pwa-launch.html',
   '/fitapp/css/app.css',
-  '/fitapp/img/pwa-icon.svg',
+  '/fitapp/img/pwa-icon-192.png',
+  '/fitapp/img/pwa-icon-512.png',
+  '/fitapp/img/pwa-splash-mobile.png',
+  '/fitapp/img/pwa-splash-desktop.png',
   '/manifest.webmanifest'
 ];
 
@@ -73,7 +77,7 @@ self.addEventListener('fetch', event => {
       return;
     }
 
-    if (url.pathname.startsWith('/fitapp/css/') || url.pathname.startsWith('/fitapp/img/') || url.pathname === '/manifest.webmanifest') {
+    if (url.pathname.startsWith('/fitapp/css/') || url.pathname.startsWith('/fitapp/img/') || url.pathname === '/manifest.webmanifest' || url.pathname === '/pwa-launch.html') {
       event.respondWith(cacheFirst(request, STATIC_CACHE));
     }
     return;

@@ -2,18 +2,31 @@
   "name": "FitApp Coach",
   "short_name": "FitApp",
   "description": "Rutinas, nutricion y progreso con tu coach.",
-  "start_url": "/fitapp/dashboard",
+  "id": "/fitapp-pwa",
+  "start_url": "/pwa-launch.html",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#edf5f8",
-  "theme_color": "#2e91b8",
+  "background_color": "#17232d",
+  "theme_color": "#17232d",
   "lang": "es-MX",
   "icons": [
     {
-      "src": "/fitapp/img/pwa-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "src": "/fitapp/img/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/fitapp/img/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/fitapp/img/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
