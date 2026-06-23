@@ -1,6 +1,5 @@
-const STATIC_CACHE = 'fitapp-static-v2';
+const STATIC_CACHE = 'fitapp-static-v3';
 const PAGE_CACHE = 'fitapp-pages-v1';
-const MEDIA_CACHE = 'fitapp-media-v1';
 const PRECACHE = [
   '/fitapp/offline',
   '/pwa-launch.html',
@@ -20,14 +19,18 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
-      keys.filter(key => ![STATIC_CACHE, PAGE_CACHE, MEDIA_CACHE].includes(key)).map(key => caches.delete(key))
+      keys.filter(key => ![STATIC_CACHE, PAGE_CACHE].includes(key)).map(key => caches.delete(key))
     )).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('message', event => {
   if (event.data?.type === 'CLEAR_PRIVATE') {
-    event.waitUntil(Promise.all([caches.delete(PAGE_CACHE), caches.delete(MEDIA_CACHE)]));
+    event.waitUntil(Promise.all([
+      caches.delete(PAGE_CACHE),
+      caches.delete('fitapp-media-v1'),
+      caches.delete('fitapp-media-v2')
+    ]));
   }
 });
 
@@ -69,11 +72,6 @@ self.addEventListener('fetch', event => {
 
     if (request.mode === 'navigate' && isPrivateClientPage(url)) {
       event.respondWith(networkFirstPage(request));
-      return;
-    }
-
-    if (url.pathname.startsWith('/fitapp/media/exercises/')) {
-      event.respondWith(cacheFirst(request, MEDIA_CACHE));
       return;
     }
 

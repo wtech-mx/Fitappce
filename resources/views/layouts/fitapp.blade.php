@@ -135,7 +135,7 @@
         document.addEventListener('DOMContentLoaded', () => { updateStatus(false); sync(); });
 
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js?v=3', { updateViaCache: 'none' }).catch(() => {}));
         }
 
         document.addEventListener('submit', function (event) {

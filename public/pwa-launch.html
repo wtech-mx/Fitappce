@@ -53,6 +53,10 @@
 <body>
     <div class="launch-progress" role="progressbar" aria-label="Abriendo FitAppCE"></div>
     <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js?v=3', { updateViaCache: 'none' }).catch(function () {});
+        }
+
         window.setTimeout(function () {
             window.location.replace('/fitapp/rutina');
         }, 1600);

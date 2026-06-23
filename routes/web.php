@@ -7,6 +7,7 @@ use App\Http\Controllers\ClientNutritionController;
 use App\Http\Controllers\ClientWorkoutController;
 use App\Http\Controllers\ClientAchievementController;
 use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\ExerciseMediaController;
 use App\Http\Controllers\Admin\AchievementController;
 use App\Http\Controllers\Admin\ExerciseController;
 use App\Http\Controllers\Admin\NutritionController;
@@ -23,6 +24,7 @@ Route::redirect('/dashboard', '/fitapp/dashboard')->name('dashboard');
 
 Route::prefix('fitapp')->name('fitapp.')->group(function () {
     Route::view('/offline', 'fitapp.offline')->name('offline');
+    Route::get('/ejercicios/{exercise}/demo', ExerciseMediaController::class)->name('exercise-demo');
     Route::view('/splash', 'fitapp.splash')->name('splash');
     Route::get('/auth', [AuthController::class, 'show'])->name('auth');
     Route::post('/login', [AuthController::class, 'login'])->name('login');

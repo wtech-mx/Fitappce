@@ -10,7 +10,7 @@
     @if($isImage)
         <img src="{{ $demoUrl }}" alt="{{ $exercise->name }}" class="exercise-demo-media">
     @elseif($exercise->demo_source === 'upload')
-        <video src="{{ $demoUrl }}" controls class="exercise-demo-media"></video>
+        <video src="{{ $demoUrl }}" controls preload="metadata" playsinline class="exercise-demo-media"></video>
     @else
         <div>
             <i class="bi bi-box-arrow-up-right"></i>

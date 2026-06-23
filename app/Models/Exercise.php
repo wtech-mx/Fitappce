@@ -48,7 +48,17 @@ class Exercise extends Model
             return $this->demo_url;
         }
 
-        return $this->demo_path ? asset($this->demo_path) : null;
+        if (! $this->demo_path) {
+            return null;
+        }
+
+        $absolutePath = public_path($this->demo_path);
+        $version = is_file($absolutePath) ? filemtime($absolutePath) : null;
+
+        return route('fitapp.exercise-demo', [
+            'exercise' => $this,
+            'v' => $version,
+        ]);
     }
 
     public function demoEmbedUrl(): ?string
