@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ClientNutritionController;
 use App\Http\Controllers\ClientWorkoutController;
 use App\Http\Controllers\ClientAchievementController;
+use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\Admin\AchievementController;
 use App\Http\Controllers\Admin\ExerciseController;
 use App\Http\Controllers\Admin\NutritionController;
@@ -39,7 +40,7 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
     });
 
     Route::middleware(['auth', 'role:user,admin'])->group(function () {
-        Route::view('/dashboard', 'fitapp.dashboard')->name('dashboard');
+        Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::get('/rutina', [ClientWorkoutController::class, 'index'])->name('rutina');
         Route::get('/rutina-dia/{day?}', [ClientWorkoutController::class, 'day'])->name('rutina-dia');
         Route::get('/nutricion-diaria', [ClientNutritionController::class, 'daily'])->name('nutricion');
