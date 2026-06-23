@@ -37,7 +37,7 @@
 
                 <div class="routine-purpose-box mb-3">
                     <div class="admin-mini mb-1">Descripcion</div>
-                    <div class="fw-bold">{{ $exercise->description ?: 'Sin descripcion.' }}</div>
+                    <div class="exercise-rich-content">{!! $exercise->description ?: '<p>Sin descripcion.</p>' !!}</div>
                 </div>
 
                 <div class="row g-3">
@@ -64,13 +64,13 @@
             </div>
             <div class="admin-form-card-body">
                 <div class="fw-bold mb-2">Para que sirve</div>
-                <div class="admin-text-block mb-3">{{ $exercise->purpose ?: 'Sin texto capturado.' }}</div>
+                <div class="admin-text-block exercise-rich-content mb-3">{!! $exercise->purpose ?: '<p>Sin texto capturado.</p>' !!}</div>
 
                 <div class="fw-bold mb-2">Notas del coach</div>
-                <div class="admin-text-block mb-3">{{ $exercise->coach_notes ?: 'Sin notas capturadas.' }}</div>
+                <div class="admin-text-block exercise-rich-content mb-3">{!! $exercise->coach_notes ?: '<p>Sin notas capturadas.</p>' !!}</div>
 
                 <div class="fw-bold mb-2">Errores comunes</div>
-                <div class="admin-text-block">{{ $exercise->common_mistakes ?: 'Sin errores capturados.' }}</div>
+                <div class="admin-text-block exercise-rich-content">{!! $exercise->common_mistakes ?: '<p>Sin errores capturados.</p>' !!}</div>
             </div>
         </div>
     </div>

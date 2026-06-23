@@ -105,7 +105,7 @@
                             <div class="exercise-purpose">
                                 <div class="exercise-purpose-title">Indicacion</div>
                                 <div class="exercise-purpose-text">
-                                    {{ $exercise->notes ?: ($catalogExercise?->purpose ?: 'Tempo: '.$exercise->tempo) }}
+                                    {{ $exercise->notes ?: ($catalogExercise?->purpose ? strip_tags($catalogExercise->purpose) : 'Tempo: '.$exercise->tempo) }}
                                 </div>
                             </div>
                         @endif
@@ -169,17 +169,28 @@
                                 @if($exercise->notes)
                                     <li>{{ $exercise->notes }}</li>
                                 @endif
-                                @if($catalogExercise?->coach_notes)
-                                    <li>{{ $catalogExercise->coach_notes }}</li>
-                                @endif
-                                @if($catalogExercise?->common_mistakes)
-                                    <li>Errores comunes: {{ $catalogExercise->common_mistakes }}</li>
-                                @endif
                                 @if(! $exercise->block_type && ! $exercise->tempo && ! $exercise->notes && ! $catalogExercise?->coach_notes)
                                     <li>Sigue el rango, descanso y tecnica indicados por tu coach.</li>
                                 @endif
                             </ul>
                         </div>
+
+                        @if($catalogExercise?->purpose || $catalogExercise?->coach_notes || $catalogExercise?->common_mistakes)
+                            <div class="surface-card p-3 mb-3 exercise-rich-content">
+                                @if($catalogExercise?->purpose)
+                                    <div class="fw-bold mb-2">Para que sirve</div>
+                                    {!! $catalogExercise->purpose !!}
+                                @endif
+                                @if($catalogExercise?->coach_notes)
+                                    <div class="fw-bold mt-3 mb-2">Indicaciones del coach</div>
+                                    {!! $catalogExercise->coach_notes !!}
+                                @endif
+                                @if($catalogExercise?->common_mistakes)
+                                    <div class="fw-bold mt-3 mb-2">Errores comunes</div>
+                                    {!! $catalogExercise->common_mistakes !!}
+                                @endif
+                            </div>
+                        @endif
 
                         @if($exercise->requires_evidence)
                             <div class="exercise-evidence-box">

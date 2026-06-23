@@ -4092,6 +4092,31 @@ a{
     color:var(--fa-muted);
 }
 
+.exercise-rich-content{
+    color:#52606a;
+    line-height:1.65;
+}
+
+.exercise-rich-content > :last-child{
+    margin-bottom:0;
+}
+
+.exercise-rich-content ul,
+.exercise-rich-content ol{
+    padding-left:20px;
+}
+
+.exercise-rich-content table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.exercise-rich-content th,
+.exercise-rich-content td{
+    border:1px solid var(--fa-border);
+    padding:8px;
+}
+
 @media (max-width: 991px){
     .achievement-unlock-form{
         grid-template-columns:1fr;

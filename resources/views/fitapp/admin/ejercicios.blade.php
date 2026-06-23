@@ -124,7 +124,7 @@
                                 </div>
 
                                 <div class="admin-card-text">
-                                    {{ $exercise->description ?: 'Sin descripcion capturada.' }}
+                                    {{ $exercise->description ? str(strip_tags($exercise->description))->limit(170) : 'Sin descripcion capturada.' }}
                                 </div>
 
                                 <div class="admin-card-actions">

@@ -49,6 +49,7 @@ class ExerciseController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validatedExercise($request);
+        $validated = $this->sanitizeRichTextFields($validated);
         $validated['demo_path'] = $validated['demo_source'] === 'upload' ? $this->storeDemo($request) : null;
         $validated['demo_url'] = $validated['demo_source'] === 'url' ? $validated['demo_url'] : null;
         $validated += $this->booleanPayload($request);
@@ -77,6 +78,7 @@ class ExerciseController extends Controller
     public function update(Request $request, Exercise $exercise): RedirectResponse
     {
         $validated = $this->validatedExercise($request);
+        $validated = $this->sanitizeRichTextFields($validated);
 
         if ($validated['demo_source'] === 'upload' && $demoPath = $this->storeDemo($request)) {
             $validated['demo_path'] = $demoPath;
@@ -124,6 +126,26 @@ class ExerciseController extends Controller
             'is_featured' => $request->boolean('is_featured'),
             'is_active' => $request->boolean('is_active'),
         ];
+    }
+
+    private function sanitizeRichTextFields(array $validated): array
+    {
+        foreach (['description', 'purpose', 'coach_notes', 'common_mistakes'] as $field) {
+            if (blank($validated[$field] ?? null)) {
+                continue;
+            }
+
+            $value = strip_tags(
+                $validated[$field],
+                '<p><br><strong><b><em><i><u><ul><ol><li><a><h2><h3><h4><blockquote><table><thead><tbody><tr><th><td>'
+            );
+            $value = preg_replace('/\s+on\w+\s*=\s*(["\']).*?\1/iu', '', $value);
+            $value = preg_replace('/(href|src)\s*=\s*(["\'])\s*javascript:.*?\2/iu', '$1="#"', $value);
+
+            $validated[$field] = $value;
+        }
+
+        return $validated;
     }
 
     private function storeDemo(Request $request): ?string

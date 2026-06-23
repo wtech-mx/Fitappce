@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-bold">Descripcion breve</label>
-                            <textarea name="description" class="form-control input-soft py-3" rows="3">{{ old('description', $exercise?->description) }}</textarea>
+                            <textarea name="description" class="form-control input-soft py-3 tinymce-editor" rows="3">{{ old('description', $exercise?->description) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -100,15 +100,15 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <label class="form-label fw-bold">Para que sirve</label>
-                            <textarea name="purpose" class="form-control input-soft py-3" rows="3">{{ old('purpose', $exercise?->purpose) }}</textarea>
+                            <textarea name="purpose" class="form-control input-soft py-3 tinymce-editor" rows="3">{{ old('purpose', $exercise?->purpose) }}</textarea>
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-bold">Indicaciones del coach</label>
-                            <textarea name="coach_notes" class="form-control input-soft py-3" rows="4">{{ old('coach_notes', $exercise?->coach_notes) }}</textarea>
+                            <textarea name="coach_notes" class="form-control input-soft py-3 tinymce-editor" rows="4">{{ old('coach_notes', $exercise?->coach_notes) }}</textarea>
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-bold">Errores comunes</label>
-                            <textarea name="common_mistakes" class="form-control input-soft py-3" rows="4">{{ old('common_mistakes', $exercise?->common_mistakes) }}</textarea>
+                            <textarea name="common_mistakes" class="form-control input-soft py-3 tinymce-editor" rows="4">{{ old('common_mistakes', $exercise?->common_mistakes) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -183,3 +183,31 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof tinymce === 'undefined') {
+        return;
+    }
+
+    tinymce.init({
+        selector: '.tinymce-editor',
+        license_key: 'gpl',
+        height: 260,
+        menubar: false,
+        branding: false,
+        promotion: false,
+        plugins: 'autoresize lists link table code',
+        toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link table | removeformat | code',
+        content_style: 'body { font-family: Inter, Arial, sans-serif; font-size: 14px; color: #24333d; }',
+        setup: function (editor) {
+            editor.on('change', function () {
+                editor.save();
+            });
+        }
+    });
+});
+</script>
+@endpush
