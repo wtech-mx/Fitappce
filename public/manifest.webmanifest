@@ -1,0 +1,19 @@
+{
+  "name": "FitApp Coach",
+  "short_name": "FitApp",
+  "description": "Rutinas, nutricion y progreso con tu coach.",
+  "start_url": "/fitapp/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#edf5f8",
+  "theme_color": "#2e91b8",
+  "lang": "es-MX",
+  "icons": [
+    {
+      "src": "/fitapp/img/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

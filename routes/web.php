@@ -22,6 +22,7 @@ Route::redirect('/register', '/fitapp/auth')->name('register');
 Route::redirect('/dashboard', '/fitapp/dashboard')->name('dashboard');
 
 Route::prefix('fitapp')->name('fitapp.')->group(function () {
+    Route::view('/offline', 'fitapp.offline')->name('offline');
     Route::view('/splash', 'fitapp.splash')->name('splash');
     Route::get('/auth', [AuthController::class, 'show'])->name('auth');
     Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -40,6 +41,7 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
     });
 
     Route::middleware(['auth', 'role:user,admin'])->group(function () {
+        Route::get('/sync-context', [ClientWorkoutController::class, 'syncContext'])->name('sync-context');
         Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
         Route::get('/rutina', [ClientWorkoutController::class, 'index'])->name('rutina');
         Route::get('/rutina-dia/{day?}', [ClientWorkoutController::class, 'day'])->name('rutina-dia');

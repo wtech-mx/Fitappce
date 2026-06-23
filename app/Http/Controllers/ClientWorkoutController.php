@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WorkoutPlanDay;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -11,6 +12,15 @@ use Illuminate\View\View;
 
 class ClientWorkoutController extends Controller
 {
+    public function syncContext(Request $request): JsonResponse
+    {
+        return response()->json([
+            'user_id' => $request->user()->id,
+            'csrf_token' => csrf_token(),
+            'server_time' => now()->toIso8601String(),
+        ]);
+    }
+
     public function index(Request $request): View
     {
         $activePlan = $this->activePlan($request);
@@ -59,30 +69,50 @@ class ClientWorkoutController extends Controller
         $validated = $request->validate([
             'progress_key' => ['required', 'string', 'max:80'],
             'completed_sets' => ['required', 'integer', 'min:0', 'max:100'],
+            'progress_date' => ['nullable', 'date'],
+            'rest_started_at' => ['nullable', 'date'],
+            'performed_at' => ['nullable', 'date'],
         ]);
         $block = $this->buildBlocks($day, collect())->firstWhere('key', $validated['progress_key']);
 
         abort_unless($block, 422, 'Bloque de rutina no valido.');
 
+        $today = now('America/Mexico_City')->startOfDay();
+        $progressDate = isset($validated['progress_date'])
+            ? Carbon::parse($validated['progress_date'], 'America/Mexico_City')->startOfDay()
+            : $today->copy();
+
+        abort_if($progressDate->isAfter($today) || $progressDate->lt($today->copy()->subDays(30)), 422, 'La fecha del progreso no es valida.');
+
         $completedSets = min((int) $validated['completed_sets'], $block['total_sets']);
         $progress = $request->user()->workoutSetProgress()->firstOrNew([
             'workout_plan_day_id' => $day->id,
             'progress_key' => $block['key'],
-            'progress_date' => now('America/Mexico_City')->toDateString(),
+            'progress_date' => $progressDate->toDateString(),
         ]);
         $previousSets = (int) ($progress->completed_sets ?? 0);
+        $performedAt = isset($validated['performed_at'])
+            ? Carbon::parse($validated['performed_at'])->min(now())
+            : now();
         $progress->completed_sets = $completedSets;
-        $progress->completed_at = $completedSets >= $block['total_sets'] ? now() : null;
+        $progress->completed_at = $completedSets >= $block['total_sets'] ? $performedAt : null;
+        $restStartedAt = isset($validated['rest_started_at'])
+            ? Carbon::parse($validated['rest_started_at'])->min(now())
+            : now();
         $progress->rest_started_at = $completedSets > $previousSets && $completedSets < $block['total_sets']
-            ? now()
+            ? $restStartedAt
             : null;
         $progress->save();
+
+        $remainingRest = $progress->rest_started_at
+            ? max(0, $block['rest_seconds'] - $progress->rest_started_at->diffInSeconds(now()))
+            : 0;
 
         return response()->json([
             'completed_sets' => $completedSets,
             'total_sets' => $block['total_sets'],
             'is_completed' => $completedSets >= $block['total_sets'],
-            'rest_seconds' => $progress->rest_started_at ? $block['rest_seconds'] : 0,
+            'rest_seconds' => $remainingRest,
         ]);
     }
 

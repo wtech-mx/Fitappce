@@ -265,6 +265,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const csrfToken = @json(csrf_token());
+    const progressDate = @json(now('America/Mexico_City')->toDateString());
     const timers = new WeakMap();
 
     function formatTime(seconds) {
@@ -335,8 +336,29 @@ document.addEventListener('DOMContentLoaded', function () {
     async function saveProgress(panel, completedSets) {
         const previousSets = Number(panel.dataset.completedSets);
         const totalSets = Number(panel.dataset.totalSets);
+        const isCompleted = completedSets >= totalSets;
+        const actionTime = new Date().toISOString();
+        const payload = {
+            progress_key: panel.dataset.progressKey,
+            completed_sets: completedSets,
+            progress_date: progressDate,
+            rest_started_at: completedSets > previousSets && !isCompleted ? actionTime : null,
+            performed_at: actionTime
+        };
         const buttons = panel.querySelectorAll('button');
         buttons.forEach(button => button.disabled = true);
+
+        renderProgress(panel, completedSets, totalSets, isCompleted);
+        startTimer(panel, completedSets > previousSets && !isCompleted ? Number(panel.dataset.restSeconds) : 0);
+
+        if (!navigator.onLine) {
+            window.FitappOffline?.queueWorkout({
+                url: panel.dataset.progressUrl,
+                progress_key: panel.dataset.progressKey,
+                payload: payload
+            });
+            return;
+        }
 
         try {
             const response = await fetch(panel.dataset.progressUrl, {
@@ -346,10 +368,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify({
-                    progress_key: panel.dataset.progressKey,
-                    completed_sets: completedSets
-                })
+                credentials: 'same-origin',
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) throw new Error('No se pudo guardar el progreso.');
@@ -357,8 +377,11 @@ document.addEventListener('DOMContentLoaded', function () {
             renderProgress(panel, data.completed_sets, data.total_sets, data.is_completed);
             startTimer(panel, data.rest_seconds);
         } catch (error) {
-            window.alert(error.message);
-            renderProgress(panel, previousSets, totalSets, previousSets >= totalSets);
+            window.FitappOffline?.queueWorkout({
+                url: panel.dataset.progressUrl,
+                progress_key: panel.dataset.progressKey,
+                payload: payload
+            });
         }
     }
 
