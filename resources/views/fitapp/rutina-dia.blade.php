@@ -86,7 +86,7 @@
                                     <div class="exercise-tags">
                                         @if($exercise->block_type)
                                             <span class="exercise-tag is-coach">
-                                                <i class="bi bi-ui-checks-grid"></i> {{ $exercise->block_type }}
+                                                <i class="bi bi-ui-checks-grid"></i> {{ $exercise->block_type }}{{ $exercise->block_group ? ' '.$exercise->block_group : '' }}
                                             </span>
                                         @endif
                                         @if($exercise->requires_evidence)

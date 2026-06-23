@@ -71,7 +71,12 @@
                                                 <div class="fw-bold">{{ $exercise->name }}</div>
                                                 <div class="admin-mini">{{ $exercise->notes ?: 'Sin notas.' }}</div>
                                             </td>
-                                            <td><span class="admin-tag {{ $exercise->block_type === 'Biserie' ? 'yellow' : '' }}">{{ $exercise->block_type }}</span></td>
+                                            <td>
+                                                <span class="admin-tag {{ $exercise->block_type === 'Biserie' ? 'yellow' : ($exercise->block_type === 'Circuito' ? 'blue' : '') }}">{{ $exercise->block_type }}</span>
+                                                @if($exercise->block_group)
+                                                    <div class="admin-mini mt-1">Grupo {{ $exercise->block_group }}</div>
+                                                @endif
+                                            </td>
                                             <td>{{ trim(($exercise->sets ?: '-').' x '.($exercise->reps ?: '-')) }}</td>
                                             <td>{{ $exercise->rest ?: '-' }}</td>
                                             <td>

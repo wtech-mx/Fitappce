@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'exercise_id',
     'name',
     'block_type',
+    'block_group',
     'sets',
     'reps',
     'rest',

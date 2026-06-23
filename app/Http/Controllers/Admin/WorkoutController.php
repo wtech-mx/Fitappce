@@ -133,6 +133,7 @@ class WorkoutController extends Controller
             'days.*.exercises.*.exercise_id' => ['nullable', 'exists:exercises,id'],
             'days.*.exercises.*.name' => ['nullable', 'string', 'max:160'],
             'days.*.exercises.*.block_type' => ['nullable', 'string', 'max:80'],
+            'days.*.exercises.*.block_group' => ['nullable', 'string', 'max:20'],
             'days.*.exercises.*.sets' => ['nullable', 'string', 'max:40'],
             'days.*.exercises.*.reps' => ['nullable', 'string', 'max:80'],
             'days.*.exercises.*.rest' => ['nullable', 'string', 'max:80'],
@@ -168,10 +169,11 @@ class WorkoutController extends Controller
         $catalog = Exercise::whereIn('id', $exerciseIds)->get()->keyBy('id');
 
         foreach ($days as $dayIndex => $dayData) {
+            $estimatedTime = $this->estimatedTime($dayData['exercises'] ?? []);
             $day = $plan->days()->create([
                 'day_name' => $dayData['day_name'],
                 'focus' => $dayData['focus'] ?? null,
-                'estimated_time' => $dayData['estimated_time'] ?? null,
+                'estimated_time' => $estimatedTime ?: ($dayData['estimated_time'] ?? null),
                 'sort_order' => $dayIndex + 1,
             ]);
 
@@ -189,6 +191,9 @@ class WorkoutController extends Controller
                     'exercise_id' => $catalogExercise?->id,
                     'name' => $exerciseName,
                     'block_type' => $exerciseData['block_type'] ?? 'Individual',
+                    'block_group' => ($exerciseData['block_type'] ?? 'Individual') === 'Individual'
+                        ? null
+                        : ($exerciseData['block_group'] ?? null),
                     'sets' => $exerciseData['sets'] ?? null,
                     'reps' => $exerciseData['reps'] ?? null,
                     'rest' => $exerciseData['rest'] ?? null,
@@ -199,5 +204,82 @@ class WorkoutController extends Controller
                 ]);
             }
         }
+    }
+
+    private function estimatedTime(array $exercises): ?string
+    {
+        $totalSeconds = 0.0;
+        $groups = [];
+
+        foreach ($exercises as $index => $exercise) {
+            if (blank($exercise['exercise_id'] ?? null) && blank($exercise['name'] ?? null)) {
+                continue;
+            }
+
+            $sets = $this->firstNumber($exercise['sets'] ?? null);
+            $reps = $this->averageRange($exercise['reps'] ?? null);
+
+            if ($sets <= 0 || $reps <= 0) {
+                continue;
+            }
+            $restSeconds = $this->restSeconds($exercise['rest'] ?? null);
+            $workSeconds = $sets * $reps * 40;
+            $type = $exercise['block_type'] ?? 'Individual';
+            $group = $exercise['block_group'] ?? null;
+
+            if ($type === 'Individual' || blank($group)) {
+                $totalSeconds += $workSeconds + (max(0, $sets - 1) * $restSeconds);
+                continue;
+            }
+
+            $key = $type.'|'.$group;
+            $groups[$key] ??= ['work' => 0.0, 'sets' => 0.0, 'rest' => 0.0, 'order' => $index];
+            $groups[$key]['work'] += $workSeconds;
+            $groups[$key]['sets'] = max($groups[$key]['sets'], $sets);
+
+            if ($groups[$key]['rest'] <= 0 && $restSeconds > 0) {
+                $groups[$key]['rest'] = $restSeconds;
+            }
+        }
+
+        foreach ($groups as $group) {
+            $totalSeconds += $group['work'] + (max(0, $group['sets'] - 1) * $group['rest']);
+        }
+
+        if ($totalSeconds <= 0) {
+            return null;
+        }
+
+        $minutes = (int) ceil($totalSeconds / 60);
+
+        return $minutes >= 60
+            ? intdiv($minutes, 60).' h '.str_pad((string) ($minutes % 60), 2, '0', STR_PAD_LEFT).' min'
+            : $minutes.' min';
+    }
+
+    private function firstNumber(?string $value): float
+    {
+        preg_match('/\d+(?:[.,]\d+)?/', (string) $value, $match);
+
+        return isset($match[0]) ? (float) str_replace(',', '.', $match[0]) : 0.0;
+    }
+
+    private function averageRange(?string $value): float
+    {
+        preg_match_all('/\d+(?:[.,]\d+)?/', (string) $value, $matches);
+        $numbers = collect($matches[0] ?? [])->map(fn ($number) => (float) str_replace(',', '.', $number));
+
+        if ($numbers->count() >= 2 && preg_match('/[-–]|\s+a\s+/i', (string) $value)) {
+            return ($numbers[0] + $numbers[1]) / 2;
+        }
+
+        return (float) ($numbers->first() ?? 0);
+    }
+
+    private function restSeconds(?string $value): float
+    {
+        $seconds = $this->firstNumber($value);
+
+        return preg_match('/min/i', (string) $value) ? $seconds * 60 : $seconds;
     }
 }

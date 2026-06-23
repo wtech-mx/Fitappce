@@ -2,11 +2,19 @@
 
 @section('title', ($mode === 'edit' ? 'Editar' : 'Crear').' rutina | FitCoach Admin')
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
+@endpush
+
 @section('content')
 @php
     $planDays = $plan?->days?->values() ?? collect();
     $defaultDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves'];
     $dayCount = max(4, $planDays->count());
+    $blockGroups = [
+        'B1' => 'Biserie 1', 'B2' => 'Biserie 2', 'B3' => 'Biserie 3', 'B4' => 'Biserie 4', 'B5' => 'Biserie 5',
+        'C1' => 'Circuito 1', 'C2' => 'Circuito 2', 'C3' => 'Circuito 3', 'C4' => 'Circuito 4', 'C5' => 'Circuito 5',
+    ];
 @endphp
 
 <div class="admin-topbar">
@@ -99,7 +107,7 @@
                     $exercises = $day?->exercises?->values() ?? collect();
                     $exerciseCount = max(5, $exercises->count());
                 @endphp
-                <div class="admin-form-card">
+                <div class="admin-form-card routine-day-builder" data-day-index="{{ $dayIndex }}">
                     <div class="admin-form-card-head">
                         <h2 class="admin-panel-title mb-1">Dia {{ $dayIndex + 1 }}</h2>
                         <div class="admin-mini">Captura ejercicios individuales, biseries o circuitos.</div>
@@ -116,7 +124,8 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-bold">Tiempo estimado</label>
-                                <input type="text" name="days[{{ $dayIndex }}][estimated_time]" value="{{ old("days.$dayIndex.estimated_time", $day?->estimated_time) }}" class="form-control input-soft" placeholder="60 min">
+                                <input type="text" name="days[{{ $dayIndex }}][estimated_time]" value="{{ old("days.$dayIndex.estimated_time", $day?->estimated_time) }}" class="form-control input-soft estimated-time-input" placeholder="Se calcula automaticamente" readonly>
+                                <div class="admin-mini mt-1">Calculado con 40 segundos por repeticion y descanso entre series.</div>
                             </div>
                         </div>
 
@@ -126,6 +135,7 @@
                                     <tr>
                                         <th>Ejercicio</th>
                                         <th>Tipo</th>
+                                        <th>Grupo</th>
                                         <th>Series</th>
                                         <th>Reps</th>
                                         <th>Descanso</th>
@@ -135,9 +145,9 @@
                                 <tbody>
                                     @for($exerciseIndex = 0; $exerciseIndex < $exerciseCount; $exerciseIndex++)
                                         @php $exercise = $exercises->get($exerciseIndex); @endphp
-                                        <tr>
+                                        <tr class="routine-exercise-input-row" data-exercise-index="{{ $exerciseIndex }}">
                                             <td>
-                                                <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][exercise_id]" class="form-select input-soft">
+                                                <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][exercise_id]" class="form-select input-soft exercise-select">
                                                     <option value="">Selecciona ejercicio</option>
                                                     @foreach($exerciseCatalog as $catalogExercise)
                                                         <option value="{{ $catalogExercise->id }}" @selected(old("days.$dayIndex.exercises.$exerciseIndex.exercise_id", $exercise?->exercise_id) == $catalogExercise->id)>
@@ -151,21 +161,29 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][block_type]" class="form-select input-soft">
+                                                <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][block_type]" class="form-select input-soft block-type-select">
                                                     @foreach(['Individual', 'Biserie', 'Circuito'] as $type)
                                                         <option value="{{ $type }}" @selected(old("days.$dayIndex.exercises.$exerciseIndex.block_type", $exercise?->block_type ?? 'Individual') === $type)>{{ $type }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][sets]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.sets", $exercise?->sets) }}" class="form-control input-soft" placeholder="4"></td>
-                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][reps]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.reps", $exercise?->reps) }}" class="form-control input-soft" placeholder="10-12"></td>
-                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][rest]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.rest", $exercise?->rest) }}" class="form-control input-soft" placeholder="90 seg"></td>
+                                            <td>
+                                                <select name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][block_group]" class="form-select input-soft block-group-select" data-current="{{ old("days.$dayIndex.exercises.$exerciseIndex.block_group", $exercise?->block_group) }}">
+                                                    <option value="">Sin grupo</option>
+                                                    @foreach($blockGroups as $groupValue => $groupLabel)
+                                                        <option value="{{ $groupValue }}" @selected(old("days.$dayIndex.exercises.$exerciseIndex.block_group", $exercise?->block_group) === $groupValue)>{{ $groupLabel }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][sets]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.sets", $exercise?->sets) }}" class="form-control input-soft sets-input" placeholder="4"></td>
+                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][reps]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.reps", $exercise?->reps) }}" class="form-control input-soft reps-input" placeholder="10-12"></td>
+                                            <td><input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][rest]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.rest", $exercise?->rest) }}" class="form-control input-soft rest-input" placeholder="90 seg"></td>
                                             <td class="text-center">
                                                 <input type="checkbox" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][requires_evidence]" value="1" @checked(old("days.$dayIndex.exercises.$exerciseIndex.requires_evidence", $exercise?->requires_evidence))>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <input type="text" name="days[{{ $dayIndex }}][exercises][{{ $exerciseIndex }}][notes]" value="{{ old("days.$dayIndex.exercises.$exerciseIndex.notes", $exercise?->notes) }}" class="form-control input-soft" placeholder="Indicaciones tecnicas o tempo">
                                             </td>
                                         </tr>
@@ -193,3 +211,178 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const GROUPS = {
+        Biserie: ['B1', 'B2', 'B3', 'B4', 'B5'],
+        Circuito: ['C1', 'C2', 'C3', 'C4', 'C5']
+    };
+
+    $('.exercise-select').select2({
+        width: '100%',
+        placeholder: 'Selecciona ejercicio',
+        allowClear: true
+    });
+
+    function firstNumber(value) {
+        const match = String(value || '').replace(',', '.').match(/\d+(?:\.\d+)?/);
+        return match ? Number(match[0]) : 0;
+    }
+
+    function averageRange(value) {
+        const text = String(value || '').replace(',', '.');
+        const values = (text.match(/\d+(?:\.\d+)?/g) || []).map(Number);
+        if (values.length >= 2 && (/[-–]/.test(text) || /\s+a\s+/i.test(text))) {
+            return (values[0] + values[1]) / 2;
+        }
+        return values[0] || 0;
+    }
+
+    function restSeconds(value) {
+        const number = firstNumber(value);
+        return /min/i.test(String(value || '')) ? number * 60 : number;
+    }
+
+    function selectedExerciseName(row) {
+        const select = row.querySelector('.exercise-select');
+        if (!select || !select.value) return '';
+        return select.options[select.selectedIndex]?.text.trim().split(' - ')[0] || '';
+    }
+
+    function refreshGroups(day) {
+        const rows = [...day.querySelectorAll('.routine-exercise-input-row')];
+        const members = {};
+
+        rows.forEach(row => {
+            const group = row.querySelector('.block-group-select').value;
+            const name = selectedExerciseName(row);
+            if (group && name) {
+                members[group] = members[group] || [];
+                members[group].push(name);
+            }
+        });
+
+        rows.forEach(row => {
+            const type = row.querySelector('.block-type-select').value;
+            const groupSelect = row.querySelector('.block-group-select');
+            const current = groupSelect.value || groupSelect.dataset.current || '';
+            const allowed = GROUPS[type] || [];
+
+            groupSelect.innerHTML = '<option value="">Sin grupo</option>';
+            allowed.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group;
+                const number = group.slice(1);
+                const names = members[group]?.length ? ' - ' + members[group].join(' + ') : '';
+                option.textContent = type + ' ' + number + names;
+                option.selected = current === group;
+                groupSelect.appendChild(option);
+            });
+
+            groupSelect.disabled = type === 'Individual';
+            if (type === 'Individual') groupSelect.value = '';
+            groupSelect.dataset.current = groupSelect.value;
+        });
+
+        refreshRestInputs(day);
+    }
+
+    function refreshRestInputs(day) {
+        const rows = [...day.querySelectorAll('.routine-exercise-input-row')];
+        rows.forEach(row => {
+            const input = row.querySelector('.rest-input');
+            input.disabled = false;
+            input.placeholder = '90 seg';
+        });
+
+        const grouped = {};
+        rows.forEach(row => {
+            const type = row.querySelector('.block-type-select').value;
+            const group = row.querySelector('.block-group-select').value;
+            if (type !== 'Individual' && group) {
+                grouped[type + '|' + group] = grouped[type + '|' + group] || [];
+                grouped[type + '|' + group].push(row);
+            }
+        });
+
+        Object.values(grouped).forEach(groupRows => {
+            const leader = groupRows[0];
+            const leaderInput = leader.querySelector('.rest-input');
+            const existingRest = groupRows.map(row => row.querySelector('.rest-input').value).find(Boolean);
+            if (!leaderInput.value && existingRest) leaderInput.value = existingRest;
+
+            groupRows.slice(1).forEach(row => {
+                const input = row.querySelector('.rest-input');
+                input.value = '';
+                input.disabled = true;
+                input.placeholder = 'Descanso del grupo';
+            });
+        });
+    }
+
+    function calculateDay(day) {
+        let totalSeconds = 0;
+        const groups = {};
+
+        day.querySelectorAll('.routine-exercise-input-row').forEach((row, index) => {
+            const exercise = row.querySelector('.exercise-select');
+            const legacy = row.querySelector('input[type="hidden"][name$="[name]"]');
+            if (!exercise.value && !legacy?.value) return;
+
+            const sets = firstNumber(row.querySelector('.sets-input').value);
+            const reps = averageRange(row.querySelector('.reps-input').value);
+            if (sets <= 0 || reps <= 0) return;
+
+            const rest = restSeconds(row.querySelector('.rest-input').value);
+            const work = sets * reps * 40;
+            const type = row.querySelector('.block-type-select').value;
+            const group = row.querySelector('.block-group-select').value;
+
+            if (type === 'Individual' || !group) {
+                totalSeconds += work + Math.max(0, sets - 1) * rest;
+                return;
+            }
+
+            const key = type + '|' + group;
+            groups[key] = groups[key] || { work: 0, sets: 0, rest: 0, order: index };
+            groups[key].work += work;
+            groups[key].sets = Math.max(groups[key].sets, sets);
+            if (!groups[key].rest && rest) groups[key].rest = rest;
+        });
+
+        Object.values(groups).forEach(group => {
+            totalSeconds += group.work + Math.max(0, group.sets - 1) * group.rest;
+        });
+
+        const minutes = totalSeconds > 0 ? Math.ceil(totalSeconds / 60) : 0;
+        const output = day.querySelector('.estimated-time-input');
+        output.value = minutes >= 60
+            ? Math.floor(minutes / 60) + ' h ' + String(minutes % 60).padStart(2, '0') + ' min'
+            : (minutes ? minutes + ' min' : '');
+    }
+
+    document.querySelectorAll('.routine-day-builder').forEach(day => {
+        refreshGroups(day);
+        calculateDay(day);
+
+        day.addEventListener('input', event => {
+            if (event.target.matches('.sets-input, .reps-input, .rest-input')) calculateDay(day);
+        });
+        day.addEventListener('change', event => {
+            if (event.target.matches('.block-type-select, .block-group-select, .exercise-select')) {
+                refreshGroups(day);
+                calculateDay(day);
+            }
+        });
+        $(day).find('.exercise-select').on('select2:select select2:clear', function () {
+            refreshGroups(day);
+            calculateDay(day);
+        });
+    });
+});
+</script>
+@endpush
