@@ -2,6 +2,62 @@
 
 @section('title', 'Crear plan nutricional | FitCoach Admin')
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet">
+<style>
+    .nutrition-food-select + .select2-container{
+        width:100% !important;
+    }
+
+    .nutrition-food-select + .select2-container .select2-selection--single{
+        min-height:52px;
+        border:0;
+        border-radius:16px;
+        background:#eaf1f5;
+        display:flex;
+        align-items:center;
+        padding:10px 14px;
+    }
+
+    .nutrition-food-select + .select2-container .select2-selection__rendered{
+        color:#15232c;
+        line-height:1.25;
+        padding-left:0;
+        padding-right:26px;
+    }
+
+    .nutrition-food-select + .select2-container .select2-selection__arrow{
+        height:52px;
+        right:10px;
+    }
+
+    .nutrition-food-select + .select2-container .select2-selection__clear{
+        margin-right:18px;
+    }
+
+    .nutrition-meal-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        justify-content:flex-end;
+    }
+
+    .nutrition-item-actions{
+        width:1%;
+        white-space:nowrap;
+    }
+
+    .nutrition-remove-item{
+        width:42px;
+        height:42px;
+        border-radius:14px;
+        padding:0;
+        display:inline-grid;
+        place-items:center;
+    }
+</style>
+@endpush
+
 @section('content')
 @php
     $mode = $mode ?? 'create';
@@ -112,12 +168,18 @@
                     $meal = $planMeals->get($mealIndex);
                     $mealName = old("meals.$mealIndex.name", $meal?->name ?? ($mealNames[$mealIndex] ?? 'Comida '.($mealIndex + 1)));
                     $mealItems = $meal?->items?->values() ?? collect();
-                    $itemCount = max(4, $mealItems->count());
+                    $oldItems = collect(old("meals.$mealIndex.items", []));
+                    $itemCount = max(4, $mealItems->count(), $oldItems->count());
                 @endphp
-                <div class="admin-form-card">
+                <div class="admin-form-card nutrition-meal-card" data-meal-index="{{ $mealIndex }}">
                     <div class="admin-form-card-head">
-                        <h2 class="admin-panel-title mb-1">{{ $mealName }}</h2>
-                        <div class="admin-mini">Selecciona hasta 4 alimentos para esta comida.</div>
+                        <div>
+                            <h2 class="admin-panel-title mb-1">{{ $mealName }}</h2>
+                            <div class="admin-mini">Agrega los alimentos necesarios para esta comida.</div>
+                        </div>
+                        <div class="nutrition-meal-actions">
+                            <button type="button" class="admin-btn-soft" data-add-food-row><i class="bi bi-plus-circle"></i> Agregar alimento</button>
+                        </div>
                     </div>
                     <div class="admin-form-card-body">
                         <input type="hidden" name="meals[{{ $mealIndex }}][name]" value="{{ $mealName }}">
@@ -128,9 +190,10 @@
                                         <th>Alimento</th>
                                         <th>Cantidad</th>
                                         <th>Unidad base</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody data-food-rows data-next-index="{{ $itemCount }}">
                                     @for ($itemIndex = 0; $itemIndex < $itemCount; $itemIndex++)
                                         @php
                                             $item = $mealItems->get($itemIndex);
@@ -139,7 +202,7 @@
                                         @endphp
                                         <tr>
                                             <td>
-                                                <select name="meals[{{ $mealIndex }}][items][{{ $itemIndex }}][food_id]" class="form-select input-soft">
+                                                <select name="meals[{{ $mealIndex }}][items][{{ $itemIndex }}][food_id]" class="form-select input-soft nutrition-food-select" data-placeholder="Selecciona alimento">
                                                     <option value="">Selecciona alimento</option>
                                                     @foreach($catalogs as $catalog)
                                                         <optgroup label="{{ $catalog['name'] }}">
@@ -155,11 +218,38 @@
                                             </td>
                                             <td><input type="number" step="0.01" name="meals[{{ $mealIndex }}][items][{{ $itemIndex }}][quantity]" value="{{ $quantity }}" class="form-control input-soft" placeholder="100"></td>
                                             <td><span class="admin-mini">Usa la unidad indicada en el alimento.</span></td>
+                                            <td class="nutrition-item-actions">
+                                                <button type="button" class="admin-btn-soft nutrition-remove-item" data-remove-food-row aria-label="Quitar alimento"><i class="bi bi-trash3"></i></button>
+                                            </td>
                                         </tr>
                                     @endfor
                                 </tbody>
                             </table>
                         </div>
+                        <template data-food-row-template>
+                            <tr>
+                                <td>
+                                    <select name="meals[{{ $mealIndex }}][items][__ITEM_INDEX__][food_id]" class="form-select input-soft nutrition-food-select" data-placeholder="Selecciona alimento">
+                                        <option value="">Selecciona alimento</option>
+                                        @foreach($catalogs as $catalog)
+                                            <optgroup label="{{ $catalog['name'] }}">
+                                                @foreach($catalog['foods'] ?? [] as $food)
+                                                    @php $isExcluded = $selectedExcludedIds->contains((int) $food['id']); @endphp
+                                                    <option value="{{ $food['id'] }}" @disabled($isExcluded)>
+                                                        {{ $food['name'] }} - {{ $food['base_unit'] }}{{ $isExcluded ? ' | No incluir' : '' }}
+                                                    </option>
+                                                @endforeach
+                                            </optgroup>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="number" step="0.01" name="meals[{{ $mealIndex }}][items][__ITEM_INDEX__][quantity]" class="form-control input-soft" placeholder="100"></td>
+                                <td><span class="admin-mini">Usa la unidad indicada en el alimento.</span></td>
+                                <td class="nutrition-item-actions">
+                                    <button type="button" class="admin-btn-soft nutrition-remove-item" data-remove-food-row aria-label="Quitar alimento"><i class="bi bi-trash3"></i></button>
+                                </td>
+                            </tr>
+                        </template>
                     </div>
                 </div>
             @endfor
@@ -207,3 +297,101 @@
     </div>
 </form>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const initFoodSelect = (select) => {
+            if (!window.jQuery || !jQuery.fn.select2 || select.dataset.select2Ready === '1') {
+                return;
+            }
+
+            jQuery(select).select2({
+                allowClear: true,
+                placeholder: select.dataset.placeholder || 'Selecciona alimento',
+                width: '100%',
+            });
+
+            select.dataset.select2Ready = '1';
+        };
+
+        const refreshRemoveState = (card) => {
+            const rows = card.querySelectorAll('[data-food-rows] tr');
+            rows.forEach((row) => {
+                const removeButton = row.querySelector('[data-remove-food-row]');
+                removeButton?.toggleAttribute('disabled', rows.length <= 1);
+            });
+        };
+
+        document.querySelectorAll('.nutrition-food-select').forEach(initFoodSelect);
+        document.querySelectorAll('.nutrition-meal-card').forEach(refreshRemoveState);
+
+        document.querySelectorAll('[data-add-food-row]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const card = button.closest('.nutrition-meal-card');
+                const rows = card?.querySelector('[data-food-rows]');
+                const template = card?.querySelector('[data-food-row-template]');
+
+                if (!card || !rows || !template) {
+                    return;
+                }
+
+                const itemIndex = Number(rows.dataset.nextIndex || rows.querySelectorAll('tr').length);
+                rows.dataset.nextIndex = itemIndex + 1;
+
+                const wrapper = document.createElement('tbody');
+                wrapper.innerHTML = template.innerHTML.replaceAll('__ITEM_INDEX__', String(itemIndex)).trim();
+                const row = wrapper.firstElementChild;
+                rows.appendChild(row);
+
+                row.querySelectorAll('.nutrition-food-select').forEach(initFoodSelect);
+                refreshRemoveState(card);
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            const removeButton = event.target.closest('[data-remove-food-row]');
+
+            if (!removeButton) {
+                return;
+            }
+
+            const card = removeButton.closest('.nutrition-meal-card');
+            const row = removeButton.closest('tr');
+            const rows = card?.querySelectorAll('[data-food-rows] tr') || [];
+
+            if (!card || !row) {
+                return;
+            }
+
+            if (rows.length <= 1) {
+                const select = row.querySelector('.nutrition-food-select');
+                const quantity = row.querySelector('input[type="number"]');
+
+                if (select && window.jQuery && jQuery.fn.select2) {
+                    jQuery(select).val(null).trigger('change');
+                } else if (select) {
+                    select.value = '';
+                }
+
+                if (quantity) {
+                    quantity.value = '';
+                }
+
+                return;
+            }
+
+            const select = row.querySelector('.nutrition-food-select');
+
+            if (select && window.jQuery && jQuery.fn.select2 && select.dataset.select2Ready === '1') {
+                jQuery(select).select2('destroy');
+            }
+
+            row.remove();
+            refreshRemoveState(card);
+        });
+    });
+</script>
+@endpush
