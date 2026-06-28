@@ -269,8 +269,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const timers = new WeakMap();
 
     function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainder = seconds % 60;
+        const cleanSeconds = Math.max(0, Math.ceil(Number(seconds) || 0));
+        const minutes = Math.floor(cleanSeconds / 60);
+        const remainder = cleanSeconds % 60;
         return String(minutes).padStart(2, '0') + ':' + String(remainder).padStart(2, '0');
     }
 
@@ -286,8 +287,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const countdown = panel.querySelector('.rest-countdown');
         const value = panel.querySelector('.rest-timer-value');
         const ring = panel.querySelector('.rest-timer-ring');
-        const total = Math.max(1, Number(panel.dataset.restSeconds || seconds));
-        let remaining = Math.max(0, Number(seconds));
+        const total = Math.max(1, Math.ceil(Number(panel.dataset.restSeconds || seconds) || 0));
+        let remaining = Math.max(0, Math.ceil(Number(seconds) || 0));
 
         if (remaining <= 0) {
             countdown.classList.remove('is-active');

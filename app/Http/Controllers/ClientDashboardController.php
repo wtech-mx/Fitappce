@@ -51,7 +51,16 @@ class ClientDashboardController extends Controller
 
         $weekTotal = $this->weekTotal($workout?->duration);
         $currentWeek = $this->currentWeek($workout?->plan_date, $weekTotal, $localNow);
-        $nutritionTotals = $nutrition?->macroTotals();
+        $filledNutritionMeals = $nutrition?->meals
+            ->filter(fn ($meal) => $meal->items->isNotEmpty())
+            ->values() ?? collect();
+        $nutritionTotals = $filledNutritionMeals->flatMap(fn ($meal) => $meal->items)->reduce(
+            fn ($totals, $item) => [
+                'calories' => $totals['calories'] + (float) $item->calories,
+                'protein' => $totals['protein'] + (float) $item->protein,
+            ],
+            ['calories' => 0, 'protein' => 0]
+        );
         $nutritionCalories = (float) ($nutritionTotals['calories'] ?? 0);
 
         if ($nutritionCalories <= 0) {
@@ -68,6 +77,7 @@ class ClientDashboardController extends Controller
             'currentWeek' => $currentWeek,
             'weekTotal' => $weekTotal,
             'nutritionCalories' => $nutritionCalories,
+            'nutritionMealCount' => $filledNutritionMeals->count(),
             'measurementCount' => $user->measurements()->count(),
             'nextAppointment' => $nextAppointment,
             'photoUploadWindow' => $photoUploadWindow,

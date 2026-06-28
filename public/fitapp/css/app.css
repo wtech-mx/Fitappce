@@ -49,7 +49,7 @@ a{
 
 .app-page{
     min-height:100vh;
-    padding-bottom:92px;
+    padding-bottom:112px;
 }
 
 .section-pad{
@@ -1709,14 +1709,18 @@ a{
 }
 
 .bottom-nav{
-    position:absolute;
-    left:0;
-    right:0;
+    position:fixed;
+    left:50%;
+    right:auto;
     bottom:0;
+    width:100%;
+    max-width:430px;
+    transform:translateX(-50%);
     background:rgba(255,255,255,.94);
     backdrop-filter:blur(12px);
     border-top:1px solid var(--fa-border);
     padding:10px 8px calc(10px + env(safe-area-inset-bottom));
+    z-index:1030;
 }
 
 .bottom-nav a{

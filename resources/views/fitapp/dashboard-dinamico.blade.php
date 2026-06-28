@@ -6,7 +6,7 @@
 @php
     $firstName = str($user->name)->before(' ')->toString();
     $days = $workout?->days ?? collect();
-    $mealCount = $nutrition?->meals->count() ?? 0;
+    $mealCount = $nutritionMealCount ?? ($nutrition?->meals->filter(fn ($meal) => $meal->items->isNotEmpty())->count() ?? 0);
     $todayEvidenceCount = $todayWorkoutDay?->exercises->where('requires_evidence', true)->count() ?? 0;
     $serviceLabel = $workout && $nutrition ? 'Entrenamiento + nutricion' : ($workout ? 'Entrenamiento' : ($nutrition ? 'Nutricion' : 'Sin plan activo'));
     $focus = $workout?->goal ?: ($nutrition?->goal ?: ($user->goal ?: 'Tu progreso personal'));
@@ -75,8 +75,8 @@
 
     <div class="row g-3 mb-4">
         <div class="col-6"><a href="{{ route('fitapp.rutina') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Rutina</div><div class="metric-value">{{ $days->count() }}</div><small class="text-muted">dias asignados</small></div></a></div>
-        <div class="col-6"><a href="{{ route('fitapp.progreso') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Progreso</div><div class="metric-value">{{ $measurementCount }}</div><small class="text-muted">mediciones</small></div></a></div>
-        <div class="col-6"><a href="{{ route('fitapp.nutricion') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Nutricion</div><div class="metric-value">{{ $mealCount }}</div><small class="text-muted">comidas del plan</small></div></a></div>
+        <div class="col-6"><a href="{{ route('fitapp.progreso-corporal') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Progreso</div><div class="metric-value">{{ $measurementCount }}</div><small class="text-muted">mediciones</small></div></a></div>
+        <div class="col-6"><a href="{{ route('fitapp.plan') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Nutricion</div><div class="metric-value">{{ $mealCount }}</div><small class="text-muted">comidas del plan</small></div></a></div>
         <div class="col-6"><a href="{{ route('fitapp.plan') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Plan</div><div class="metric-value">{{ number_format($nutritionCalories, 0) }}</div><small class="text-muted">kcal del dia</small></div></a></div>
     </div>
 
@@ -125,14 +125,14 @@
         </a>
     @endif
 
-    <a href="{{ route('fitapp.nutricion') }}" class="quick-link-card mb-3">
+    <a href="{{ route('fitapp.plan') }}" class="quick-link-card mb-3">
         <div class="d-flex justify-content-between align-items-start gap-3">
             <div><div class="page-kicker mb-1"><i class="bi bi-cup-hot"></i> Nutricion</div><div class="fw-bold mb-1">{{ $nutrition?->name ?: 'Plan pendiente' }}</div><div class="fit-subtitle">{{ $nutrition ? $mealCount.' comidas - '.number_format($nutritionCalories, 0).' kcal'.($nutrition->daily_water ? ' - Agua: '.$nutrition->daily_water : '') : 'Tu coach aun no ha asignado un plan alimentario.' }}</div></div>
             <i class="bi bi-chevron-right fs-5 text-primary-custom"></i>
         </div>
     </a>
 
-    <a href="{{ route('fitapp.progreso') }}" class="quick-link-card">
+    <a href="{{ route('fitapp.progreso-corporal') }}" class="quick-link-card">
         <div class="d-flex justify-content-between align-items-start gap-3">
             <div><div class="page-kicker mb-1"><i class="bi bi-graph-up-arrow"></i> Seguimiento</div><div class="fw-bold mb-1">{{ $latestMeasurement ? 'Ultima valoracion '.$latestMeasurement->measured_at->format('d/m/Y') : 'Primera valoracion pendiente' }}</div><div class="fit-subtitle">{{ $latestMeasurement?->notes ?: 'Aqui veras las observaciones reales que deje tu coach.' }}</div></div>
             <i class="bi bi-chevron-right fs-5 text-primary-custom"></i>

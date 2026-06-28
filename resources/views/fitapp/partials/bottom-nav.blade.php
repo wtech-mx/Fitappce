@@ -15,14 +15,14 @@
         </div>
 
         <div class="col">
-            <a href="{{ route('fitapp.nutricion') }}" class="{{ request()->routeIs('fitapp.nutricion') || request()->routeIs('fitapp.plan') || request()->routeIs('fitapp.recetas') ? 'active' : '' }}">
+            <a href="{{ route('fitapp.plan') }}" class="{{ request()->routeIs('fitapp.nutricion') || request()->routeIs('fitapp.plan') || request()->routeIs('fitapp.recetas') ? 'active' : '' }}">
                 <i class="bi bi-cup-hot"></i>
                 Nutrición
             </a>
         </div>
 
         <div class="col">
-            <a href="{{ route('fitapp.progreso') }}" class="{{ request()->routeIs('fitapp.progreso') || request()->routeIs('fitapp.progreso-corporal') || request()->routeIs('fitapp.logros') ? 'active' : '' }}">
+            <a href="{{ route('fitapp.progreso-corporal') }}" class="{{ request()->routeIs('fitapp.progreso') || request()->routeIs('fitapp.progreso-corporal') || request()->routeIs('fitapp.logros') ? 'active' : '' }}">
                 <i class="bi bi-graph-up-arrow"></i>
                 Progreso
             </a>

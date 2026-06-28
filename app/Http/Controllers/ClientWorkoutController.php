@@ -105,7 +105,7 @@ class ClientWorkoutController extends Controller
         $progress->save();
 
         $remainingRest = $progress->rest_started_at
-            ? max(0, $block['rest_seconds'] - $progress->rest_started_at->diffInSeconds(now()))
+            ? (int) max(0, ceil($block['rest_seconds'] - $progress->rest_started_at->diffInSeconds(now())))
             : 0;
 
         return response()->json([
@@ -168,7 +168,7 @@ class ClientWorkoutController extends Controller
 
             if ($record?->rest_started_at && $completedSets < $block['total_sets']) {
                 $elapsed = $record->rest_started_at->diffInSeconds(now());
-                $remainingSeconds = max(0, $block['rest_seconds'] - $elapsed);
+                $remainingSeconds = (int) max(0, ceil($block['rest_seconds'] - $elapsed));
             }
 
             return $block + [
@@ -186,10 +186,10 @@ class ClientWorkoutController extends Controller
         return isset($match[0]) ? (float) str_replace(',', '.', $match[0]) : 0.0;
     }
 
-    private function restSeconds(?string $value): float
+    private function restSeconds(?string $value): int
     {
         $seconds = $this->firstNumber($value);
 
-        return preg_match('/min/i', (string) $value) ? $seconds * 60 : $seconds;
+        return (int) ceil(preg_match('/min/i', (string) $value) ? $seconds * 60 : $seconds);
     }
 }

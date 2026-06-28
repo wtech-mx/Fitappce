@@ -11,7 +11,7 @@
 
 <div class="section-pad trophy-page">
     <div class="app-bar">
-        <a href="{{ route('fitapp.progreso') }}" class="app-bar-btn text-dark">
+        <a href="{{ route('fitapp.progreso-corporal') }}" class="app-bar-btn text-dark">
             <i class="bi bi-arrow-left"></i>
         </a>
         <span class="step-badge">Tu vitrina</span>

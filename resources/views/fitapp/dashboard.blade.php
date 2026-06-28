@@ -49,7 +49,7 @@
         </div>
 
         <div class="col-6">
-            <a href="{{ route('fitapp.progreso') }}" class="card-link-clean">
+            <a href="{{ route('fitapp.progreso-corporal') }}" class="card-link-clean">
                 <div class="metric-card is-clickable">
                     <div class="metric-label">Progreso</div>
                     <div class="metric-value">85%</div>
@@ -59,7 +59,7 @@
         </div>
 
         <div class="col-6">
-            <a href="{{ route('fitapp.nutricion') }}" class="card-link-clean">
+            <a href="{{ route('fitapp.plan') }}" class="card-link-clean">
                 <div class="metric-card is-clickable">
                     <div class="metric-label">Nutrición</div>
                     <div class="metric-value">3</div>
@@ -155,7 +155,7 @@
         </div>
     </a>
 
-    <a href="{{ route('fitapp.nutricion') }}" class="quick-link-card mb-3">
+    <a href="{{ route('fitapp.plan') }}" class="quick-link-card mb-3">
         <div class="d-flex justify-content-between align-items-start gap-3">
             <div>
                 <div class="page-kicker mb-1">
@@ -168,7 +168,7 @@
         </div>
     </a>
 
-    <a href="{{ route('fitapp.progreso') }}" class="quick-link-card">
+    <a href="{{ route('fitapp.progreso-corporal') }}" class="quick-link-card">
         <div class="d-flex justify-content-between align-items-start gap-3">
             <div>
                 <div class="page-kicker mb-1">

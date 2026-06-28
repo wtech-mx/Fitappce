@@ -103,6 +103,7 @@
         ->values()
         ->map(fn ($measurement) => [
             'month' => $measurement->measured_at->translatedFormat('M'),
+            'label' => $measurement->measured_at->translatedFormat('M Y'),
             'fat' => filled($measurement->body_fat) ? max(8, min(100, (float) $measurement->body_fat * 3)) : 12,
             'muscle' => filled($measurement->lean_mass) ? max(8, min(100, (float) $measurement->lean_mass * 1.2)) : 12,
             'weight' => $measurement->weight ? $measurement->weight.' kg' : '-',
@@ -113,6 +114,7 @@
     if (empty($history)) {
         $history = [[
             'month' => 'Base',
+            'label' => 'Base',
             'fat' => filled($current['body_fat']) ? max(8, min(100, (float) $current['body_fat'] * 3)) : 12,
             'muscle' => filled($current['lean_mass']) ? max(8, min(100, (float) $current['lean_mass'] * 1.2)) : 12,
             'weight' => $formatValue($current['weight'], ' kg'),
@@ -135,11 +137,26 @@
         ['name' => 'Muslo', 'previous' => $formatValue($before['thigh'], ' cm'), 'current' => $formatValue($current['thigh'], ' cm'), 'change' => $changeValue($current['thigh'], $before['thigh'])],
         ['name' => 'Pantorrilla', 'previous' => $formatValue($before['calf'], ' cm'), 'current' => $formatValue($current['calf'], ' cm'), 'change' => $changeValue($current['calf'], $before['calf'])],
     ];
+    $previousLabel = $previousMeasurement?->measured_at?->translatedFormat('F') ?? 'Anterior';
+    $currentLabel = $latestMeasurement?->measured_at?->translatedFormat('F') ?? 'Actual';
+    $rangeLabel = $previousMeasurement && $latestMeasurement
+        ? $previousMeasurement->measured_at->translatedFormat('M').' - '.$latestMeasurement->measured_at->translatedFormat('M')
+        : ($latestMeasurement?->measured_at?->translatedFormat('M Y') ?? 'Sin historial');
+    $scoreChecks = collect([
+        filled($before['body_fat']) && filled($current['body_fat']) && (float) $current['body_fat'] <= (float) $before['body_fat'],
+        filled($before['waist']) && filled($current['waist']) && (float) $current['waist'] <= (float) $before['waist'],
+        filled($before['lean_mass']) && filled($current['lean_mass']) && (float) $current['lean_mass'] >= (float) $before['lean_mass'],
+        filled($latestMeasurement),
+    ]);
+    $reportScore = $latestMeasurement ? min(98, 62 + ($scoreChecks->filter()->count() * 9)) : 0;
+    $fatWentDown = filled($before['body_fat']) && filled($current['body_fat']) && (float) $current['body_fat'] <= (float) $before['body_fat'];
+    $leanWentUp = filled($before['lean_mass']) && filled($current['lean_mass']) && (float) $current['lean_mass'] >= (float) $before['lean_mass'];
+    $weightChange = filled($before['weight']) && filled($current['weight']) ? (float) $current['weight'] - (float) $before['weight'] : null;
 @endphp
 
 <div class="section-pad">
     <div class="app-bar">
-        <a href="{{ route('fitapp.progreso') }}" class="app-bar-btn text-dark">
+        <a href="{{ route('fitapp.dashboard') }}" class="app-bar-btn text-dark">
             <i class="bi bi-arrow-left"></i>
         </a>
         <span class="step-badge">{{ $latestDate ? $latestDate->format('d/m/Y') : 'Sin medicion' }}</span>
@@ -162,7 +179,7 @@
             <div class="fit-subtitle">{{ $previousMeasurement ? 'Comparado contra tu medicion anterior.' : 'Primer punto de partida para tu progreso.' }}</div>
         </div>
         <div class="body-score-ring">
-            <span>86</span>
+            <span>{{ $reportScore }}</span>
             <small>/100</small>
         </div>
     </div>
@@ -244,7 +261,7 @@
     <div class="surface-card p-4 mb-4">
         <div class="section-title-row">
             <h2 class="h6 fw-bold mb-0">Comparativo mensual</h2>
-            <span class="mini-note">Feb - Abr</span>
+            <span class="mini-note">{{ $rangeLabel }}</span>
         </div>
 
         <div class="body-chart">
@@ -268,7 +285,7 @@
     <div class="surface-card p-4 mb-4">
         <div class="section-title-row">
             <h2 class="h6 fw-bold mb-0">Diferencia contra otros meses</h2>
-            <span class="mini-note">Ene - Abr</span>
+            <span class="mini-note">{{ $rangeLabel }}</span>
         </div>
 
         <div class="body-month-track mb-3">
@@ -304,15 +321,15 @@
         </div>
 
         <div class="compare-month-tabs mb-3">
-            <button class="compare-month-tab">Ene</button>
-            <button class="compare-month-tab active">Feb</button>
-            <button class="compare-month-tab">Mar</button>
+            @foreach($history as $point)
+                <button class="compare-month-tab {{ $loop->last ? 'active' : '' }}" type="button">{{ $point['month'] }}</button>
+            @endforeach
         </div>
 
         <div class="body-compare-stage mb-3">
             <div class="compare-body-card previous">
                 <div class="compare-body-head">
-                    <span>Febrero</span>
+                    <span>{{ ucfirst($previousLabel) }}</span>
                     <strong>Medicion anterior</strong>
                 </div>
                 @if(($bodyVisualType ?? 'avatar') === 'avatar')
@@ -348,7 +365,7 @@
 
             <div class="compare-body-card current">
                 <div class="compare-body-head">
-                    <span>Abril</span>
+                    <span>{{ ucfirst($currentLabel) }}</span>
                     <strong>Medicion actual</strong>
                 </div>
                 @if(($bodyVisualType ?? 'avatar') === 'avatar')
@@ -402,7 +419,7 @@
         <div class="result-insight good mb-3">
             <i class="bi bi-arrow-down-right"></i>
             <div>
-                <div class="fw-bold">Bajaste grasa corporal</div>
+                <div class="fw-bold">{{ $fatWentDown ? 'Bajaste grasa corporal' : 'Cambio en grasa corporal' }}</div>
                 <div class="fit-subtitle">Grasa actual: {{ $formatValue($current['body_fat'], '%') }}. Anterior: {{ $formatValue($before['body_fat'], '%') }}.</div>
             </div>
         </div>
@@ -410,7 +427,7 @@
         <div class="result-insight good mb-3">
             <i class="bi bi-arrow-up-right"></i>
             <div>
-                <div class="fw-bold">Subiste masa magra</div>
+                <div class="fw-bold">{{ $leanWentUp ? 'Subiste masa magra' : 'Cambio en masa magra' }}</div>
                 <div class="fit-subtitle">Masa magra actual: {{ $formatValue($current['lean_mass'], ' kg') }}. Cambio: {{ $changeValue($current['lean_mass'], $before['lean_mass'], ' kg') }}.</div>
             </div>
         </div>
@@ -418,7 +435,7 @@
         <div class="result-insight neutral">
             <i class="bi bi-dash-lg"></i>
             <div>
-                <div class="fw-bold">El peso se mantuvo</div>
+                <div class="fw-bold">{{ $weightChange === null ? 'Peso en seguimiento' : (abs($weightChange) < .2 ? 'El peso se mantuvo' : 'Cambio en peso corporal') }}</div>
                 <div class="fit-subtitle">Peso actual: {{ $formatValue($current['weight'], ' kg') }}. Cambio: {{ $changeValue($current['weight'], $before['weight'], ' kg') }}.</div>
             </div>
         </div>

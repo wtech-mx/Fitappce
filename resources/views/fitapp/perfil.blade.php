@@ -128,7 +128,6 @@
         <a href="{{ route('fitapp.plan') }}" class="btn btn-soft-custom w-100 mb-2">Ver plan alimentario</a>
         <a href="{{ route('fitapp.recetas') }}" class="btn btn-soft-custom w-100 mb-2">Ver recetas</a>
         <a href="{{ route('fitapp.logros') }}" class="btn btn-soft-custom w-100 mb-2">Ver vitrina de logros</a>
-        <a href="{{ route('fitapp.progreso') }}" class="btn btn-soft-custom w-100 mb-2">Ver progreso</a>
         <a href="{{ route('fitapp.progreso-corporal') }}" class="btn btn-primary-custom w-100">Ver reporte corporal</a>
     </div>
 

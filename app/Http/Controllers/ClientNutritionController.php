@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ClientNutritionController extends Controller
 {
-    public function daily(Request $request): View
+    public function daily(Request $request): RedirectResponse
     {
-        return view('fitapp.nutricion', [
-            'activePlan' => $this->activePlan($request),
-        ]);
+        return redirect()->route('fitapp.plan');
     }
 
     public function plan(Request $request): View
