@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientProgressController;
+use App\Http\Controllers\ClientProgressPhotoController;
 use App\Http\Controllers\ClientProfileController;
 use App\Http\Controllers\ClientNutritionController;
 use App\Http\Controllers\ClientWorkoutController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\ClientAchievementController;
 use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\ExerciseMediaController;
 use App\Http\Controllers\Admin\AchievementController;
+use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\ExerciseController;
 use App\Http\Controllers\Admin\NutritionController;
 use App\Http\Controllers\Admin\MeasurementController;
@@ -54,6 +56,8 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
         Route::view('/recetas', 'fitapp.recetas')->name('recetas');
         Route::get('/progreso', [ClientProgressController::class, 'index'])->name('progreso');
         Route::get('/progreso-corporal', [ClientProgressController::class, 'report'])->name('progreso-corporal');
+        Route::get('/fotos-progreso', [ClientProgressPhotoController::class, 'index'])->name('fotos-progreso');
+        Route::post('/fotos-progreso', [ClientProgressPhotoController::class, 'store'])->name('fotos-progreso.store');
         Route::get('/logros', [ClientAchievementController::class, 'index'])->name('logros');
         Route::get('/perfil', [ClientProfileController::class, 'show'])->name('perfil');
         Route::put('/perfil/visual', [ClientProfileController::class, 'updateVisual'])->name('perfil.visual');
@@ -63,12 +67,16 @@ Route::prefix('fitapp')->name('fitapp.')->group(function () {
 Route::prefix('admin')->name('fitapp.admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::redirect('/', '/admin/dashboard')->name('index');
     Route::view('/dashboard', 'fitapp.admin.dashboard')->name('dashboard');
-    Route::view('/citas', 'fitapp.admin.citas')->name('citas');
+    Route::get('/citas', [AppointmentController::class, 'index'])->name('citas');
+    Route::post('/citas', [AppointmentController::class, 'store'])->name('citas.store');
+    Route::put('/citas/{appointment}', [AppointmentController::class, 'update'])->name('citas.update');
+    Route::post('/citas/bloqueos', [AppointmentController::class, 'block'])->name('citas.bloqueos.store');
     Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios');
     Route::get('/usuarios/alta', [UserController::class, 'create'])->name('usuarios.alta');
     Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
     Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
     Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
+    Route::get('/usuarios/{user}/expediente', [UserController::class, 'record'])->name('usuarios.expediente');
     Route::get('/usuarios/{user}', [UserController::class, 'show'])->name('usuarios.detalle');
     Route::get('/mediciones', [MeasurementController::class, 'index'])->name('mediciones');
     Route::get('/mediciones/crear', [MeasurementController::class, 'create'])->name('mediciones.crear');

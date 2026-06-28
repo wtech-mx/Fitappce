@@ -42,6 +42,37 @@
         </p>
     </div>
 
+    <div class="quick-link-card mb-3">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+                <div class="page-kicker mb-1"><i class="bi bi-calendar2-check"></i> Proxima cita</div>
+                @if($nextAppointment)
+                    <div class="fw-bold mb-1">{{ $nextAppointment->starts_at->format('d/m/Y · h:i A') }}</div>
+                    <div class="fit-subtitle">{{ $nextAppointment->appointment_type ?: 'Seguimiento' }} · {{ $nextAppointment->modality }}</div>
+                @else
+                    <div class="fw-bold mb-1">Sin cita programada</div>
+                    <div class="fit-subtitle">Tu coach te avisara cuando quede agendada.</div>
+                @endif
+            </div>
+            <span class="status-pill {{ $nextAppointment ? '' : 'status-warn' }}" @if($nextAppointment) style="background:#dff1f8;color:#2E86AB;" @endif>
+                {{ $nextAppointment ? 'Agendada' : 'Pendiente' }}
+            </span>
+        </div>
+    </div>
+
+    <a href="{{ route('fitapp.fotos-progreso') }}" class="quick-link-card mb-4 text-decoration-none text-dark">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+                <div class="page-kicker mb-1"><i class="bi bi-camera"></i> Fotos de avance</div>
+                <div class="fw-bold mb-1">{{ $photoUploadWindow['is_open'] ? 'Ya puedes subir tus fotos' : 'Preparalas para tu cita' }}</div>
+                <div class="fit-subtitle">
+                    {{ $nextAppointment ? 'Ventana: 7 dias antes de tu cita.' : 'Aparecera cuando tengas cita programada.' }}
+                </div>
+            </div>
+            <span class="status-pill {{ $photoUploadWindow['is_open'] ? 'status-ok' : 'status-warn' }}">{{ $photoUploadWindow['label'] }}</span>
+        </div>
+    </a>
+
     <div class="row g-3 mb-4">
         <div class="col-6"><a href="{{ route('fitapp.rutina') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Rutina</div><div class="metric-value">{{ $days->count() }}</div><small class="text-muted">dias asignados</small></div></a></div>
         <div class="col-6"><a href="{{ route('fitapp.progreso') }}" class="card-link-clean"><div class="metric-card is-clickable"><div class="metric-label">Progreso</div><div class="metric-value">{{ $measurementCount }}</div><small class="text-muted">mediciones</small></div></a></div>

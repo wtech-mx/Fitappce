@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->hasMany(ClientMeasurement::class);
     }
 
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     public function nutritionPlans(): HasMany
     {
         return $this->hasMany(NutritionPlan::class);
@@ -110,6 +115,11 @@ class User extends Authenticatable
     public function clientAchievements(): HasMany
     {
         return $this->hasMany(ClientAchievement::class);
+    }
+
+    public function progressPhotos(): HasMany
+    {
+        return $this->hasMany(ProgressPhoto::class);
     }
 
     public function workoutSetProgress(): HasMany

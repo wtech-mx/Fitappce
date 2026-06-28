@@ -26,6 +26,13 @@ class ClientDashboardController extends Controller
             ->latest('measured_at')
             ->latest()
             ->first();
+        $nextAppointment = $user->appointments()
+            ->where('kind', 'appointment')
+            ->whereNotIn('status', ['cancelled', 'completed'])
+            ->where('starts_at', '>=', now())
+            ->orderBy('starts_at')
+            ->first();
+        $photoUploadWindow = $this->photoUploadWindow($nextAppointment);
         $localNow = now('America/Mexico_City');
 
         $todayName = [
@@ -62,6 +69,8 @@ class ClientDashboardController extends Controller
             'weekTotal' => $weekTotal,
             'nutritionCalories' => $nutritionCalories,
             'measurementCount' => $user->measurements()->count(),
+            'nextAppointment' => $nextAppointment,
+            'photoUploadWindow' => $photoUploadWindow,
         ]);
     }
 
@@ -87,5 +96,21 @@ class ClientDashboardController extends Controller
         $week = $start->greaterThan($localNow) ? 1 : $start->diffInWeeks($localNow->copy()->startOfDay()) + 1;
 
         return max(1, min($weekTotal, $week));
+    }
+
+    private function photoUploadWindow($appointment): array
+    {
+        if (! $appointment) {
+            return ['is_open' => false, 'label' => 'Sin cita'];
+        }
+
+        $startsAt = $appointment->starts_at->copy()->subDays(7)->startOfDay();
+        $endsAt = $appointment->starts_at->copy()->endOfDay();
+        $now = now();
+
+        return [
+            'is_open' => $now->greaterThanOrEqualTo($startsAt) && $now->lessThanOrEqualTo($endsAt),
+            'label' => $now->lt($startsAt) ? 'Abre '.$startsAt->format('d/m') : 'Subir ahora',
+        ];
     }
 }

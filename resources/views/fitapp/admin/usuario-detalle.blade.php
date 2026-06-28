@@ -23,6 +23,7 @@
     <div class="admin-topbar-actions">
         <a href="{{ route('fitapp.admin.usuarios') }}" class="btn btn-soft-custom px-4">Volver</a>
         <a href="{{ route('fitapp.admin.usuarios.edit', $user) }}" class="btn btn-soft-custom px-4">Editar usuario</a>
+        <a href="{{ route('fitapp.admin.usuarios.expediente', $user) }}" class="btn btn-soft-custom px-4">Expediente</a>
         <a href="{{ route('fitapp.admin.planes', ['user' => $user->id]) }}" class="btn btn-primary-custom px-4">Planes</a>
         <div class="admin-avatar">C</div>
     </div>

@@ -83,6 +83,7 @@
 
                     <div class="admin-card-actions">
                         <a href="{{ route('fitapp.admin.usuarios.detalle', $user) }}" class="admin-btn-soft"><i class="bi bi-person-vcard"></i> Ver perfil</a>
+                        <a href="{{ route('fitapp.admin.usuarios.expediente', $user) }}" class="admin-btn-soft"><i class="bi bi-folder2-open"></i> Expediente</a>
                         <a href="{{ route('fitapp.admin.usuarios.edit', $user) }}" class="admin-btn-soft"><i class="bi bi-pencil-square"></i> Editar</a>
                         <a href="{{ route('fitapp.admin.planes', ['user' => $user->id]) }}" class="admin-btn-soft"><i class="bi bi-clipboard2-pulse"></i> Planes</a>
                         <a href="{{ route('fitapp.admin.rutinas') }}" class="admin-btn-soft"><i class="bi bi-activity"></i> Rutina</a>

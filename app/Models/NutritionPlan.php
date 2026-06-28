@@ -24,6 +24,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 ])]
 class NutritionPlan extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'plan_date' => 'date',
+        ];
+    }
+
     /**
      * @return array{calories: float, protein: float, carbohydrates: float, fat: float}
      */
