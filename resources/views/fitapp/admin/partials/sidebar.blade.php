@@ -1,6 +1,15 @@
 <aside class="admin-sidebar">
     <div class="admin-brand">
-        <div class="admin-brand-title">FitCoach Admin</div>
+        <div class="admin-brand-mark">
+            <i class="bi bi-heart-pulse-fill"></i>
+        </div>
+        <div>
+            <div class="admin-brand-title">FitCoach Admin</div>
+            <div class="admin-brand-subtitle">Panel de control</div>
+        </div>
+        <label for="adminMenuToggle" class="admin-sidebar-close" aria-label="Cerrar menu">
+            <i class="bi bi-x-lg"></i>
+        </label>
     </div>
 
     <nav class="admin-nav">
@@ -77,8 +86,8 @@
         </form>
     </nav>
 
-    <div class="mt-auto pt-2">
-        <div class="surface-card p-3 bg-transparent border-0" style="background:rgba(255,255,255,.06)!important;">
+    <div class="admin-coach-card-wrap">
+        <div class="admin-coach-card">
             <div class="small text-white-50 mb-1">Coach activo</div>
             <div class="fw-bold text-white">Carlos Coach</div>
             <div class="small text-white-50">Rutinas + nutrición</div>

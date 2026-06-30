@@ -16,10 +16,18 @@
     @stack('styles')
 </head>
 <body class="admin-shell">
+    <input type="checkbox" id="adminMenuToggle" class="admin-menu-toggle" aria-hidden="true">
+
     <div class="admin-layout">
+        <label for="adminMenuToggle" class="admin-menu-backdrop" aria-label="Cerrar menu"></label>
+
         @include('fitapp.admin.partials.sidebar')
 
         <main class="admin-main">
+            <label for="adminMenuToggle" class="admin-menu-fab" aria-label="Abrir menu">
+                <i class="bi bi-list"></i>
+            </label>
+
             @yield('content')
         </main>
     </div>
